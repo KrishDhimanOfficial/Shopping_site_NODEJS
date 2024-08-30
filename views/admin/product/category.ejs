@@ -1,0 +1,137 @@
+<html lang="en">
+<%- include('../../partials/header') %>
+
+  <body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+      <!-- Preloader -->
+      <div class="preloader flex-column justify-content-center align-items-center">
+        <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+      </div>
+
+      <!-- Navbar -->
+      <%- include('../../partials/navbar') %>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <%- include('../../partials/sidebar') %>
+
+          <!-- Content Wrapper. Contains page content -->
+          <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6 d-flex">
+                    <h1>Category</h1>
+                    <button type="button" class="btn btn-default mx-2 bg-primary" data-toggle="modal"
+                      data-target="#modal-default">
+                      Add Category
+                    </button>
+                  </div>
+                  <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active">Product Category</li>
+                    </ol>
+                  </div>
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">All Category</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th style="width: 10px">S.No</th>
+                              <th>Category</th>
+                              <th>Sub Category</th>
+                              <th>Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1.</td>
+                              <td>Update software</td>
+                              <td>
+                              </td>
+                              <td>
+                                <button type="button" class="btn btn-sm btn-primary">Edit</button>
+                                <button type="button" class="btn btn-sm btn-danger">Danger</button>
+                            </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                      <div class="card-footer clearfix">
+                        <ul class="pagination pagination-sm m-0 float-right">
+                          <li class="page-item"><a class="page-link" href="#">«</a></li>
+                          <li class="page-item"><a class="page-link" href="#">1</a></li>
+                          <li class="page-item"><a class="page-link" href="#">2</a></li>
+                          <li class="page-item"><a class="page-link" href="#">3</a></li>
+                          <li class="page-item"><a class="page-link" href="#">»</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                </div>
+              </div>
+              <!-- /.card-body -->
+          </div>
+    </div>
+    <div class="modal fade" id="modal-default">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Add Category</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="" method="post">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="category">Category Name</label>
+                    <input type="text" id="category" name="category" class="form-control">
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="maincategory">Category</label>
+                    <select name="" id="maincategory" class="form-control">
+                      <option selected disabled>Category</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <!-- ./wrapper -->
+    <%- include('../../partials/footer') %>
+  </body>
+
+</html>

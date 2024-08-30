@@ -18,7 +18,7 @@ module.exports = {
             res.json({ message: 'Please Enter Category' })
         }
     },
-    
+
     allCategories: async (req, res) => {
         try {
             const data = await category.find()
@@ -35,6 +35,8 @@ module.exports = {
             const data = await post.create({ blog_title, blog_description, date, blog_image, category_id })
             if (data) res.json({ message: 'Post Created sucessfull!' })
         } catch (error) {
+            console.log(error.message);
+
             res.json({ message: 'Post Created Unsucessfull!' })
         }
     }
