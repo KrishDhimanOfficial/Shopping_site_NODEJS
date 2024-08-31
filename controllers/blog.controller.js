@@ -9,7 +9,7 @@ module.exports = {
             })
 
             if (existingCategory) {
-                res.json({ message: 'Category already exists' });
+                res.json({ message: 'Category already exists!' });
             } else {
                 await category.create(req.body);
                 res.json({ message: 'Category created successfully' });
@@ -32,11 +32,12 @@ module.exports = {
             const { blog_title, blog_description, category_id } = req.body;
             date = new Date()
             blog_image = req.file.filename
-            const data = await post.create({ blog_title, blog_description, date, blog_image, category_id })
+            console.log(blog_description[1]);
+
+            const data = await post.create({ blog_title, blog_description: blog_description[1], date, blog_image, category_id })
             if (data) res.json({ message: 'Post Created sucessfull!' })
         } catch (error) {
-            console.log(error.message);
-
+            // console.log("controller" + " " +error.message);
             res.json({ message: 'Post Created Unsucessfull!' })
         }
     }

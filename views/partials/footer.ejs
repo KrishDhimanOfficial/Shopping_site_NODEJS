@@ -45,7 +45,7 @@
 <script src="/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
 <script src="/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 <script src="/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="/js/script.js"></script>
+<script async src="/js/script.js"></script>
 <script>
   $(function () {
     //Initialize Select2 Elements
@@ -71,7 +71,9 @@
   });
   $(function () {
     // Summernote
-    $('#summernote').summernote()
+    $('#summernote').summernote({
+      height: 300
+    })
   })
 
 </script>
