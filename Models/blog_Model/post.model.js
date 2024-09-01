@@ -20,6 +20,9 @@ const postSchema = mongoose.Schema({
     date:{
         type: Date
     },
+    author:{
+        type: String
+    },
     category_id:{
         type: mongoose.Schema.Types.ObjectId
     }

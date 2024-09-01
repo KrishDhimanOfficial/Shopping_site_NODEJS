@@ -31,10 +31,11 @@ module.exports = {
         try {
             const { blog_title, blog_description, category_id } = req.body;
             date = new Date()
+            author = 'Admin'
             blog_image = req.file.filename
             console.log(blog_description[1]);
 
-            const data = await post.create({ blog_title, blog_description: blog_description[1], date, blog_image, category_id })
+            const data = await post.create({ blog_title, author, blog_description: blog_description[1], date, blog_image, category_id })
             if (data) res.json({ message: 'Post Created sucessfull!' })
         } catch (error) {
             // console.log("controller" + " " +error.message);

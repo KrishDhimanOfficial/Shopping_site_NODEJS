@@ -11,6 +11,17 @@
 })() // Immediately Invoked Function Expression (IIFE)
 
 
+const inputField = document.getElementById('imageInput');
+const imageTag = document.getElementById('imageTag');
+
+inputField.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    imageTag.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+});
 document.querySelector('#submitPost').addEventListener('submit', async (e) => {
     e.preventDefault()
     const blog_description = $('#summernote').summernote('code').trim()
@@ -28,7 +39,6 @@ document.querySelector('#submitPost').addEventListener('submit', async (e) => {
             document.querySelector('#submitPost').reset()
         })
 })
-
 
 function AlertMessage(message, erroMessage, sucsessMessage) {
     const ToastElement = document.querySelector('#toast-container .toast')
