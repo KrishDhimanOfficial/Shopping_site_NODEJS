@@ -32,17 +32,18 @@ router
 
 router.get('/logout', Admin.handleAdminLogout)
 
-
-router.get('/blogs', checkLogin, blogControllers.allPosts)
+// Post Routes
 router.route('/blog/create')
     .all(checkLogin)
     .get(blogControllers.allCategories)
     .post(upload.single('blog_image'), blogControllers.createPost)
 
+router.route('/update/blog')
+    .all(checkLogin)
+    .get(blogControllers.updateBlogPage)
+    .put(upload.single('blog_image'), blogControllers.updateBlog)
 
-
-
-router.get('/update/blog/:id', checkLogin, blogControllers.updateBlog)
+router.get('/blogs', checkLogin, blogControllers.allPosts)
 router.get('/delete/blog/:id', checkLogin, blogControllers.deleteBlog)
 
 

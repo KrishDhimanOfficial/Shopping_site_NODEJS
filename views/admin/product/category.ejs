@@ -124,58 +124,80 @@
               <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
           </form>
+          <div id="toast-container" class="toast-top-right">
+            <div class="toast toast-success" aria-live="polite" style="opacity: 0;">
+              <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
+              </div>
+            </div>
+          </div>
+          <!-- /.modal-content -->
         </div>
-        <!-- /.modal-content -->
+        <!-- /.modal-dialog -->
       </div>
-      <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-    <!-- ./wrapper -->
-    <%- include('../../partials/footer') %>
-      <script>
-        (async () => {
-          const selectBox = document.querySelector('#maincategory')
-          await fetch('http://localhost:8000/admin/api/parent_category')
-            .then(response => response.json())
-            .then(data => {
-              let categoryOption = ''
-              data.forEach(category => {
-                categoryOption += `<option value="${category._id}">${category.category_name}</option>`
+      <!-- /.modal -->
+      <!-- ./wrapper -->
+      <%- include('../../partials/footer') %>
+        <script>
+          (async () => {
+            const selectBox = document.querySelector('#maincategory')
+            await fetch('http://localhost:8000/admin/api/parent_category')
+              .then(response => response.json())
+              .then(data => {
+                let categoryOption = ''
+                data.forEach(category => {
+                  categoryOption += `<option value="${category._id}">${category.category_name}</option>`
+                })
+                selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
               })
-              selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
-            })
-        })() // IIFE
+          })() // IIFE
+          function AlertMessage(message, erroMessage, sucsessMessage) {
+            const ToastElement = document.querySelector('#toast-container .toast')
 
-        document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
-          e.preventDefault();
-
-          const selectBox = document.querySelector('#maincategory')
-          const category_name = document.querySelector('#category')
-
-          if (selectBox.value) {
-            await fetch('http://localhost:8000/admin/api/sub_category', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                category_name: category_name.value,
-                parent_id: selectBox.value
-              })
-            })
-          } else {
-            await fetch('http://localhost:8000/admin/api/parent_category', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                category_name: document.querySelector('#category').value
-              })
-            })
+            ToastElement.style.opacity = '1'
+            if (erroMessage == message) {
+              ToastElement.classList.remove('toast-success')
+              ToastElement.classList.add('toast-error')
+              ToastElement.innerHTML = message
+            } else if (sucsessMessage == message) {
+              ToastElement.classList.remove('toast-error')
+              ToastElement.classList.add('toast-success')
+              ToastElement.innerHTML = message
+            }
+            setTimeout(() => { ToastElement.style.opacity = '0' }, 3000)
           }
-        })        
-      </script>
+
+          async function Fetch(api, value1, value2) {
+            await fetch(api, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                category_name: value1,
+                parent_id: value2
+              })
+            })
+              .then(response => response.json())
+              .then(data => AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!'))
+          }
+
+          document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const selectBox = document.querySelector('#maincategory')
+            const category_name = document.querySelector('#category')
+
+            if (selectBox.value && category_name.value) {
+              const api = 'http://localhost:8000/admin/api/sub_category';
+              Fetch(api, category_name.value, selectBox.value)
+            } else {
+              if (category_name.value) {
+                const api = 'http://localhost:8000/admin/api/parent_category';
+                Fetch(api, document.querySelector('#category').value)
+              }
+            }
+            selectBox.value = ''
+            category_name.value = ''
+          })        
+        </script>
   </body>
 
 </html>

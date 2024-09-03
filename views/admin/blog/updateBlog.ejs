@@ -54,90 +54,87 @@
                                     </div>
                                     <!-- /.card-header -->
                                     <div class="card-body">
-                                        <form id="submitPost" enctype="multipart/form-data">
-                                            <div class="row mb-2">
-                                                <!-- /.col -->
-                                                <div class="col-md-6">
-                                                    <!-- /.form-group -->
-                                                    <div class="form-group">
-                                                        <label for="title">Blog Title</label>
-                                                        <input type="text" name="blog_title" id="title"
-                                                            class="form-control" placeholder="Enter Title">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <div class="row mb-4">
-                                                            <div class="col-12 mb-3">
-                                                                <label>Thumbnail Image</label>
-                                                            </div>
-                                                            <div class="col-md-8">
-                                                                <input type="file" id="imageInput"
-                                                                    class="custom-file-input" name="blog_image">
-                                                                <label class="custom-file-label">Choose file</label>
-                                                            </div>
-                                                            <div class="col-md-4">
-                                                                <img id="imageTag" src="/images/Skeleton.png" alt=""
-                                                                    style="width: 180px;height: 145px;">
+                                        <% if (locals.post && locals.categories) { %>
+                                            <form id="updatePost" enctype="multipart/form-data">
+                                                <div class="row mb-2">
+                                                    <!-- /.col -->
+                                                    <div class="col-md-6">
+                                                        <!-- /.form-group -->
+                                                        <div class="form-group">
+                                                            <label for="title">Blog Title</label>
+                                                            <input type="text" name="blog_title" id="title"
+                                                                value="<%= post.blog_title %>" class="form-control"
+                                                                placeholder="Enter Title">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="row mb-4">
+                                                                <div class="col-12 mb-3">
+                                                                    <label>Thumbnail Image</label>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <input type="file" id="imageInput"
+                                                                        class="custom-file-input" name="blog_image">
+                                                                    <label class="custom-file-label">Choose file</label>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <img id="imageTag"
+                                                                        src="http://localhost:8000/uploads/<%= post.blog_image %>"
+                                                                        alt="" style="width: 180px;height: 145px;">
+                                                                </div>
                                                             </div>
                                                         </div>
+                                                        <!-- /.form-group -->
                                                     </div>
-                                                    <!-- /.form-group -->
-                                                </div>
-                                                <!-- /.col -->
-                                                <!-- /.col -->
-                                                <div class="col-md-6">
-                                                    <!-- /.form-group -->
-                                                    <div class="form-group">
-                                                        <label for="categoryBox">Category</label>
-                                                        <select id="categoryBox" name="category_id"
-                                                            class="form-control">
-                                                            <option selected disabled>Select Category</option>
-                                                            <% if (locals.categories) { %>
+                                                    <!-- /.col -->
+                                                    <!-- /.col -->
+                                                    <div class="col-md-6">
+                                                        <!-- /.form-group -->
+                                                        <div class="form-group">
+                                                            <label for="categoryBox">Category</label>
+                                                            <select id="categoryBox" name="category_id"
+                                                                class="form-control">
+                                                                <option selected value="<%= post.category_id %>">
+                                                                    <%= post.category_name.category %>
+                                                                </option>
                                                                 <% categories.forEach(category=> { %>
                                                                     <option value="<%= category._id %>">
                                                                         <%= category.category %>
                                                                     </option>
                                                                     <% }) %>
-                                                                        <% } %>
-                                                        </select>
+                                                            </select>
+                                                        </div>
+                                                        <!-- /.form-group -->
                                                     </div>
-                                                    <!-- /.form-group -->
-                                                </div>
-                                                <!-- /.col -->
-                                                <div class="col-md-12">
-                                                    <textarea id="summernote" name="blog_description">
+                                                    <!-- /.col -->
+
+                                                    <div class="col-md-12">
+                                                        <textarea id="summernote" name="blog_description">
+                                                            <%= post.blog_description %>
                                                           </textarea>
+                                                    </div>
+                                                    <!-- /.col-->
                                                 </div>
-                                                <!-- /.col-->
-                                            </div>
-                                            <button type="submit" class="border-0 rounded p-2 bg-primary">Submit
-                                            </button>
-                                            <div id="toast-container" class="toast-top-right">
-                                                <div class="toast toast-success" aria-live="polite" style="opacity: 0;">
+                                                <button type="submit" class="border-0 rounded p-2 bg-primary">Submit
+                                                </button>
+                                                <div id="toast-container" class="toast-top-right">
+                                                    <div class="toast toast-success" aria-live="polite"
+                                                        style="opacity: 0;">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </form>
+                                            </form>
+                                            <% } %>
                                     </div>
                                     <!-- /.card-body -->
                                 </div>
                             </div><!-- /.container-fluid -->
                         </section>
                         <!-- /.content -->
-                        <section class="content">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                    </div>
-                                    <div class="col-md-6">
-                                    </div>
-                                </div>
-                            </div><!-- /.container-fluid -->
-                        </section>
                     </div>
                     <!-- /.content-wrapper -->
         </div>
         <!-- ./wrapper -->
         <%- include('../../partials/footer') %>
-            <script async>
+            <script>
                 const inputField = document.getElementById('imageInput');
                 const imageTag = document.getElementById('imageTag');
 
@@ -149,20 +146,24 @@
                     };
                     reader.readAsDataURL(file)
                 })
+                document.querySelector('#updatePost').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const queryString = window.location.search;
+                    const urlParams = new URLSearchParams(queryString);
+                    const id = urlParams.get('id');
 
-                document.querySelector('#submitPost').addEventListener('submit', async (e) => {
-                    e.preventDefault()
                     const blog_description = $('#summernote').summernote('code').trim()
                     const formData = new FormData(e.target)
                     formData.append('blog_description', blog_description)
+                    formData.append('blog_image', inputField.value)
 
-                    await fetch('http://localhost:8000/admin/blog/create', {
-                        method: 'POST',
+                    await fetch(`http://localhost:8000/admin/update/blog?id=${id}`, {
+                        method: 'PUT',
                         body: formData
                     })
                         .then(response => response.json())
-                        .then((data) => {
-                            AlertMessage(data.message, 'Post Created Unsucessfull!', 'Post Created sucessfull!')
+                        .then(data => {
+                            AlertMessage(data.message, 'Update Unsuccessfull!','Update Successfully!')
                         })
                 })
 

@@ -4,10 +4,11 @@ const sub_Category = require('../Models/product_model/sub.category.model')
 module.exports = {
     createPcategory: async (req, res) => {
         try {
-            const data = await parent_Category.create(req.body)
-            console.log(data);
+            await parent_Category.create(req.body)
+            res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log(error.message);
+            res.json({ message: 'Unsuccessfull!' })
         }
     },
     parenCategory: async (req, res) => {
@@ -15,16 +16,16 @@ module.exports = {
             const data = await parent_Category.find({})
             res.json(data)
         } catch (error) {
-            console.log(error.message)
+            console.log(error.message);
         }
     },
     createScategory: async (req, res) => {
         try {
-            const data = await sub_Category.create(req.body)
-            console.log(data);
+            await sub_Category.create(req.body)
+            res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log(error.message);
-
+            res.json({ message: 'Unsuccessfull!' })
         }
     }
 }

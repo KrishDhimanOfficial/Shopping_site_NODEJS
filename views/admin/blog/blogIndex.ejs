@@ -85,7 +85,7 @@
                                                                 </thead>
                                                                 <tbody id="blogTable">
                                                                     <% if (locals.posts) { %>
-                                                                        <% posts.collectionData.forEach(post=> { %>
+                                                                        <% posts.forEach(post=> { %>
                                                                             %>
                                                                             <tr>
                                                                                 <td class="dtr-control sorting_1"
@@ -105,7 +105,7 @@
                                                                                 </td>
                                                                                 <td>
                                                                                     <button type="button"
-                                                                                        onclick="(()=>{window.location.href='update/blog/<%= post._id %>' })()"
+                                                                                        onclick="(()=>{window.location.href='update/blog?id=<%= post._id %>' })()"
                                                                                         class="btn btn-block
                                                                                             btn-success">Edit</button>
 

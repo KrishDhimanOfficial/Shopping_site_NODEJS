@@ -1,7 +1,7 @@
 const category = require('../Models/blog_Model/category.model')
 const post = require('../Models/blog_Model/post.model')
 const deleteImage = require('../Service/deleteUploadImage')
-const handelAggregatePagination = require('../Service/handlePaginate.Aggregation')
+const mongoose = require('mongoose')
 
 module.exports = {
     createCategory: async (req, res) => {
@@ -45,7 +45,6 @@ module.exports = {
     },
     allPosts: async (req, res) => {
         try {
-            const options = { page: 1, limit: 4 }
             const project = ([
                 {
                     $lookup: {
@@ -61,7 +60,7 @@ module.exports = {
                         }
                     }
                 }])
-            const data = await handelAggregatePagination(post, project, options)
+            const data = await post.aggregate(project)
             res.render('admin/blog/blogIndex', { posts: data });
         } catch (error) {
             console.log(error.message);
@@ -76,12 +75,48 @@ module.exports = {
             console.log(error.message);
         }
     },
-    updateBlog: async (req, res) => {
+    updateBlogPage: async (req, res) => {
         try {
-           const data = await post.findOne({ _id: req.params.id })
-           if(!data) res.redirect('/admin/blogs')
+            const categorydata = await category.find({})
+            const data = await post.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(req.query.id) } },
+                {
+                    $lookup: {
+                        from: 'categories',
+                        localField: 'category_id',
+                        foreignField: '_id',
+                        as: 'category_name'
+                    }
+                },
+                {
+                    $unwind: '$category_name'
+                }
+            ])
+            res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata })
+            if (!data) res.redirect('/admin/blogs')
         } catch (error) {
             console.log(error.message)
+            res.redirect('/admin/blogs')
+        }
+    },
+    updateBlog: async (req, res) => {
+        try {
+            const { blog_title, blog_description, category_id } = req.body
+            blog_image = req.file?.filename;
+            if (blog_image) { deleteImage(req.query.id) }
+
+            const data = await post.findByIdAndUpdate({ _id: req.query.id },
+                {
+                    blog_title, blog_image, category_id,
+                    blog_description: blog_description[0]
+                })
+
+            if (!data) res.json({ message: 'Update Unsuccessfull!' })
+                res.json({ message: 'Update Successfully!' })
+        } catch (error) {
+            console.log(error.message);
+            res.json({ message: 'Update Unsuccessfull!' })
         }
     }
+
 }
