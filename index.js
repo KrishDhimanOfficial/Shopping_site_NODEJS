@@ -6,7 +6,6 @@ const path = require('path');
 const port = process.env.PORT ?? 8000;
 
 const adminRoutes = require('./routes/admin.routes')
-const blogRoutes = require('./routes/blog.routes')
 
 // Use Cookie parser to send cookie
 app.use(cookie())
@@ -30,6 +29,5 @@ app.set('view engine', 'ejs')
 
 
 app.use('/admin', adminRoutes)
-app.use('/blog', blogRoutes)
 
 app.listen(port, console.log('Running...'))

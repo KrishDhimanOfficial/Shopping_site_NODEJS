@@ -5,7 +5,7 @@ const upload = require('../Middleware/multer.middleware')
 const checkLogin = require('../Middleware/checkLogin')
 const Admin = require('../controllers/admin.controllers')
 const blogControllers = require('../controllers/blog.controller')
-const productControllers = require('../controllers/product.controllers.js')
+const productControllers = require('../controllers/product.controllers.js');
 
 router.get('/dashboard', checkLogin, (req, res) => {
     res.render('admin/adminPanel')
@@ -19,9 +19,6 @@ router.get('/create', checkLogin, (req, res) => {
 router.get('/category', checkLogin, (req, res) => {
     res.render('admin/product/category')
 })
-router.get('/blog/category', checkLogin, (req, res) => {
-    res.render('admin/blog/blogCategory')
-})
 
 
 router
@@ -33,6 +30,8 @@ router
 router.get('/logout', Admin.handleAdminLogout)
 
 // Post Routes
+router.post('/api/createCategory', checkLogin, blogControllers.createCategory)
+router.get('/blog/category', checkLogin, blogControllers.allPostsByCategory)
 router.route('/blog/create')
     .all(checkLogin)
     .get(blogControllers.allCategories)

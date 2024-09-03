@@ -60,6 +60,11 @@
                                                                             aria-controls="example1" rowspan="1"
                                                                             colspan="1" aria-sort="ascending"
                                                                             aria-label="Rendering engine: activate to sort column descending">
+                                                                            S.No</th>
+                                                                        <th class="sorting sorting_asc" tabindex="0"
+                                                                            aria-controls="example1" rowspan="1"
+                                                                            colspan="1" aria-sort="ascending"
+                                                                            aria-label="Rendering engine: activate to sort column descending">
                                                                             Blog Title</th>
                                                                         <th class="sorting" tabindex="0"
                                                                             aria-controls="example1" rowspan="1"
@@ -85,9 +90,12 @@
                                                                 </thead>
                                                                 <tbody id="blogTable">
                                                                     <% if (locals.posts) { %>
-                                                                        <% posts.forEach(post=> { %>
+                                                                        <% posts.forEach((post ,i)=> { %>
                                                                             %>
                                                                             <tr>
+                                                                                <td>
+                                                                                    <%= i + 1 %>
+                                                                                </td>
                                                                                 <td class="dtr-control sorting_1"
                                                                                     tabindex="0">
                                                                                     <%= post.blog_title %>
@@ -119,8 +127,8 @@
                                                                 </tbody>
                                                                 <tfoot>
                                                                     <tr>
-                                                                        <th rowspan="1" colspan="1">Blog Title
-                                                                        </th>
+                                                                        <th rowspan="1" colspan="1">S.NO</th>
+                                                                        <th rowspan="1" colspan="1">Blog Title</th>
                                                                         <th rowspan="1" colspan="1">Image</th>
                                                                         <th rowspan="1" colspan="1">Category</th>
                                                                         <th rowspan="1" colspan="1">Blog Date</th>

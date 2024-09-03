@@ -17,10 +17,35 @@ module.exports = {
                 res.json({ message: 'Category created successfully' });
             }
         } catch (error) {
+            console.log(error.message);
             res.json({ message: 'Please Enter Category' })
         }
     },
-
+    allPostsByCategory: async (req, res) => {
+        try {
+            const data = await category.aggregate([
+                {
+                    $lookup: {
+                        from: 'posts', localField: '_id',
+                        foreignField: 'category_id', as: 'categoryPosts'
+                    }
+                },
+                { $unwind: '$categoryPosts' },
+                {
+                    $group: {
+                        _id: '$_id', category_name: { $first: '$category' },
+                        posts: { $push: '$categoryPosts' },
+                    }
+                },
+                {
+                    $addFields: { length: { $size: '$posts' } }
+                }
+            ])
+            res.render('admin/blog/blogCategory', { allPostsByCategory: data })
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
     allCategories: async (req, res) => {
         try {
             const data = await category.find()
@@ -112,7 +137,7 @@ module.exports = {
                 })
 
             if (!data) res.json({ message: 'Update Unsuccessfull!' })
-                res.json({ message: 'Update Successfully!' })
+            res.json({ message: 'Update Successfully!' })
         } catch (error) {
             console.log(error.message);
             res.json({ message: 'Update Unsuccessfull!' })
