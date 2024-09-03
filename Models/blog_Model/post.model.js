@@ -1,4 +1,5 @@
 const mongoose = require('../../Connections/monodb.connection')
+const aggregatePaginate = require("mongoose-aggregate-paginate-v2")
 
 const postSchema = mongoose.Schema({
     blog_title: {
@@ -11,7 +12,6 @@ const postSchema = mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        maxlength: 150
     },
     blog_image: {
         type: String,
@@ -29,5 +29,6 @@ const postSchema = mongoose.Schema({
 
 })
 
+postSchema.plugin(aggregatePaginate)
 module.exports = mongoose.model('post', postSchema)
 

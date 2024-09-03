@@ -68,7 +68,7 @@
                               <td>
                                 <button type="button" class="btn btn-sm btn-primary">Edit</button>
                                 <button type="button" class="btn btn-sm btn-danger">Danger</button>
-                            </td>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -100,20 +100,20 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form action="" method="post">
+          <form id="submitCategory">
             <div class="modal-body">
               <div class="row">
                 <div class="col-12">
                   <div class="form-group">
                     <label for="category">Category Name</label>
-                    <input type="text" id="category" name="category" class="form-control">
+                    <input type="text" id="category" name="category_name" class="form-control">
                   </div>
                 </div>
                 <div class="col-12">
                   <div class="form-group">
-                    <label for="maincategory">Category</label>
-                    <select name="" id="maincategory" class="form-control">
-                      <option selected disabled>Category</option>
+                    <label for="maincategory">Select Parent Category (if you want!)</label>
+                    <select name="parent_id" id="maincategory" class="form-control">
+                      <option selected disabled value="">Category</option>
                     </select>
                   </div>
                 </div>
@@ -132,6 +132,50 @@
     <!-- /.modal -->
     <!-- ./wrapper -->
     <%- include('../../partials/footer') %>
+      <script>
+        (async () => {
+          const selectBox = document.querySelector('#maincategory')
+          await fetch('http://localhost:8000/admin/api/parent_category')
+            .then(response => response.json())
+            .then(data => {
+              let categoryOption = ''
+              data.forEach(category => {
+                categoryOption += `<option value="${category._id}">${category.category_name}</option>`
+              })
+              selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
+            })
+        })() // IIFE
+
+        document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const selectBox = document.querySelector('#maincategory')
+          const category_name = document.querySelector('#category')
+
+          if (selectBox.value) {
+            await fetch('http://localhost:8000/admin/api/sub_category', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                category_name: category_name.value,
+                parent_id: selectBox.value
+              })
+            })
+          } else {
+            await fetch('http://localhost:8000/admin/api/parent_category', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                category_name: document.querySelector('#category').value
+              })
+            })
+          }
+        })        
+      </script>
   </body>
 
 </html>

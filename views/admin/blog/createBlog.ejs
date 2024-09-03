@@ -70,12 +70,13 @@
                                                                 <label>Thumbnail Image</label>
                                                             </div>
                                                             <div class="col-md-8">
-                                                                <input type="file" id="imageInput" class="custom-file-input"
-                                                                    name="blog_image">
+                                                                <input type="file" id="imageInput"
+                                                                    class="custom-file-input" name="blog_image">
                                                                 <label class="custom-file-label">Choose file</label>
                                                             </div>
                                                             <div class="col-md-4">
-                                                                <img id="imageTag" src="/images/Skeleton.png" alt=""  class="img-fluid w-100">
+                                                                <img id="imageTag" src="/images/Skeleton.png" alt=""
+                                                                    class="img-fluid w-100">
                                                             </div>
                                                         </div>
                                                     </div>
@@ -90,6 +91,11 @@
                                                         <select id="categoryBox" name="category_id"
                                                             class="form-control">
                                                             <option selected disabled>Select Category</option>
+                                                            <% if (locals.categories) { %>
+                                                                <% categories.forEach(category => { %>
+                                                                    <option value="<%= category._id %>"><%= category.category %> </option>
+                                                             <% }) %>
+                                                            <% } %>
                                                         </select>
                                                     </div>
                                                     <!-- /.form-group -->
@@ -129,6 +135,7 @@
         </div>
         <!-- ./wrapper -->
         <%- include('../../partials/footer') %>
+        <script async src="/js/script.js"></script>
     </body>
 
 </html>

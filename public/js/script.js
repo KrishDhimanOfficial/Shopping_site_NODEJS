@@ -1,45 +1,3 @@
-(async function () {
-    const api = await fetch('http://localhost:8000/blog/api/allCategory')
-    const response = await api.json()
-    let categorie = ''
-    response.forEach(categoryobj => {
-        categorie += `<option data-select2-id="1" value="${categoryobj._id}" >
-                    ${categoryobj.category}
-                    </option>`
-    })
-    document.querySelector('#categoryBox').insertAdjacentHTML('beforeEnd', categorie)
-})() // Immediately Invoked Function Expression (IIFE)
-
-
-const inputField = document.getElementById('imageInput');
-const imageTag = document.getElementById('imageTag');
-
-inputField.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  reader.onload = () => {
-    imageTag.src = reader.result;
-  };
-  reader.readAsDataURL(file);
-});
-document.querySelector('#submitPost').addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const blog_description = $('#summernote').summernote('code').trim()
-
-    const formData = new FormData(e.target)
-    formData.append('blog_description', blog_description)
-
-    await fetch('http://localhost:8000/blog/api/createPost', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then((data) => {
-            AlertMessage(data.message, 'Post Created Unsucessfull!', 'Post Created sucessfull!')
-            document.querySelector('#submitPost').reset()
-        })
-})
-
 function AlertMessage(message, erroMessage, sucsessMessage) {
     const ToastElement = document.querySelector('#toast-container .toast')
 
@@ -57,3 +15,35 @@ function AlertMessage(message, erroMessage, sucsessMessage) {
         ToastElement.style.opacity = '0'
     }, 3000)
 }
+
+const inputField = document.getElementById('imageInput');
+const imageTag = document.getElementById('imageTag');
+
+inputField.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+        imageTag.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+});
+document.querySelector('#submitPost').addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const blog_description = $('#summernote').summernote('code').trim()
+
+    const formData = new FormData(e.target)
+    formData.append('blog_description', blog_description)
+
+    await fetch('http://localhost:8000/admin/blog/create', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then((data) => {
+            AlertMessage(data.message, 'Post Created Unsucessfull!', 'Post Created sucessfull!')
+            $('#summernote').summernote('reset')
+            imageTag.src = 'http://localhost:8000/images/Skeleton.png';
+            document.querySelector('#submitPost').reset()
+        })
+})
+()()

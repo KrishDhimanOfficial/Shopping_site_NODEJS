@@ -206,7 +206,11 @@
                                     <div class="toast-message"></div>
                                 </div>
                                 <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
-                                    <div class="toast-message"></div>
+                                    <div class="toast-message">
+                                        <% if (locals.message) { %>
+                                         <%= message %>
+                                        <% } %>
+                                    </div>
                                 </div>
                             </div>
                         </div>

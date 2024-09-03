@@ -83,18 +83,39 @@
                                                                             Actions</th>
                                                                     </tr>
                                                                 </thead>
-                                                                <tbody>
-                                                                    <tr class="odd">
-                                                                        <td class="dtr-control sorting_1" tabindex="0">
-                                                                            Gecko</td>
-                                                                        <td>Firefox 1.0</td>
-                                                                        <td>Win 98+ / OSX.2+</td>
-                                                                        <td>1.7</td>
-                                                                        <td>
-                                                                            <button type="button" class="btn btn-block btn-success">Edit</button>
-                                                                            <button type="button" class="btn btn-block btn-danger">Delete</button>
-                                                                        </td>
-                                                                    </tr>
+                                                                <tbody id="blogTable">
+                                                                    <% if (locals.posts) { %>
+                                                                        <% posts.collectionData.forEach(post=> { %>
+                                                                            %>
+                                                                            <tr>
+                                                                                <td class="dtr-control sorting_1"
+                                                                                    tabindex="0">
+                                                                                    <%= post.blog_title %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <img src="http://localhost:8000/uploads/<%= post.blog_image %>"
+                                                                                        alt=""
+                                                                                        style='width:150px;height:100px;'>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= post.postCategory.category %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <%= post.formattedDate %>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <button type="button"
+                                                                                        onclick="(()=>{window.location.href='update/blog/<%= post._id %>' })()"
+                                                                                        class="btn btn-block
+                                                                                            btn-success">Edit</button>
+
+                                                                                    <button type="button"
+                                                                                        onclick="(()=>{window.location.href='delete/blog/<%= post._id %>'})()"
+                                                                                        class="btn btn-block btn-danger">Delete</button>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <% }) %>
+                                                                                <% } %>
                                                                 </tbody>
                                                                 <tfoot>
                                                                     <tr>
