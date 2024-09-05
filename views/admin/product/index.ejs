@@ -1,178 +1,115 @@
+
+<!DOCTYPE html>
 <html lang="en">
-<%- include('../../partials/header') %>
+    <%- include('../../partials/header') %>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Navbar -->
+  <%- include('../../partials/navbar') %>
+  <!-- /.navbar -->
 
-    <body class="hold-transition sidebar-mini layout-fixed">
-        <div class="wrapper">
+  <!-- Main Sidebar Container -->
+   <%- include('../../partials/sidebar') %>
 
-            <!-- Preloader -->
-            <div class="preloader flex-column justify-content-center align-items-center">
-                <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60"
-                    width="60">
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+        <div class="col-sm-6 d-flex align-items-center">
+            <h1 class="m-0">Product</h1>
+            <a href="/admin/create" class="mx-3 bg-primary rounded p-2">Add Product</a>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Product</li>
+            </ol>
+        </div><!-- /.col -->
+    </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">All Products</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
+                aria-describedby="example1_info">
+                <thead>
+                    <tr>
+                        <th class="sorting sorting_asc" tabindex="0"
+                            aria-controls="example1" rowspan="1"
+                            colspan="1" aria-sort="ascending"
+                            aria-label="Rendering engine: activate to sort column descending">
+                            S.No</th>
+                        <th class="sorting sorting_asc" tabindex="0"
+                            aria-controls="example1" rowspan="1"
+                            colspan="1" aria-sort="ascending"
+                            aria-label="Rendering engine: activate to sort column descending">
+                            Blog Title</th>
+                        <th class="sorting" tabindex="0"
+                            aria-controls="example1" rowspan="1"
+                            colspan="1"
+                            aria-label="Browser: activate to sort column ascending">
+                            Blog Image</th>
+                        <th class="sorting" tabindex="0"
+                            aria-controls="example1" rowspan="1"
+                            colspan="1"
+                            aria-label="Platform(s): activate to sort column ascending">
+                            Category</th>
+                        <th class="sorting" tabindex="0"
+                            aria-controls="example1" rowspan="1"
+                            colspan="1"
+                            aria-label="Engine version: activate to sort column ascending">
+                            Blog Date</th>
+                        <th class="sorting" tabindex="0"
+                            aria-controls="example1" rowspan="1"
+                            colspan="1"
+                            aria-label="CSS grade: activate to sort column ascending">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="blogTable">
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th rowspan="1" colspan="1">S.NO</th>
+                        <th rowspan="1" colspan="1">Blog Title</th>
+                        <th rowspan="1" colspan="1">Image</th>
+                        <th rowspan="1" colspan="1">Category</th>
+                        <th rowspan="1" colspan="1">Blog Date</th>
+                        <th rowspan="1" colspan="1">Actions</th>
+                    </tr>
+                </tfoot>
+            </table>
+              </div>
+              <!-- /.card-body -->
             </div>
-
-            <!-- Navbar -->
-            <%- include('../../partials/navbar') %>
-                <!-- /.navbar -->
-
-                <!-- Main Sidebar Container -->
-                <%- include('../../partials/sidebar') %>
-
-                    <!-- Content Wrapper. Contains page content -->
-                    <div class="content-wrapper">
-                        <!-- Content Header (Page header) -->
-                        <div class="content-header">
-                            <div class="container-fluid">
-                                <div class="row mb-2">
-                                    <div class="col-sm-6 d-flex align-items-center">
-                                        <h1 class="m-0">Product</h1>
-                                        <a href="/admin/create" class="mx-3 bg-primary rounded p-2">Add Product</a>
-                                    </div><!-- /.col -->
-                                    <div class="col-sm-6">
-                                        <ol class="breadcrumb float-sm-right">
-                                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                            <li class="breadcrumb-item active">Product</li>
-                                        </ol>
-                                    </div><!-- /.col -->
-                                </div><!-- /.row -->
-                            </div><!-- /.container-fluid -->
-                        </div>
-                        <!-- /.content-header -->
-
-                        <!-- Main content -->
-                        <section class="content">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <div class="card">
-                                            <!-- /.card-header -->
-                                            <div class="card-body">
-                                                <div id="example2_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                                                    <div class="row mb-3">
-                                                        <div class="col-sm-12 col-md-6 d-flex align-items-center">
-                                                            <h3 class="card-title">All Product</h3>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-6">
-                                                            <div id="example1_filter" class="dataTables_filter">
-                                                                <label>Search:<input type="search"
-                                                                        class="form-control form-control-sm"
-                                                                        placeholder="" aria-controls="example1"></label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <table id="example2"
-                                                                class="table table-bordered table-hover dataTable dtr-inline"
-                                                                aria-describedby="example2_info">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th class="sorting sorting_asc" tabindex="0"
-                                                                            aria-controls="example2" rowspan="1"
-                                                                            colspan="1" aria-sort="ascending"
-                                                                            aria-label="Rendering engine: activate to sort column descending">
-                                                                            Rendering engine</th>
-                                                                        <th class="sorting" tabindex="0"
-                                                                            aria-controls="example2" rowspan="1"
-                                                                            colspan="1"
-                                                                            aria-label="Browser: activate to sort column ascending">
-                                                                            Browser</th>
-                                                                        <th class="sorting" tabindex="0"
-                                                                            aria-controls="example2" rowspan="1"
-                                                                            colspan="1"
-                                                                            aria-label="Platform(s): activate to sort column ascending">
-                                                                            Platform(s)</th>
-                                                                        <th class="sorting" tabindex="0"
-                                                                            aria-controls="example2" rowspan="1"
-                                                                            colspan="1"
-                                                                            aria-label="Engine version: activate to sort column ascending">
-                                                                            Engine version</th>
-                                                                        <th class="sorting" tabindex="0"
-                                                                            aria-controls="example2" rowspan="1"
-                                                                            colspan="1"
-                                                                            aria-label="CSS grade: activate to sort column ascending">
-                                                                            CSS grade</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    <tr class="odd">
-                                                                        <td class="dtr-control sorting_1" tabindex="0">
-                                                                            Gecko</td>
-                                                                        <td>Firefox 1.0</td>
-                                                                        <td>Win 98+ / OSX.2+</td>
-                                                                        <td>1.7</td>
-                                                                        <td>A</td>
-                                                                    </tr>
-                                                                </tbody>
-                                                                <tfoot>
-                                                                    <tr>
-                                                                        <th rowspan="1" colspan="1">Rendering engine
-                                                                        </th>
-                                                                        <th rowspan="1" colspan="1">Browser</th>
-                                                                        <th rowspan="1" colspan="1">Platform(s)</th>
-                                                                        <th rowspan="1" colspan="1">Engine version</th>
-                                                                        <th rowspan="1" colspan="1">CSS grade</th>
-                                                                    </tr>
-                                                                </tfoot>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-sm-12 col-md-5">
-                                                            <div class="dataTables_info" id="example2_info"
-                                                                role="status" aria-live="polite">Showing 1 to 10 of 57
-                                                                entries</div>
-                                                        </div>
-                                                        <div class="col-sm-12 col-md-7">
-                                                            <div class="dataTables_paginate paging_simple_numbers"
-                                                                id="example2_paginate">
-                                                                <ul class="pagination">
-                                                                    <li class="paginate_button page-item previous disabled"
-                                                                        id="example2_previous"><a href="#"
-                                                                            aria-controls="example2" data-dt-idx="0"
-                                                                            tabindex="0" class="page-link">Previous</a>
-                                                                    </li>
-                                                                    <li class="paginate_button page-item active"><a
-                                                                            href="#" aria-controls="example2"
-                                                                            data-dt-idx="1" tabindex="0"
-                                                                            class="page-link">1</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#"
-                                                                            aria-controls="example2" data-dt-idx="2"
-                                                                            tabindex="0" class="page-link">2</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#"
-                                                                            aria-controls="example2" data-dt-idx="3"
-                                                                            tabindex="0" class="page-link">3</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#"
-                                                                            aria-controls="example2" data-dt-idx="4"
-                                                                            tabindex="0" class="page-link">4</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#"
-                                                                            aria-controls="example2" data-dt-idx="5"
-                                                                            tabindex="0" class="page-link">5</a></li>
-                                                                    <li class="paginate_button page-item "><a href="#"
-                                                                            aria-controls="example2" data-dt-idx="6"
-                                                                            tabindex="0" class="page-link">6</a></li>
-                                                                    <li class="paginate_button page-item next"
-                                                                        id="example2_next"><a href="#"
-                                                                            aria-controls="example2" data-dt-idx="7"
-                                                                            tabindex="0" class="page-link">Next</a></li>
-                                                                </ul>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- /.card-body -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /.container-fluid -->
-                        </section>
-                        <!-- /.content -->
-                    </div>
-                    <!-- /.content-wrapper -->
-                    <%- include('../../partials/footer') %>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
         </div>
-        <!-- ./wrapper -->
-    </body>
-
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <%- include('../../partials/main_footer') %>
+</div>
+<!-- ./wrapper -->
+<%- include('../../partials/script') %>
+<!-- AdminLTE App -->
+</body>
 </html>

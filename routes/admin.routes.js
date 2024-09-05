@@ -16,10 +16,6 @@ router.get('/product', checkLogin, (req, res) => {
 router.get('/create', checkLogin, (req, res) => {
     res.render('admin/product/create')
 })
-router.get('/category', checkLogin, (req, res) => {
-    res.render('admin/product/category')
-})
-
 
 router
     .get('/login', login, (req, res) => {
@@ -52,5 +48,7 @@ router.route('/api/parent_category')
     .get(productControllers.parenCategory)
 
 router.post('/api/sub_category', productControllers.createScategory)
+router.get('/product/category', checkLogin, productControllers.showAllCategories)
+router.get('/product/category/delete/:id',checkLogin,productControllers.deleteParentCategory)
 
 module.exports = router;

@@ -1,15 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <%- include('../../partials/header') %>
+    </head>
 
-    <body class="hold-transition sidebar-mini layout-fixed">
+    <body class="hold-transition sidebar-mini">
         <div class="wrapper">
-
-            <!-- Preloader -->
-            <div class="preloader flex-column justify-content-center align-items-center">
-                <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60"
-                    width="60">
-            </div>
-
             <!-- Navbar -->
             <%- include('../../partials/navbar') %>
                 <!-- /.navbar -->
@@ -51,133 +46,121 @@
                                             </div>
                                             <!-- /.card-header -->
                                             <div class="card-body">
-                                                <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
-                                                    <div class="row">
-                                                        <div class="col-sm-12">
-                                                            <div id="example1_wrapper"
-                                                                class="dataTables_wrapper dt-bootstrap4">
-                                                                <div class="row">
-                                                                    <div class="col-sm-12">
-                                                                        <table id="example1"
-                                                                            class="table table-bordered table-striped dataTable dtr-inline"
-                                                                            aria-describedby="example1_info">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th class="sorting sorting_asc"
-                                                                                        tabindex="0"
-                                                                                        aria-controls="example1"
-                                                                                        rowspan="1" colspan="1"
-                                                                                        aria-label="
-                                                                            S.No: activate to sort column descending"
-                                                                                        aria-sort="ascending">
-                                                                                        S.No</th>
-                                                                                    <th class="sorting" tabindex="0"
-                                                                                        aria-controls="example1"
-                                                                                        rowspan="1" colspan="1"
-                                                                                        aria-label="
-                                                                            Blog Title: activate to sort column ascending">
-                                                                                        Category Name</th>
-                                                                                    <th class="sorting" tabindex="0"
-                                                                                        aria-controls="example1"
-                                                                                        rowspan="1" colspan="1"
-                                                                                        aria-label="
-                                                                            Blog Image: activate to sort column ascending">
-                                                                                        No of Posts</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody id="blogTable">
-                                                                                <% if (locals.allPostsByCategory) { %>
-                                                                                    <% allPostsByCategory.forEach((element,i)=> { %>
-                                                                                        <tr>
-                                                                                            <td class="dtr-control sorting_1"
-                                                                                                tabindex="0">
-                                                                                                <%= i+1 %>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <%= element.category_name %>
-                                                                                            </td>
-                                                                                            <td>
-                                                                                                <%= element.length %>
-                                                                                            </td>
-                                                                                        </tr>
-                                                                                        <% }) %>
-                                                                                            <% } %>
-                                                                            </tbody>
-                                                                            <tfoot>
-                                                                                <tr>
-                                                                                    <th rowspan="1" colspan="1">S.NO</th>
-                                                                                    <th rowspan="1" colspan="1">Category Name </th>
-                                                                                    <th rowspan="1" colspan="1">No of Posts </th>
-                                                                                </tr>
-                                                                            </tfoot>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <table id="example1"
+                                                    class="table table-bordered table-striped dataTable dtr-inline"
+                                                    aria-describedby="example1_info">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="sorting sorting_asc" tabindex="0"
+                                                                aria-controls="example1" rowspan="1" colspan="1"
+                                                                aria-label="
+                S.No: activate to sort column descending" aria-sort="ascending">
+                                                                S.No</th>
+                                                            <th class="sorting" tabindex="0" aria-controls="example1"
+                                                                rowspan="1" colspan="1" aria-label="
+                Blog Title: activate to sort column ascending">
+                                                                Category Name</th>
+                                                            <th class="sorting" tabindex="0" aria-controls="example1"
+                                                                rowspan="1" colspan="1" aria-label="
+                Blog Image: activate to sort column ascending">
+                                                                No of Posts</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="blogTable">
+                                                        <% if (locals.allPostsByCategory) { %>
+                                                            <% allPostsByCategory.forEach((element,i)=> { %>
+                                                                <tr>
+                                                                    <td class="dtr-control sorting_1" tabindex="0">
+                                                                        <%= i+1 %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= element.category_name %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= element.length %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% }) %>
+                                                                    <% } %>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th rowspan="1" colspan="1">S.NO</th>
+                                                            <th rowspan="1" colspan="1">Category Name </th>
+                                                            <th rowspan="1" colspan="1">No of Posts </th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
                                             </div>
                                             <!-- /.card-body -->
                                         </div>
+                                        <!-- /.card -->
                                     </div>
+                                    <!-- /.col -->
                                 </div>
+                                <!-- /.row -->
                             </div>
                             <!-- /.container-fluid -->
                         </section>
                         <!-- /.content -->
                     </div>
                     <!-- /.content-wrapper -->
-        </div>
-        <div class="modal fade" id="modal-default">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Add Category</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="post">
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="form-group">
-                                        <label for="createcategory">Category</label>
-                                        <input type="text" name="category" id="createcategory" class="form-control"
-                                            placeholder="Enter Category">
-                                        <div class="error bg-danger p-2 rounded mt-2" style="display: none;"></div>
+                    <%- include('../../partials/main_footer') %>
+
+                        <div class="modal fade" id="modal-default">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Add Category</h4>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
+                                    <form method="post">
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="createcategory">Category</label>
+                                                        <input type="text" name="category" id="createcategory"
+                                                            class="form-control" placeholder="Enter Category">
+                                                        <div class="error bg-danger p-2 rounded mt-2"
+                                                            style="display: none;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer justify-content-between">
+                                            <button type="button" class="btn btn-default"
+                                                data-dismiss="modal">Close</button>
+                                            <!-- <button type="submit" id="addCategory" class="btn btn-primary">Save changes</button> -->
+                                            <button type="submit" id="addCategory"
+                                                class="btn btn-primary toastrDefaultSuccess">
+                                                Save changes
+                                            </button>
+                                            <div id="toast-container" class="toast-top-right">
+                                                <div class="toast toast-success" aria-live="polite" style="opacity: 0;">
+                                                    <div class="toast-message"></div>
+                                                </div>
+                                                <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
+                                                    <div class="toast-message">
+                                                        <% if (locals.message) { %>
+                                                            <%= message %>
+                                                                <% } %>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
                                 </div>
+                                <!-- /.modal-content -->
                             </div>
+                            <!-- /.modal-dialog -->
                         </div>
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <!-- <button type="submit" id="addCategory" class="btn btn-primary">Save changes</button> -->
-                            <button type="submit" id="addCategory" class="btn btn-primary toastrDefaultSuccess">
-                                Save changes
-                            </button>
-                            <div id="toast-container" class="toast-top-right">
-                                <div class="toast toast-success" aria-live="polite" style="opacity: 0;">
-                                    <div class="toast-message"></div>
-                                </div>
-                                <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
-                                    <div class="toast-message">
-                                        <% if (locals.message) { %>
-                                            <%= message %>
-                                                <% } %>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
         </div>
         <!-- ./wrapper -->
-        <%- include('../../partials/footer') %>
+        <%- include('../../partials/script') %>
+            <!-- AdminLTE App -->
             <script>
                 const SuccesToast = document.querySelector('#toast-container .toast-success');
                 const ErrorToast = document.querySelector('#toast-container .toast-error');

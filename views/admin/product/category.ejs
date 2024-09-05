@@ -1,14 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <%- include('../../partials/header') %>
+  </head>
 
-  <body class="hold-transition sidebar-mini layout-fixed">
+  <body class="hold-transition sidebar-mini">
     <div class="wrapper">
-
-      <!-- Preloader -->
-      <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
-      </div>
-
       <!-- Navbar -->
       <%- include('../../partials/navbar') %>
         <!-- /.navbar -->
@@ -32,7 +28,7 @@
                   <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                       <li class="breadcrumb-item"><a href="#">Home</a></li>
-                      <li class="breadcrumb-item active">Product Category</li>
+                      <li class="breadcrumb-item active">Product Attributes</li>
                     </ol>
                   </div>
                 </div>
@@ -46,50 +42,83 @@
                   <div class="col-12">
                     <div class="card">
                       <div class="card-header">
-                        <h3 class="card-title">All Category</h3>
+                        <h3 class="card-title">Update Blog</h3>
                       </div>
                       <!-- /.card-header -->
                       <div class="card-body">
-                        <table class="table table-bordered">
+                        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
+                          aria-describedby="example1_info">
                           <thead>
                             <tr>
-                              <th style="width: 10px">S.No</th>
-                              <th>Category</th>
-                              <th>Sub Category</th>
-                              <th>Actions</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                S.No</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                Category</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Browser: activate to sort column ascending">
+                                Sub Category</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Platform(s): activate to sort column ascending">
+                                Actions</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td>1.</td>
-                              <td>Update software</td>
-                              <td>
-                              </td>
-                              <td>
-                                <button type="button" class="btn btn-sm btn-primary">Edit</button>
-                                <button type="button" class="btn btn-sm btn-danger">Danger</button>
-                              </td>
-                            </tr>
+                            <% if (locals.categories) { %>
+                              <% categories.forEach((category,i)=> { %>
+                                <tr>
+                                  <td>
+                                    <%= i + 1 %>
+                                  </td>
+                                  <td>
+                                    <%= category.parent_Category %>
+                                  </td>
+                                  <td>
+                                    <% category.sub_categories.forEach(category=> { %>
+                                      <p class="m-0 float-left mx-1">
+                                        <%= category.category_name %>
+                                      </p>
+                                      <% }) %>
+                                  </td>
+                                  <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                      onclick="(()=>{ window.location.href = 'category/update/<%= category._id %>'})()">Edit</button>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                      onclick="(()=>{ window.location.href = 'category/delete/<%= category._id %>'})()">
+                                      Delete</button>
+                                  </td>
+                                </tr>
+                                <% }) %>
+                                  <% } %>
                           </tbody>
+                          <tfoot>
+                            <tr>
+                              <th rowspan="1" colspan="1">S.NO</th>
+                              <th rowspan="1" colspan="1">Category</th>
+                              <th rowspan="1" colspan="1">Sub Category</th>
+                              <th rowspan="1" colspan="1">Actions</th>
+                            </tr>
+                          </tfoot>
                         </table>
                       </div>
                       <!-- /.card-body -->
-                      <div class="card-footer clearfix">
-                        <ul class="pagination pagination-sm m-0 float-right">
-                          <li class="page-item"><a class="page-link" href="#">«</a></li>
-                          <li class="page-item"><a class="page-link" href="#">1</a></li>
-                          <li class="page-item"><a class="page-link" href="#">2</a></li>
-                          <li class="page-item"><a class="page-link" href="#">3</a></li>
-                          <li class="page-item"><a class="page-link" href="#">»</a></li>
-                        </ul>
-                      </div>
                     </div>
+                    <!-- /.card -->
                   </div>
                   <!-- /.col -->
                 </div>
+                <!-- /.row -->
               </div>
-              <!-- /.card-body -->
+              <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
           </div>
+          <!-- /.content-wrapper -->
+          <%- include('../../partials/main_footer') %>
+
     </div>
     <div class="modal fade" id="modal-default">
       <div class="modal-dialog">
@@ -134,70 +163,71 @@
         </div>
         <!-- /.modal-dialog -->
       </div>
-      <!-- /.modal -->
-      <!-- ./wrapper -->
-      <%- include('../../partials/footer') %>
-        <script>
-          (async () => {
-            const selectBox = document.querySelector('#maincategory')
-            await fetch('http://localhost:8000/admin/api/parent_category')
-              .then(response => response.json())
-              .then(data => {
-                let categoryOption = ''
-                data.forEach(category => {
-                  categoryOption += `<option value="${category._id}">${category.category_name}</option>`
-                })
-                selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
+    </div>
+    <!-- ./wrapper -->
+    <%- include('../../partials/script') %>
+      <!-- AdminLTE App -->
+      <script async>
+        (async () => {
+          const selectBox = document.querySelector('#maincategory')
+          await fetch('http://localhost:8000/admin/api/parent_category')
+            .then(response => response.json())
+            .then(data => {
+              let categoryOption = ''
+              data.forEach(category => {
+                categoryOption += `<option value="${category._id}">${category.category_name}</option>`
               })
-          })() // IIFE
-          function AlertMessage(message, erroMessage, sucsessMessage) {
-            const ToastElement = document.querySelector('#toast-container .toast')
-
-            ToastElement.style.opacity = '1'
-            if (erroMessage == message) {
-              ToastElement.classList.remove('toast-success')
-              ToastElement.classList.add('toast-error')
-              ToastElement.innerHTML = message
-            } else if (sucsessMessage == message) {
-              ToastElement.classList.remove('toast-error')
-              ToastElement.classList.add('toast-success')
-              ToastElement.innerHTML = message
-            }
-            setTimeout(() => { ToastElement.style.opacity = '0' }, 3000)
-          }
-
-          async function Fetch(api, value1, value2) {
-            await fetch(api, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                category_name: value1,
-                parent_id: value2
-              })
+              selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
             })
-              .then(response => response.json())
-              .then(data => AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!'))
+        })() // IIFE
+        function AlertMessage(message, erroMessage, sucsessMessage) {
+          const ToastElement = document.querySelector('#toast-container .toast')
+
+          ToastElement.style.opacity = '1'
+          if (erroMessage == message) {
+            ToastElement.classList.remove('toast-success')
+            ToastElement.classList.add('toast-error')
+            ToastElement.innerHTML = message
+          } else if (sucsessMessage == message) {
+            ToastElement.classList.remove('toast-error')
+            ToastElement.classList.add('toast-success')
+            ToastElement.innerHTML = message
           }
+          setTimeout(() => { ToastElement.style.opacity = '0' }, 3000)
+        }
 
-          document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        async function Fetch(api, value1, value2) {
+          await fetch(api, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              category_name: value1,
+              parent_id: value2
+            })
+          })
+            .then(response => response.json())
+            .then(data => AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!'))
+        }
 
-            const selectBox = document.querySelector('#maincategory')
-            const category_name = document.querySelector('#category')
+        document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
+          e.preventDefault();
 
-            if (selectBox.value && category_name.value) {
-              const api = 'http://localhost:8000/admin/api/sub_category';
-              Fetch(api, category_name.value, selectBox.value)
-            } else {
-              if (category_name.value) {
-                const api = 'http://localhost:8000/admin/api/parent_category';
-                Fetch(api, document.querySelector('#category').value)
-              }
+          const selectBox = document.querySelector('#maincategory')
+          const category_name = document.querySelector('#category')
+
+          if (selectBox.value && category_name.value) {
+            const api = 'http://localhost:8000/admin/api/sub_category';
+            Fetch(api, category_name.value, selectBox.value)
+          } else {
+            if (category_name.value) {
+              const api = 'http://localhost:8000/admin/api/parent_category';
+              Fetch(api, document.querySelector('#category').value)
             }
-            selectBox.value = ''
-            category_name.value = ''
-          })        
-        </script>
+          }
+          selectBox.value = ''
+          category_name.value = ''
+        })        
+      </script>
   </body>
 
 </html>

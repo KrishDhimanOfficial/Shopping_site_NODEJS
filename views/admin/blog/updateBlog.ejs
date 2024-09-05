@@ -1,15 +1,10 @@
+<!DOCTYPE html>
 <html lang="en">
 <%- include('../../partials/header') %>
+    </head>
 
-    <body class="hold-transition sidebar-mini layout-fixed">
+    <body class="hold-transition sidebar-mini">
         <div class="wrapper">
-
-            <!-- Preloader -->
-            <div class="preloader flex-column justify-content-center align-items-center">
-                <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60"
-                    width="60">
-            </div>
-
             <!-- Navbar -->
             <%- include('../../partials/navbar') %>
                 <!-- /.navbar -->
@@ -23,13 +18,13 @@
                         <section class="content-header">
                             <div class="container-fluid">
                                 <div class="row mb-2">
-                                    <div class="col-sm-6">
-                                        <h1>Blog</h1>
+                                    <div class="col-sm-6 d-flex">
+                                        <h1>Blog </h1>
                                     </div>
                                     <div class="col-sm-6">
                                         <ol class="breadcrumb float-sm-right">
                                             <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                            <li class="breadcrumb-item active">Create Blog</li>
+                                            <li class="breadcrumb-item active">Update Blog</li>
                                         </ol>
                                     </div>
                                 </div>
@@ -39,102 +34,104 @@
                         <!-- Main content -->
                         <section class="content">
                             <div class="container-fluid">
-                                <div class="card card-primary">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Add Blog</h3>
-
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <!-- /.card-header -->
-                                    <div class="card-body">
-                                        <% if (locals.post && locals.categories) { %>
-                                            <form id="updatePost" enctype="multipart/form-data">
-                                                <div class="row mb-2">
-                                                    <!-- /.col -->
-                                                    <div class="col-md-6">
-                                                        <!-- /.form-group -->
-                                                        <div class="form-group">
-                                                            <label for="title">Blog Title</label>
-                                                            <input type="text" name="blog_title" id="title"
-                                                                value="<%= post.blog_title %>" class="form-control"
-                                                                placeholder="Enter Title">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">Update Blog</h3>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body">
+                                                <% if (locals.post && locals.categories) { %>
+                                                    <form id="updatePost" enctype="multipart/form-data">
+                                                        <div class="row mb-2">
+                                                            <!-- /.col -->
+                                                            <div class="col-md-6">
+                                                                <!-- /.form-group -->
+                                                                <div class="form-group">
+                                                                    <label for="title">Blog Title</label>
+                                                                    <input type="text" name="blog_title" id="title"
+                                                                        value="<%= post.blog_title %>" class="form-control"
+                                                                        placeholder="Enter Title">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <div class="row mb-4">
+                                                                        <div class="col-12 mb-3">
+                                                                            <label>Thumbnail Image</label>
+                                                                        </div>
+                                                                        <div class="col-md-8">
+                                                                            <input type="file" id="imageInput"
+                                                                                class="custom-file-input" name="blog_image">
+                                                                            <label class="custom-file-label">Choose file</label>
+                                                                        </div>
+                                                                        <div class="col-md-4">
+                                                                            <img id="imageTag"
+                                                                                src="http://localhost:8000/uploads/<%= post.blog_image %>"
+                                                                                alt="" style="width: 180px;height: 145px;">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- /.form-group -->
+                                                            </div>
+                                                            <!-- /.col -->
+                                                            <!-- /.col -->
+                                                            <div class="col-md-6">
+                                                                <!-- /.form-group -->
+                                                                <div class="form-group">
+                                                                    <label for="categoryBox">Category</label>
+                                                                    <select id="categoryBox" name="category_id"
+                                                                        class="form-control">
+                                                                        <option selected value="<%= post.category_id %>">
+                                                                            <%= post.category_name.category %>
+                                                                        </option>
+                                                                        <% categories.forEach(category=> { %>
+                                                                            <option value="<%= category._id %>">
+                                                                                <%= category.category %>
+                                                                            </option>
+                                                                            <% }) %>
+                                                                    </select>
+                                                                </div>
+                                                                <!-- /.form-group -->
+                                                            </div>
+                                                            <!-- /.col -->
+                                                
+                                                            <div class="col-md-12">
+                                                                <textarea id="summernote" name="blog_description">
+                                                                    <%= post.blog_description %>
+                                                                  </textarea>
+                                                            </div>
+                                                            <!-- /.col-->
                                                         </div>
-                                                        <div class="form-group">
-                                                            <div class="row mb-4">
-                                                                <div class="col-12 mb-3">
-                                                                    <label>Thumbnail Image</label>
-                                                                </div>
-                                                                <div class="col-md-8">
-                                                                    <input type="file" id="imageInput"
-                                                                        class="custom-file-input" name="blog_image">
-                                                                    <label class="custom-file-label">Choose file</label>
-                                                                </div>
-                                                                <div class="col-md-4">
-                                                                    <img id="imageTag"
-                                                                        src="http://localhost:8000/uploads/<%= post.blog_image %>"
-                                                                        alt="" style="width: 180px;height: 145px;">
-                                                                </div>
+                                                        <button type="submit" class="border-0 rounded p-2 bg-primary">Submit
+                                                        </button>
+                                                        <div id="toast-container" class="toast-top-right">
+                                                            <div class="toast toast-success" aria-live="polite"
+                                                                style="opacity: 0;">
                                                             </div>
                                                         </div>
-                                                        <!-- /.form-group -->
-                                                    </div>
-                                                    <!-- /.col -->
-                                                    <!-- /.col -->
-                                                    <div class="col-md-6">
-                                                        <!-- /.form-group -->
-                                                        <div class="form-group">
-                                                            <label for="categoryBox">Category</label>
-                                                            <select id="categoryBox" name="category_id"
-                                                                class="form-control">
-                                                                <option selected value="<%= post.category_id %>">
-                                                                    <%= post.category_name.category %>
-                                                                </option>
-                                                                <% categories.forEach(category=> { %>
-                                                                    <option value="<%= category._id %>">
-                                                                        <%= category.category %>
-                                                                    </option>
-                                                                    <% }) %>
-                                                            </select>
-                                                        </div>
-                                                        <!-- /.form-group -->
-                                                    </div>
-                                                    <!-- /.col -->
-
-                                                    <div class="col-md-12">
-                                                        <textarea id="summernote" name="blog_description">
-                                                            <%= post.blog_description %>
-                                                          </textarea>
-                                                    </div>
-                                                    <!-- /.col-->
-                                                </div>
-                                                <button type="submit" class="border-0 rounded p-2 bg-primary">Submit
-                                                </button>
-                                                <div id="toast-container" class="toast-top-right">
-                                                    <div class="toast toast-success" aria-live="polite"
-                                                        style="opacity: 0;">
-                                                    </div>
-                                                </div>
-                                            </form>
-                                            <% } %>
+                                                    </form>
+                                                    <% } %>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
                                     </div>
-                                    <!-- /.card-body -->
+                                    <!-- /.col -->
                                 </div>
-                            </div><!-- /.container-fluid -->
+                                <!-- /.row -->
+                            </div>
+                            <!-- /.container-fluid -->
                         </section>
                         <!-- /.content -->
                     </div>
                     <!-- /.content-wrapper -->
+                    <%- include('../../partials/main_footer') %>
+
         </div>
         <!-- ./wrapper -->
-        <%- include('../../partials/footer') %>
-            <script>
+        <%- include('../../partials/script') %>
+            <!-- AdminLTE App -->
+            <script async>
                 const inputField = document.getElementById('imageInput');
                 const imageTag = document.getElementById('imageTag');
 

@@ -1,147 +1,143 @@
+
+<!DOCTYPE html>
 <html lang="en">
-<%- include('../../partials/header') %>
+    <%- include('../../partials/header') %>
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+  <!-- Navbar -->
+  <%- include('../../partials/navbar') %>
+  <!-- /.navbar -->
 
-    <body class="hold-transition sidebar-mini layout-fixed">
-        <div class="wrapper">
+  <!-- Main Sidebar Container -->
+   <%- include('../../partials/sidebar') %>
 
-            <!-- Preloader -->
-            <div class="preloader flex-column justify-content-center align-items-center">
-                <img class="animation__shake" src="/dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60"
-                    width="60">
-            </div>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0">Product</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Product</li>
+            </ol>
+        </div><!-- /.col -->
+    </div>
+      </div><!-- /.container-fluid -->
+    </section>
 
-            <!-- Navbar -->
-            <%- include('../../partials/navbar') %>
-                <!-- /.navbar -->
-
-                <!-- Main Sidebar Container -->
-                <%- include('../../partials/sidebar') %>
-
-                    <!-- Content Wrapper. Contains page content -->
-                    <div class="content-wrapper">
-                        <!-- Content Header (Page header) -->
-                        <section class="content-header">
-                            <div class="container-fluid">
-                                <div class="row mb-2">
-                                    <div class="col-sm-6">
-                                        <h1>Product</h1>
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">All Products</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form id="submitProduct">
+                    <div class="row">
+                        <!-- /.col -->
+                        <div class="col-md-6">
+                            <!-- /.form-group -->
+                            <div class="form-group">
+                                <label for="title">Product Title</label>
+                                <input type="text" id="title" class="form-control"
+                                    placeholder="Enter Title">
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <select name="" id="category" class="form-control">
+                                    <option selected>Select Category</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Sub_Category</label>
+                                <select name="" id="category" class="form-control">
+                                    <option selected>Select Category</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Aprice">Actual Price</label>
+                                <input type="text" id="Aprice" class="form-control"
+                                    placeholder="Enter Actual Price">
+                            </div>
+                            <div class="form-group">
+                                <label>Sizes</label>
+                                <select class="select2" multiple="multiple" data-placeholder="Select a Size" style="width: 100%;">
+                                  <option selected disabled value="">Sizes</option>
+                                  <option>L (Large)</option>
+                                  <option>M (Medium)</option>
+                                  <option>SM (Small)</option>
+                                  <option>XL (Extra Large)</option>
+                                </select>
+                              </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                        <!-- /.col -->
+                        <div class="col-md-6">
+                            <!-- /.form-group -->
+                            <div class="form-group">
+                                <label for="image-upload">File input</label>
+                                <div class="input-group d-flex flex-column">
+                                    <div class="custom-file w-100 mb-2">
+                                        <input type="file" class="custom-file-input"
+                                            id="imageInput">
+                                        <label class="custom-file-label"
+                                            for="image-upload">Choose file</label>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <ol class="breadcrumb float-sm-right">
-                                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                            <li class="breadcrumb-item active">Product</li>
-                                        </ol>
-                                    </div>
+                                     <img id="imageTag" src="/images/Skeleton.png" alt="" style="width: 270px; height: 200px;" class="img-fluid">
                                 </div>
-                            </div><!-- /.container-fluid -->
-                        </section>
-
-                        <!-- Main content -->
-                        <section class="content">
-                            <div class="container-fluid">
-                                <div class="card card-primary">
-                                    <div class="card-header">
-                                        <h3 class="card-title">Add Product</h3>
-
-                                        <div class="card-tools">
-                                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                                <i class="fas fa-minus"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-tool" data-card-widget="remove">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <!-- /.card-header -->
-                                    <div class="card-body">
-                                        <form action="" method="post">
-                                            <div class="row">
-                                                <!-- /.col -->
-                                                <div class="col-md-6">
-                                                    <!-- /.form-group -->
-                                                    <div class="form-group">
-                                                        <label for="title">Product Title</label>
-                                                        <input type="text" id="title" class="form-control"
-                                                            placeholder="Enter Title">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="category">Category</label>
-                                                        <select name="" id="category" class="form-control">
-                                                            <option selected>Select Category</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="brand">Brand</label>
-                                                        <select name="" id="brand" class="form-control">
-                                                            <option selected>Select Brand</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="description">Description</label>
-                                                        <textarea id="description" class="form-control"
-                                                            placeholder="Description..."></textarea>
-                                                    </div>
-                                                    <!-- /.form-group -->
-                                                </div>
-                                                <!-- /.col -->
-                                                <!-- /.col -->
-                                                <div class="col-md-6">
-                                                    <!-- /.form-group -->
-                                                    <div class="form-group">
-                                                        <label for="image-upload">File input</label>
-                                                        <div class="input-group">
-                                                            <div class="custom-file">
-                                                                <input type="file" class="custom-file-input"
-                                                                    id="image-upload">
-                                                                <label class="custom-file-label"
-                                                                    for="image-upload">Choose file</label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="Aprice">Actual Price</label>
-                                                        <input type="text" id="Aprice" class="form-control"
-                                                            placeholder="Enter Actual Price">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="price">Price</label>
-                                                        <input type="text" id="price" class="form-control"
-                                                            placeholder="Enter Price">
-                                                    </div>
-                                                    <div class="form-group" data-select2-id="29">
-                                                        <label>Colors</label>
-                                                        <select class="select2 select2-hidden-accessible" multiple
-                                                            data-placeholder="Select a State" style="width: 100%;"
-                                                            data-select2-id="7" tabindex="-1" aria-hidden="true">
-                                                            <option data-select2-id="1">red</option>
-                                                            <option data-select2-id="4">Green</option>
-                                                            <option data-select2-id="3">Blue</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="size">Size</label>
-                                                        <select id="size" class="form-control">
-                                                            <option selected>Select Size</option>
-                                                        </select>
-                                                    </div>
-                                                    <!-- /.form-group -->
-                                                </div>
-                                                <!-- /.col -->
-                                            </div>
-                                            <button type="submit"
-                                                class="border-0 rounded p-2 bg-primary">Submit</button>
-                                        </form>
-                                    </div>
-                                    <!-- /.card-body -->
-                                </div>
-                            </div><!-- /.container-fluid -->
-                        </section>
-                        <!-- /.content -->
+                            </div>
+                            <div class="form-group">
+                                <label for="price">Price</label>
+                                <input type="text" id="price" class="form-control"
+                                    placeholder="Enter Price">
+                            </div>
+                            <div class="form-group">
+                                <label>Color</label>
+                                <select class="select2" multiple="multiple" data-placeholder="Select a Color" style="width: 100%;">
+                                  <option selected disabled value="">Sizes</option>
+                                  <option>Red</option>
+                                </select>
+                              </div>
+                            <!-- /.form-group -->
+                        </div>
+                        <!-- /.col -->
+                         <div class="col-12">
+                            <textarea id="summernote">
+                              </textarea>
+                         </div>
                     </div>
-                    <!-- /.content-wrapper -->
+                    <button type="submit"
+                        class="border-0 rounded p-2 bg-primary">Submit</button>
+                </form>
+            </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
         </div>
-        <!-- ./wrapper -->
-        <%- include('../../partials/footer') %>
-    </body>
-
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+  <%- include('../../partials/main_footer') %>
+</div>
+<!-- ./wrapper -->
+<%- include('../../partials/script') %>
+<!-- AdminLTE App -->
+</body>
 </html>
