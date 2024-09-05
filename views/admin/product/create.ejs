@@ -1,143 +1,162 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('../../partials/header') %>
-</head>
-<body class="hold-transition sidebar-mini">
-<div class="wrapper">
-  <!-- Navbar -->
-  <%- include('../../partials/navbar') %>
-  <!-- /.navbar -->
+<%- include('../../partials/header') %>
+  </head>
 
-  <!-- Main Sidebar Container -->
-   <%- include('../../partials/sidebar') %>
+  <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+      <!-- Navbar -->
+      <%- include('../../partials/navbar') %>
+        <!-- /.navbar -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0">Product</h1>
-        </div><!-- /.col -->
-        <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item active">Product</li>
-            </ol>
-        </div><!-- /.col -->
-    </div>
-      </div><!-- /.container-fluid -->
-    </section>
+        <!-- Main Sidebar Container -->
+        <%- include('../../partials/sidebar') %>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">All Products</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <form id="submitProduct">
-                    <div class="row">
-                        <!-- /.col -->
-                        <div class="col-md-6">
-                            <!-- /.form-group -->
-                            <div class="form-group">
+          <!-- Content Wrapper. Contains page content -->
+          <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6">
+                    <h1 class="m-0">Product</h1>
+                  </div><!-- /.col -->
+                  <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active">Product</li>
+                    </ol>
+                  </div><!-- /.col -->
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">All Products</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <form id="submitProduct">
+                          <div class="row">
+                            <!-- /.col -->
+                            <div class="col-md-6">
+                              <!-- /.form-group -->
+                              <div class="form-group">
                                 <label for="title">Product Title</label>
-                                <input type="text" id="title" class="form-control"
-                                    placeholder="Enter Title">
-                            </div>
-                            <div class="form-group">
+                                <input type="text" id="title" class="form-control" placeholder="Enter Title">
+                              </div>
+                              <div class="form-group">
                                 <label for="category">Category</label>
                                 <select name="" id="category" class="form-control">
-                                    <option selected>Select Category</option>
+                                  <option selected>Select Category</option>
                                 </select>
-                            </div>
-                            <div class="form-group">
+                              </div>
+                              <div class="form-group">
                                 <label for="category">Sub_Category</label>
                                 <select name="" id="category" class="form-control">
-                                    <option selected>Select Category</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="Aprice">Actual Price</label>
-                                <input type="text" id="Aprice" class="form-control"
-                                    placeholder="Enter Actual Price">
-                            </div>
-                            <div class="form-group">
-                                <label>Sizes</label>
-                                <select class="select2" multiple="multiple" data-placeholder="Select a Size" style="width: 100%;">
-                                  <option selected disabled value="">Sizes</option>
-                                  <option>L (Large)</option>
-                                  <option>M (Medium)</option>
-                                  <option>SM (Small)</option>
-                                  <option>XL (Extra Large)</option>
+                                  <option selected>Select Category</option>
                                 </select>
                               </div>
-                            <!-- /.form-group -->
-                        </div>
-                        <!-- /.col -->
-                        <!-- /.col -->
-                        <div class="col-md-6">
-                            <!-- /.form-group -->
-                            <div class="form-group">
+                              <div class="form-group">
+                                <label for="Aprice">Actual Price</label>
+                                <input type="text" id="Aprice" class="form-control" placeholder="Enter Actual Price">
+                              </div>
+                              <div class="form-group">
+                                <label>Sizes</label>
+                                <select class="select2" multiple="multiple" data-placeholder="Select a Size"
+                                  style="width: 100%;">
+                                  <% if (locals.sizes) { %>
+                                    <% sizes.forEach(size=> { %>
+                                      <option value="<%= size._id %>">
+                                        <%= size.size_name %>
+                                      </option>
+                                      <% }) %>
+                                        <% } %>
+                                </select>
+                              </div>
+                              <!-- /.form-group -->
+                            </div>
+                            <!-- /.col -->
+                            <!-- /.col -->
+                            <div class="col-md-6">
+                              <!-- /.form-group -->
+                              <div class="form-group">
                                 <label for="image-upload">File input</label>
                                 <div class="input-group d-flex flex-column">
-                                    <div class="custom-file w-100 mb-2">
-                                        <input type="file" class="custom-file-input"
-                                            id="imageInput">
-                                        <label class="custom-file-label"
-                                            for="image-upload">Choose file</label>
-                                    </div>
-                                     <img id="imageTag" src="/images/Skeleton.png" alt="" style="width: 270px; height: 200px;" class="img-fluid">
+                                  <div class="custom-file w-100 mb-2">
+                                    <input type="file" class="custom-file-input" id="imageInput">
+                                    <label class="custom-file-label" for="image-upload">Choose file</label>
+                                  </div>
+                                  <img id="imageTag" src="/images/Skeleton.png" alt=""
+                                    style="width: 270px; height: 200px;" class="img-fluid">
                                 </div>
-                            </div>
-                            <div class="form-group">
+                              </div>
+                              <div class="form-group">
                                 <label for="price">Price</label>
-                                <input type="text" id="price" class="form-control"
-                                    placeholder="Enter Price">
-                            </div>
-                            <div class="form-group">
+                                <input type="text" id="price" class="form-control" placeholder="Enter Price">
+                              </div>
+                              <div class="form-group">
                                 <label>Color</label>
-                                <select class="select2" multiple="multiple" data-placeholder="Select a Color" style="width: 100%;">
-                                  <option selected disabled value="">Sizes</option>
-                                  <option>Red</option>
+                                <select class="select2" multiple="multiple" data-placeholder="Select a Color"
+                                  style="width: 100%;">
+                                  <% if (locals.colors) { %>
+                                    <% colors.forEach(color=> { %>
+                                      <option value="<%= color._id %>">
+                                        <%= color.color_name %>
+                                      </option>
+                                      <% }) %>
+                                        <% } %>
                                 </select>
                               </div>
-                            <!-- /.form-group -->
-                        </div>
-                        <!-- /.col -->
-                         <div class="col-12">
-                            <textarea id="summernote">
+                              <!-- /.form-group -->
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-12">
+                              <textarea id="summernote">
                               </textarea>
-                         </div>
+                            </div>
+                          </div>
+                          <button type="submit" class="border-0 rounded p-2 bg-primary">Submit</button>
+                        </form>
+                      </div>
+                      <!-- /.card-body -->
                     </div>
-                    <button type="submit"
-                        class="border-0 rounded p-2 bg-primary">Submit</button>
-                </form>
-            </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+                    <!-- /.card -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
           </div>
-          <!-- /.col -->
-        </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <%- include('../../partials/main_footer') %>
-</div>
-<!-- ./wrapper -->
-<%- include('../../partials/script') %>
-<!-- AdminLTE App -->
-</body>
+          <!-- /.content-wrapper -->
+          <%- include('../../partials/main_footer') %>
+    </div>
+    <!-- ./wrapper -->
+    <%- include('../../partials/script') %>
+      <!-- AdminLTE App -->
+      <script>
+        const inputField = document.getElementById('imageInput');
+        const imageTag = document.getElementById('imageTag');
+
+        inputField.addEventListener('change', (e) => {
+          const file = e.target.files[0]
+          
+          const reader = new FileReader()
+          reader.onload = () => {
+            imageTag.src = reader.result;
+          };
+          reader.readAsDataURL(file)
+        })
+      </script>
+  </body>
+
 </html>

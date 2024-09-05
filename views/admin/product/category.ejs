@@ -115,6 +115,127 @@
               <!-- /.container-fluid -->
             </section>
             <!-- /.content -->
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6 d-flex">
+                    <h1>Product Color</h1>
+                    <button type="button" class="btn btn-default mx-2 bg-primary" data-toggle="modal"
+                      data-target="#modal-2">
+                      Add Color
+                    </button>
+                  </div>
+                  <div class="col-sm-6 d-flex">
+                    <h1>Product Size</h1>
+                    <button type="button" class="btn btn-default mx-2 bg-primary" data-toggle="modal"
+                      data-target="#modal-3">
+                      Add Size
+                    </button>
+                  </div>
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card">
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th style="width: 10px">S.NO</th>
+                              <th>Colors
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1.</td>
+                              <td>Update software</td>
+                            </tr>
+                            <tr>
+                              <td>2.</td>
+                              <td>Clean database</td>
+                            </tr>
+                            <tr>
+                              <td>3.</td>
+                              <td>Cron job running</td>
+                            </tr>
+                            <tr>
+                              <td>4.</td>
+                              <td>Fix and squish bugs</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                      <div class="card-footer clearfix">
+                        <ul class="pagination pagination-sm m-0 float-right">
+                          <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                          <li class="page-item"><a class="page-link" href="#">1</a></li>
+                          <li class="page-item"><a class="page-link" href="#">2</a></li>
+                          <li class="page-item"><a class="page-link" href="#">3</a></li>
+                          <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <!-- /.card -->
+                    <!-- /.card -->
+                  </div>
+                  <!-- /.col -->
+                  <div class="col-md-6">
+                    <div class="card">
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <table class="table table-bordered">
+                          <thead>
+                            <tr>
+                              <th style="width: 10px">S.NO</th>
+                              <th>Sizes</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1.</td>
+                              <td>Update software</td>
+                            </tr>
+                            <tr>
+                              <td>2.</td>
+                              <td>Clean database</td>
+                            </tr>
+                            <tr>
+                              <td>3.</td>
+                              <td>Cron job running</td>
+                            </tr>
+                            <tr>
+                              <td>4.</td>
+                              <td>Fix and squish bugs</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                      <div class="card-footer clearfix">
+                        <ul class="pagination pagination-sm m-0 float-right">
+                          <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
+                          <li class="page-item"><a class="page-link" href="#">1</a></li>
+                          <li class="page-item"><a class="page-link" href="#">2</a></li>
+                          <li class="page-item"><a class="page-link" href="#">3</a></li>
+                          <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
           </div>
           <!-- /.content-wrapper -->
           <%- include('../../partials/main_footer') %>
@@ -153,15 +274,74 @@
               <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
           </form>
-          <div id="toast-container" class="toast-top-right">
-            <div class="toast toast-success" aria-live="polite" style="opacity: 0;">
-              <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
-              </div>
-            </div>
-          </div>
           <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
+      </div>
+    </div>
+    <div class="modal fade" id="modal-2">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Add Color</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form id="submitColor">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="category">Color Name</label>
+                    <input type="text" id="color" name="color_name" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+    </div>
+    <div class="modal fade" id="modal-3">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Add Sizes</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form id="submitSize">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="category">Size Name</label>
+                    <input type="text" id="Size" name="size_name" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+    </div>
+
+    <div id="toast-container" class="toast-top-right">
+      <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
       </div>
     </div>
     <!-- ./wrapper -->
@@ -180,6 +360,69 @@
               selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
             })
         })() // IIFE
+
+        document.querySelector('#submitCategory').addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const selectBox = document.querySelector('#maincategory')
+          const category_name = document.querySelector('#category')
+
+          if (selectBox.value && category_name.value) {
+            const api = 'http://localhost:8000/admin/api/sub_category';
+            Fetch(api, category_name.value, selectBox.value)
+          } else {
+            if (category_name.value) {
+              const api = 'http://localhost:8000/admin/api/parent_category';
+              Fetch(api, category_name.value)
+            }
+          }
+          selectBox.value = ''
+          category_name.value = ''
+        })
+
+        document.querySelector('#submitColor').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const color = document.querySelector('#color')
+          if (color.value) {
+            await fetch('http://localhost:8000/admin/api/attributes/color', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ color_name: color.value })
+            })
+              .then(response => response.json())
+              .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
+          }
+          color.value = ''
+        })
+
+        document.querySelector('#submitSize').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const size = document.querySelector('#Size')
+          if (size.value) {
+            await fetch('http://localhost:8000/admin/api/attributes/size', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ size_name: size.value.trim() })
+            })
+              .then(response => response.json())
+              .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
+          }
+          size.value = ''
+        })
+
+        async function Fetch(api, value1, value2) {
+          await fetch(api, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              category_name: value1,
+              parent_id: value2,
+            })
+          })
+            .then(response => response.json())
+            .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
+        }
+
         function AlertMessage(message, erroMessage, sucsessMessage) {
           const ToastElement = document.querySelector('#toast-container .toast')
 
@@ -195,38 +438,6 @@
           }
           setTimeout(() => { ToastElement.style.opacity = '0' }, 3000)
         }
-
-        async function Fetch(api, value1, value2) {
-          await fetch(api, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              category_name: value1,
-              parent_id: value2
-            })
-          })
-            .then(response => response.json())
-            .then(data => AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!'))
-        }
-
-        document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
-          e.preventDefault();
-
-          const selectBox = document.querySelector('#maincategory')
-          const category_name = document.querySelector('#category')
-
-          if (selectBox.value && category_name.value) {
-            const api = 'http://localhost:8000/admin/api/sub_category';
-            Fetch(api, category_name.value, selectBox.value)
-          } else {
-            if (category_name.value) {
-              const api = 'http://localhost:8000/admin/api/parent_category';
-              Fetch(api, document.querySelector('#category').value)
-            }
-          }
-          selectBox.value = ''
-          category_name.value = ''
-        })        
       </script>
   </body>
 

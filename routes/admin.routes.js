@@ -13,9 +13,6 @@ router.get('/dashboard', checkLogin, (req, res) => {
 router.get('/product', checkLogin, (req, res) => {
     res.render('admin/product/index')
 })
-router.get('/create', checkLogin, (req, res) => {
-    res.render('admin/product/create')
-})
 
 router
     .get('/login', login, (req, res) => {
@@ -43,12 +40,18 @@ router.get('/delete/blog/:id', checkLogin, blogControllers.deleteBlog)
 
 
 // Product Routes   
+router.get('/product/create', checkLogin, productControllers.showProductAttributes)
 router.route('/api/parent_category')
     .post(productControllers.createPcategory)
     .get(productControllers.parenCategory)
 
 router.post('/api/sub_category', productControllers.createScategory)
-router.get('/product/category', checkLogin, productControllers.showAllCategories)
-router.get('/product/category/delete/:id',checkLogin,productControllers.deleteParentCategory)
+router.route('/product/category')
+    .all(checkLogin)
+    .get(productControllers.showAllCategories)
+router.get('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
+
+router.post('/api/attributes/color', checkLogin, productControllers.createColor)
+router.post('/api/attributes/size', checkLogin, productControllers.createSize)
 
 module.exports = router;
