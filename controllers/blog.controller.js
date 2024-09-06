@@ -30,16 +30,16 @@ module.exports = {
                         foreignField: 'category_id', as: 'categoryPosts'
                     }
                 },
-                { $unwind: '$categoryPosts' },
                 {
                     $group: {
                         _id: '$_id', category_name: { $first: '$category' },
-                        posts: { $push: '$categoryPosts' },
+                        posts: { $addToSet: '$categoryPosts' },
                     }
                 },
+                { $unwind: '$posts' },
                 {
                     $addFields: { length: { $size: '$posts' } }
-                }
+                },
             ])
             res.render('admin/blog/blogCategory', { allPostsByCategory: data })
         } catch (error) {
@@ -143,5 +143,4 @@ module.exports = {
             res.json({ message: 'Update Unsuccessfull!' })
         }
     }
-
 }

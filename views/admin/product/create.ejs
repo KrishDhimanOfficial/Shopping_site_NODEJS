@@ -49,28 +49,44 @@
                               <!-- /.form-group -->
                               <div class="form-group">
                                 <label for="title">Product Title</label>
-                                <input type="text" id="title" class="form-control" placeholder="Enter Title">
+                                <input type="text" id="title" name="product_title" class="form-control"
+                                  placeholder="Enter Title">
                               </div>
                               <div class="form-group">
                                 <label for="category">Category</label>
-                                <select name="" id="category" class="form-control">
-                                  <option selected>Select Category</option>
+                                <select name="product_parent_category_id" id="category" class="form-control">
+                                  <option selected disabled value="">Select Category</option>
+                                  <% if (locals.parent_Categories) { %>
+                                    <% parent_Categories.forEach(category=> { %>
+                                      <option value="<%= category._id %>">
+                                        <%= category.category_name %>
+                                      </option>
+                                      <% }) %>
+                                        <% } %>
                                 </select>
                               </div>
                               <div class="form-group">
                                 <label for="category">Sub_Category</label>
-                                <select name="" id="category" class="form-control">
-                                  <option selected>Select Category</option>
+                                <select name="product_sub_category_id" id="category" class="form-control">
+                                  <option selected disabled value="">Select Category</option>
+                                  <% if (locals.sub_categories) { %>
+                                    <% sub_categories.forEach(category=> { %>
+                                      <option value="<%= category._id %> ">
+                                        <%= category.category_name %>
+                                      </option>
+                                      <% }) %>
+                                        <% } %>
                                 </select>
                               </div>
                               <div class="form-group">
                                 <label for="Aprice">Actual Price</label>
-                                <input type="text" id="Aprice" class="form-control" placeholder="Enter Actual Price">
+                                <input type="number" id="Aprice" name="product_price" class="form-control"
+                                  placeholder="Enter Actual Price">
                               </div>
                               <div class="form-group">
                                 <label>Sizes</label>
-                                <select class="select2" multiple="multiple" data-placeholder="Select a Size"
-                                  style="width: 100%;">
+                                <select class="select2" name="availableSize" multiple="multiple"
+                                  data-placeholder="Select a Size" style="width: 100%;">
                                   <% if (locals.sizes) { %>
                                     <% sizes.forEach(size=> { %>
                                       <option value="<%= size._id %>">
@@ -80,6 +96,13 @@
                                         <% } %>
                                 </select>
                               </div>
+                              <div class="form-group">
+                                <div class="form-check">
+                                  <input type="checkbox" name="product_stock" class="form-check-input"
+                                    id="exampleCheck1">
+                                  <label class="form-check-label" for="exampleCheck1">In Stock</label>
+                                </div>
+                              </div>
                               <!-- /.form-group -->
                             </div>
                             <!-- /.col -->
@@ -87,24 +110,14 @@
                             <div class="col-md-6">
                               <!-- /.form-group -->
                               <div class="form-group">
-                                <label for="image-upload">File input</label>
-                                <div class="input-group d-flex flex-column">
-                                  <div class="custom-file w-100 mb-2">
-                                    <input type="file" class="custom-file-input" id="imageInput">
-                                    <label class="custom-file-label" for="image-upload">Choose file</label>
-                                  </div>
-                                  <img id="imageTag" src="/images/Skeleton.png" alt=""
-                                    style="width: 270px; height: 200px;" class="img-fluid">
-                                </div>
-                              </div>
-                              <div class="form-group">
-                                <label for="price">Price</label>
-                                <input type="text" id="price" class="form-control" placeholder="Enter Price">
+                                <label for="price">Discount</label>
+                                <input type="number" min="0" max="100" name="product_discount" id="price" class="form-control"
+                                  placeholder="Enter Price">
                               </div>
                               <div class="form-group">
                                 <label>Color</label>
-                                <select class="select2" multiple="multiple" data-placeholder="Select a Color"
-                                  style="width: 100%;">
+                                <select class="select2" name="availableColor" multiple="multiple"
+                                  data-placeholder="Select a Color" style="width: 100%;">
                                   <% if (locals.colors) { %>
                                     <% colors.forEach(color=> { %>
                                       <option value="<%= color._id %>">
@@ -114,15 +127,41 @@
                                         <% } %>
                                 </select>
                               </div>
+                              <div class="form-group">
+                                <label>Brand</label>
+                                <select class="form-control" name="availableColor" data-placeholder="Select a Brand"
+                                  style="width: 100%;">
+                                  <option selected disabled value="">Select Brand Name</option>
+                                  <% if (locals.brands) { %>
+                                    <% brands.forEach(brand=> { %>
+                                      <option value="<%= brand._id %>">
+                                        <%= brand.brand_name %>
+                                      </option>
+                                      <% }) %>
+                                        <% } %>
+                                </select>
+                              </div>
+                              <div class="form-group">
+                                <label for="image-upload">File input</label>
+                                <div class="input-group d-flex flex-column">
+                                  <div class="custom-file w-100 mb-2">
+                                    <input type="file" name="product_image" class="custom-file-input" id="imageInput"
+                                      multiple>
+                                    <label class="custom-file-label" for="image-upload">Choose file</label>
+                                  </div>
+                                  <div id="imagePreview" class="d-flex">
+                                  </div>
+                                </div>
+                              </div>
                               <!-- /.form-group -->
                             </div>
                             <!-- /.col -->
                             <div class="col-12">
-                              <textarea id="summernote">
+                              <textarea id="summernote" name="product_description">
                               </textarea>
                             </div>
                           </div>
-                          <button type="submit" class="border-0 rounded p-2 bg-primary">Submit</button>
+                          <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Submit</button>
                         </form>
                       </div>
                       <!-- /.card-body -->
@@ -141,21 +180,57 @@
           <%- include('../../partials/main_footer') %>
     </div>
     <!-- ./wrapper -->
+
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
       <script>
+
         const inputField = document.getElementById('imageInput');
-        const imageTag = document.getElementById('imageTag');
+        const imagePreview = document.getElementById('imagePreview');
 
         inputField.addEventListener('change', (e) => {
-          const file = e.target.files[0]
-          
-          const reader = new FileReader()
-          reader.onload = () => {
-            imageTag.src = reader.result;
-          };
-          reader.readAsDataURL(file)
+          const files = e.target.files
+
+          Array.from(files).forEach((file) => {
+            const reader = new FileReader()
+
+            reader.onload = () => {
+              const img = document.createElement('img')
+              img.src = reader.result;
+              img.alt = file.name;
+              img.style.margin = '10px';
+              img.style.width = '130px';
+              img.style.height = '100px';
+              imagePreview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+          })
         })
+        document.querySelector('#submitProduct').addEventListener('submit', async (e) => {
+          e.preventDefault()
+          const product_description = $('#summernote').summernote('code').trim()
+          const formData = new FormData(e.target)
+          formData.append('product_description', product_description)
+
+          await fetch('http://localhost:8000/admin/product/create', {
+            method: 'POST',
+            body: formData
+          })
+            .then((res) => res.json())
+            .then((data) => console.log(data))
+        })
+        function AlertMessage(message, erroMessage, sucsessMessage) {
+          const ToastElement = document.querySelector('.toast-btn')
+          if (erroMessage == message) {
+            ToastElement.classList.remove('toastrDefaultSuccess')
+            ToastElement.classList.add('toastrDefaultError')
+            toastr.error(message)
+          } else if (sucsessMessage == message) {
+            ToastElement.classList.remove('toastrDefaultError')
+            ToastElement.classList.add('toastrDefaultSuccess')
+            toastr.success(message)
+          }
+        }
       </script>
   </body>
 

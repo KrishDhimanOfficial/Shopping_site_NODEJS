@@ -1,175 +1,167 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('../../partials/header') %>
-<body class="hold-transition sidebar-mini">
-<div class="wrapper">
-  <!-- Navbar -->
-  <%- include('../../partials/navbar') %>
-  <!-- /.navbar -->
+<%- include('../../partials/header') %>
 
-  <!-- Main Sidebar Container -->
-   <%- include('../../partials/sidebar') %>
+  <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+      <!-- Navbar -->
+      <%- include('../../partials/navbar') %>
+        <!-- /.navbar -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Blog</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Create Blog</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+        <!-- Main Sidebar Container -->
+        <%- include('../../partials/sidebar') %>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">All Blogs</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <form id="submitPost" enctype="multipart/form-data">
-                    <div class="row mb-2">
-                        <!-- /.col -->
-                        <div class="col-md-6">
-                            <!-- /.form-group -->
-                            <div class="form-group">
+          <!-- Content Wrapper. Contains page content -->
+          <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6">
+                    <h1>Blog</h1>
+                  </div>
+                  <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active">Create Blog</li>
+                    </ol>
+                  </div>
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">All Blogs</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <form id="submitPost" enctype="multipart/form-data">
+                          <div class="row mb-2">
+                            <!-- /.col -->
+                            <div class="col-md-6">
+                              <!-- /.form-group -->
+                              <div class="form-group">
                                 <label for="title">Blog Title</label>
-                                <input type="text" name="blog_title" id="title"
-                                    class="form-control" placeholder="Enter Title">
-                            </div>
-                            <div class="form-group">
+                                <input type="text" name="blog_title" id="title" class="form-control"
+                                  placeholder="Enter Title">
+                              </div>
+                              <div class="form-group">
                                 <div class="row mb-4">
-                                    <div class="col-12 mb-3">
-                                        <label>Thumbnail Image</label>
-                                    </div>
-                                    <div class="col-md-8">
-                                        <input type="file" id="imageInput"
-                                            class="custom-file-input" name="blog_image">
-                                        <label class="custom-file-label">Choose file</label>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <img id="imageTag" src="/images/Skeleton.png" alt=""
-                                            style="width: 180px;height: 145px;">
-                                    </div>
+                                  <div class="col-12 mb-3">
+                                    <label>Thumbnail Image</label>
+                                  </div>
+                                  <div class="col-md-8">
+                                    <input type="file" id="imageInput" class="custom-file-input" name="blog_image">
+                                    <label class="custom-file-label">Choose file</label>
+                                  </div>
+                                  <div class="col-md-4">
+                                    <img id="imageTag" src="/images/Skeleton.png" alt=""
+                                      style="width: 180px;height: 145px;">
+                                  </div>
                                 </div>
+                              </div>
+                              <!-- /.form-group -->
                             </div>
-                            <!-- /.form-group -->
-                        </div>
-                        <!-- /.col -->
-                        <!-- /.col -->
-                        <div class="col-md-6">
-                            <!-- /.form-group -->
-                            <div class="form-group">
+                            <!-- /.col -->
+                            <!-- /.col -->
+                            <div class="col-md-6">
+                              <!-- /.form-group -->
+                              <div class="form-group">
                                 <label for="categoryBox">Category</label>
-                                <select id="categoryBox" name="category_id"
-                                    class="form-control">
-                                    <option selected disabled>Select Category</option>
-                                    <% if (locals.categories) { %>
-                                        <% categories.forEach(category=> { %>
-                                            <option value="<%= category._id %>">
-                                                <%= category.category %>
-                                            </option>
-                                            <% }) %>
-                                                <% } %>
+                                <select id="categoryBox" name="category_id" class="form-control">
+                                  <option selected disabled>Select Category</option>
+                                  <% if (locals.categories) { %>
+                                    <% categories.forEach(category=> { %>
+                                      <option value="<%= category._id %>">
+                                        <%= category.category %>
+                                      </option>
+                                      <% }) %>
+                                        <% } %>
                                 </select>
+                              </div>
+                              <!-- /.form-group -->
                             </div>
-                            <!-- /.form-group -->
-                        </div>
-                        <!-- /.col -->
-                        <div class="col-md-12">
-                            <textarea id="summernote" name="blog_description">
+                            <!-- /.col -->
+                            <div class="col-md-12">
+                              <textarea id="summernote" name="blog_description">
                                   </textarea>
-                        </div>
-                        <!-- /.col-->
+                            </div>
+                            <!-- /.col-->
+                          </div>
+                          <button type="submit"
+                            class="border-0 rounded p-2 toast-btn btn btn-primary toastrDefaultError">
+                            Submit
+                          </button>
+                        </form>
+                      </div>
+                      <!-- /.card-body -->
                     </div>
-                    <button type="submit" class="border-0 rounded p-2 bg-primary">Submit
-                    </button>
-                    <div id="toast-container" class="toast-top-right">
-                        <div class="toast toast-success" aria-live="polite" style="opacity: 0;">
-                        </div>
-                    </div>
-                </form>
+                    <!-- /.card -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
               </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+              <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
           </div>
-          <!-- /.col -->
-        </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <%- include('../../partials/main_footer') %>
-</div>
-<!-- ./wrapper -->
+          <!-- /.content-wrapper -->
+          <%- include('../../partials/main_footer') %>
+    </div>
+    <!-- ./wrapper -->
 
-<!-- jQuery -->
-<%- include('../../partials/script') %>
-<script>
+    <!-- jQuery -->
+    <%- include('../../partials/script') %>
+      <script>
 
-const inputField = document.getElementById('imageInput');
-const imageTag = document.getElementById('imageTag');
+        const inputField = document.getElementById('imageInput');
+        const imageTag = document.getElementById('imageTag');
 
-inputField.addEventListener('change', (e) => {
-    const file = e.target.files[0]
-    const reader = new FileReader()
-    reader.onload = () => {
-        imageTag.src = reader.result;
-    };
-    reader.readAsDataURL(file)
-})
-
-document.querySelector('#submitPost').addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const blog_description = $('#summernote').summernote('code').trim()
-    const formData = new FormData(e.target)
-    formData.append('blog_description', blog_description)
-
-    await fetch('http://localhost:8000/admin/blog/create', {
-        method: 'POST',
-        body: formData
-    })
-        .then(response => response.json())
-        .then((data) => {
-            AlertMessage(data.message, 'Post Created Unsucessfull!', 'Post Created sucessfull!')
+        inputField.addEventListener('change', (e) => {
+          const file = e.target.files[0]
+          const reader = new FileReader()
+          reader.onload = () => {
+            imageTag.src = reader.result;
+          };
+          reader.readAsDataURL(file)
         })
-})
 
-function AlertMessage(message, erroMessage, sucsessMessage) {
-    const ToastElement = document.querySelector('#toast-container .toast')
+        document.querySelector('#submitPost').addEventListener('submit', async (e) => {
+          e.preventDefault()
+          const blog_description = $('#summernote').summernote('code').trim()
+          const formData = new FormData(e.target)
+          formData.append('blog_description', blog_description)
 
-    ToastElement.style.opacity = '1'
-    if (erroMessage == message) {
-        ToastElement.classList.remove('toast-success')
-        ToastElement.classList.add('toast-error')
-        ToastElement.innerHTML = message
-    } else if (sucsessMessage == message) {
-        ToastElement.classList.remove('toast-error')
-        ToastElement.classList.add('toast-success')
-        ToastElement.innerHTML = message
-    }
-    setTimeout(() => {
-        ToastElement.style.opacity = '0'
-    }, 3000)
-}
-</script>
-</body>
+          await fetch('http://localhost:8000/admin/blog/create', {
+            method: 'POST',
+            body: formData
+          })
+            .then(response => response.json())
+            .then((data) => {
+              AlertMessage(data.message, 'Post Created Unsucessfull!', 'Post Created sucessfull!')
+            })
+        })
+
+        function AlertMessage(message, erroMessage, sucsessMessage) {
+          const ToastElement = document.querySelector('.toast-btn')
+          if (erroMessage == message) {
+            ToastElement.classList.remove('toastrDefaultSuccess')
+            ToastElement.classList.add('toastrDefaultError')
+            toastr.error(message)
+          } else if (sucsessMessage == message) {
+            ToastElement.classList.remove('toastrDefaultError')
+            ToastElement.classList.add('toastrDefaultSuccess')
+            toastr.success(message)
+          }
+        }
+      </script>
+  </body>
+
 </html>

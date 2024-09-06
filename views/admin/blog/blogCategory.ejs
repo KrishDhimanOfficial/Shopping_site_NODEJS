@@ -135,21 +135,9 @@
                                                 data-dismiss="modal">Close</button>
                                             <!-- <button type="submit" id="addCategory" class="btn btn-primary">Save changes</button> -->
                                             <button type="submit" id="addCategory"
-                                                class="btn btn-primary toastrDefaultSuccess">
+                                                class="toast-btn btn btn-primary toastrDefaultError">
                                                 Save changes
                                             </button>
-                                            <div id="toast-container" class="toast-top-right">
-                                                <div class="toast toast-success" aria-live="polite" style="opacity: 0;">
-                                                    <div class="toast-message"></div>
-                                                </div>
-                                                <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
-                                                    <div class="toast-message">
-                                                        <% if (locals.message) { %>
-                                                            <%= message %>
-                                                                <% } %>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                     </form>
                                 </div>
@@ -173,30 +161,24 @@
                     if (!category.value) return
                     await fetch('http://localhost:8000/admin/api/createCategory', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json', },
                         body: JSON.stringify({ category: category.value.trim() })
                     })
                         .then(response => response.json())
                         .then(data => {
                             category.value = ''
 
+                            const ToastElement = document.querySelector('.toast-btn')
                             if (data.message == 'Category created successfully') {
-                                SuccesToast.style.opacity = '1';
-                                document.querySelector('.toast-success .toast-message').innerHTML = data.message
+                                ToastElement.classList.remove('toastrDefaultError')
+                                ToastElement.classList.add('toastrDefaultSuccess')
+                                toastr.success(data.message)
                             } else if (data.message == 'Category already exists!') {
-                                ErrorToast.style.opacity = '1';
-                                document.querySelector('.toast-error .toast-message').innerHTML = data.message
-                            } else {
-                                ErrorToast.style.opacity = '1';
-                                document.querySelector('.toast-error .toast-message').innerHTML = data.message
+                                ToastElement.classList.remove('toastrDefaultSuccess')
+                                ToastElement.classList.add('toastrDefaultError')
+                                toastr.error(data.message)
                             }
                         })
-                    setTimeout(() => {
-                        ErrorToast.style.opacity = '0';
-                        SuccesToast.style.opacity = '0';
-                    }, 3000);
                 })
             </script>
     </body>

@@ -1,151 +1,140 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('../../partials/header') %>
-</head>
-<body class="hold-transition sidebar-mini">
-<div class="wrapper">
-  <!-- Navbar -->
-  <%- include('../../partials/navbar') %>
-  <!-- /.navbar -->
+<%- include('../../partials/header') %>
+  </head>
 
-  <!-- Main Sidebar Container -->
-   <%- include('../../partials/sidebar') %>
+  <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+      <!-- Navbar -->
+      <%- include('../../partials/navbar') %>
+        <!-- /.navbar -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6 d-flex">
-            <h1>Blog</h1>
-            <a href="/admin/blog/create" class="mx-3 btn  bg-primary rounded p-2">Add Blog</a>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Blog</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+        <!-- Main Sidebar Container -->
+        <%- include('../../partials/sidebar') %>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">All Blogs</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
-                aria-describedby="example1_info">
-                <thead>
-                    <tr>
-                        <th class="sorting sorting_asc" tabindex="0"
-                            aria-controls="example1" rowspan="1"
-                            colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            S.No</th>
-                        <th class="sorting sorting_asc" tabindex="0"
-                            aria-controls="example1" rowspan="1"
-                            colspan="1" aria-sort="ascending"
-                            aria-label="Rendering engine: activate to sort column descending">
-                            Blog Title</th>
-                        <th class="sorting" tabindex="0"
-                            aria-controls="example1" rowspan="1"
-                            colspan="1"
-                            aria-label="Browser: activate to sort column ascending">
-                            Blog Image</th>
-                        <th class="sorting" tabindex="0"
-                            aria-controls="example1" rowspan="1"
-                            colspan="1"
-                            aria-label="Platform(s): activate to sort column ascending">
-                            Category</th>
-                        <th class="sorting" tabindex="0"
-                            aria-controls="example1" rowspan="1"
-                            colspan="1"
-                            aria-label="Engine version: activate to sort column ascending">
-                            Blog Date</th>
-                        <th class="sorting" tabindex="0"
-                            aria-controls="example1" rowspan="1"
-                            colspan="1"
-                            aria-label="CSS grade: activate to sort column ascending">
-                            Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="blogTable">
-                    <% if (locals.posts) { %>
-                        <% posts.forEach((post ,i)=> { %>
-                            %>
+          <!-- Content Wrapper. Contains page content -->
+          <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6 d-flex">
+                    <h1>Blog</h1>
+                    <a href="/admin/blog/create" class="mx-3 btn  bg-primary rounded p-2">Add Blog</a>
+                  </div>
+                  <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active">Blog</li>
+                    </ol>
+                  </div>
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">All Blogs</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
+                          aria-describedby="example1_info">
+                          <thead>
                             <tr>
-                                <td>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                S.No</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                Blog Title</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Browser: activate to sort column ascending">
+                                Blog Image</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Platform(s): activate to sort column ascending">
+                                Category</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Engine version: activate to sort column ascending">
+                                Blog Date</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="CSS grade: activate to sort column ascending">
+                                Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody id="blogTable">
+                            <% if (locals.posts) { %>
+                              <% posts.forEach((post ,i)=> { %>
+                                %>
+                                <tr>
+                                  <td>
                                     <%= i + 1 %>
-                                </td>
-                                <td class="dtr-control sorting_1"
-                                    tabindex="0">
+                                  </td>
+                                  <td class="dtr-control sorting_1" tabindex="0">
                                     <%= post.blog_title %>
-                                </td>
-                                <td>
-                                    <img src="http://localhost:8000/uploads/<%= post.blog_image %>"
-                                        alt=""
-                                        class="img-fluid"
-                                        style='width:110px;height:80px;'>
-                                </td>
-                                <td>
+                                  </td>
+                                  <td>
+                                    <img src="http://localhost:8000/uploads/<%= post.blog_image %>" alt=""
+                                      class="img-fluid" style='width:110px;height:80px;'>
+                                  </td>
+                                  <td>
                                     <%= post.postCategory.category %>
-                                </td>
-                                <td>
+                                  </td>
+                                  <td>
                                     <%= post.formattedDate %>
-                                </td>
-                                <td>
+                                  </td>
+                                  <td>
                                     <button type="button"
-                                        onclick="(()=>{window.location.href='update/blog?id=<%= post._id %>' })()"
-                                        class="btn btn-block
+                                      onclick="(()=>{window.location.href='update/blog?id=<%= post._id %>' })()" class="btn btn-block
                                             btn-success">Edit</button>
 
                                     <button type="button"
-                                        onclick="(()=>{window.location.href='delete/blog/<%= post._id %>'})()"
-                                        class="btn btn-block btn-danger">Delete</button>
-                                </td>
+                                      onclick="((e)=>{
+                                        window.location.href='delete/blog/<%= post._id %>'
+                                      })()"
+                                      class="btn btn-block btn-danger">Delete</button>
+                                  </td>
+                                </tr>
+                                <% }) %>
+                                  <% } %>
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <th rowspan="1" colspan="1">S.NO</th>
+                              <th rowspan="1" colspan="1">Blog Title</th>
+                              <th rowspan="1" colspan="1">Image</th>
+                              <th rowspan="1" colspan="1">Category</th>
+                              <th rowspan="1" colspan="1">Blog Date</th>
+                              <th rowspan="1" colspan="1">Actions</th>
                             </tr>
-                            <% }) %>
-                                <% } %>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th rowspan="1" colspan="1">S.NO</th>
-                        <th rowspan="1" colspan="1">Blog Title</th>
-                        <th rowspan="1" colspan="1">Image</th>
-                        <th rowspan="1" colspan="1">Category</th>
-                        <th rowspan="1" colspan="1">Blog Date</th>
-                        <th rowspan="1" colspan="1">Actions</th>
-                    </tr>
-                </tfoot>
-            </table>
+                          </tfoot>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
               </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+              <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
           </div>
-          <!-- /.col -->
-        </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
-  <%- include('../../partials/main_footer') %>
-</div>
-<!-- ./wrapper -->
-<%- include('../../partials/script') %>
-<!-- AdminLTE App -->
-</body>
+          <!-- /.content-wrapper -->
+          <%- include('../../partials/main_footer') %>
+    </div>
+    <!-- ./wrapper -->
+    <%- include('../../partials/script') %>
+      <!-- AdminLTE App -->
+  </body>
+
 </html>

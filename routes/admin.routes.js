@@ -40,7 +40,11 @@ router.get('/delete/blog/:id', checkLogin, blogControllers.deleteBlog)
 
 
 // Product Routes   
-router.get('/product/create', checkLogin, productControllers.showProductAttributes)
+router.route('/product/create')
+    .all(checkLogin)
+    .get(productControllers.showProductAttributes)
+    .post(upload.array('product_image', 5), productControllers.createProduct)
+
 router.route('/api/parent_category')
     .post(productControllers.createPcategory)
     .get(productControllers.parenCategory)
@@ -49,9 +53,13 @@ router.post('/api/sub_category', productControllers.createScategory)
 router.route('/product/category')
     .all(checkLogin)
     .get(productControllers.showAllCategories)
-router.get('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
 
+router.get('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
 router.post('/api/attributes/color', checkLogin, productControllers.createColor)
+router.delete('/api/attributes/color/:id', checkLogin, productControllers.deleteColor)
 router.post('/api/attributes/size', checkLogin, productControllers.createSize)
+router.delete('/api/attributes/size/:id', checkLogin, productControllers.deleteSize)
+router.post('/api/attributes/brand', checkLogin, productControllers.createBrand)
+router.delete('/api/attributes/brand/:id', checkLogin, productControllers.deleteBrand)
 
 module.exports = router;

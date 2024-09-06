@@ -143,44 +143,64 @@
                     <div class="card">
                       <!-- /.card-header -->
                       <div class="card-body">
-                        <table class="table table-bordered">
+                        <table id="example2" class="table table-bordered table-striped dataTable dtr-inline"
+                          aria-describedby="example1_info">
                           <thead>
                             <tr>
-                              <th style="width: 10px">S.NO</th>
-                              <th>Colors
-                              </th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                S.No</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                color</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td>1.</td>
-                              <td>Update software</td>
-                            </tr>
-                            <tr>
-                              <td>2.</td>
-                              <td>Clean database</td>
-                            </tr>
-                            <tr>
-                              <td>3.</td>
-                              <td>Cron job running</td>
-                            </tr>
-                            <tr>
-                              <td>4.</td>
-                              <td>Fix and squish bugs</td>
-                            </tr>
+
+                            <% if (locals.colors) { %>
+                              <% colors.forEach((color,i)=> { %>
+                                <tr id="row-<%= color._id %>">
+                                  <td>
+                                    <%= i+1 %>
+                                  </td>
+                                  <td>
+                                    <%= color.color_name %>
+                                  </td>
+                                  <td>
+                                    <button type="button" class="btn btn-danger" onclick="(async (e)=> { 
+                                      const row = document.querySelector('#row-'+'<%= color._id %>');
+                                          await fetch('http://localhost:8000/admin/api/attributes/color/' + '<%= color._id %>', {
+                                            method: 'DELETE',
+                                           })
+                                          .then(response => response.json())
+                                          .then(data => { 
+                                            row.remove()
+                                            AlertMessage(data.message,'Successfully Deleted!')
+                                          })
+                                        })()">
+                                      Delete
+                                    </button>
+                                  </td>
+                                </tr>
+                                <% }) %>
+                                  <% } %>
                           </tbody>
+                          <tfoot>
+                            <tr>
+                              <th rowspan="1" colspan="1">S.NO</th>
+                              <th rowspan="1" colspan="1">Colors</th>
+                              <th rowspan="1" colspan="1">Action</th>
+                            </tr>
+                          </tfoot>
                         </table>
                       </div>
                       <!-- /.card-body -->
-                      <div class="card-footer clearfix">
-                        <ul class="pagination pagination-sm m-0 float-right">
-                          <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                          <li class="page-item"><a class="page-link" href="#">1</a></li>
-                          <li class="page-item"><a class="page-link" href="#">2</a></li>
-                          <li class="page-item"><a class="page-link" href="#">3</a></li>
-                          <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                        </ul>
-                      </div>
                     </div>
                     <!-- /.card -->
                     <!-- /.card -->
@@ -190,44 +210,152 @@
                     <div class="card">
                       <!-- /.card-header -->
                       <div class="card-body">
-                        <table class="table table-bordered">
+                        <table id="example3" class="table table-bordered table-striped dataTable dtr-inline"
+                          aria-describedby="example1_info">
                           <thead>
                             <tr>
-                              <th style="width: 10px">S.NO</th>
-                              <th>Sizes</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                S.No</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                Sizes</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
-                              <td>1.</td>
-                              <td>Update software</td>
-                            </tr>
-                            <tr>
-                              <td>2.</td>
-                              <td>Clean database</td>
-                            </tr>
-                            <tr>
-                              <td>3.</td>
-                              <td>Cron job running</td>
-                            </tr>
-                            <tr>
-                              <td>4.</td>
-                              <td>Fix and squish bugs</td>
-                            </tr>
+                            <% if (locals.sizes) { %>
+                              <% sizes.forEach((size,i)=> { %>
+                                <tr id="row-<%= size._id %>">
+                                  <td>
+                                    <%= i+1 %>
+                                  </td>
+                                  <td>
+                                    <%= size.size_name %>
+                                  </td>
+                                  <td>
+                                    <button id="<%= i %>index" type="button" class="btn btn-danger" onclick="(async ()=> {   
+                                       const row = document.querySelector('#row-'+'<%= size._id %>');
+                                          await fetch('http://localhost:8000/admin/api/attributes/size/' + '<%= size._id %>', {
+                                            method: 'DELETE',
+                                           })
+                                          .then(response => response.json())
+                                          .then(data => { 
+                                            row.remove()
+                                            AlertMessage(data.message,'Successfully Deleted!')
+                                          })
+                                        })()">
+                                      Delete
+                                    </button>
+                                  </td>
+                                </tr>
+                                <% }) %>
+                                  <% } %>
                           </tbody>
+                          <tfoot>
+                            <tr>
+                              <th rowspan="1" colspan="1">S.NO</th>
+                              <th rowspan="1" colspan="1">Blog Color</th>
+                              <th rowspan="1" colspan="1">Action</th>
+                            </tr>
+                          </tfoot>
                         </table>
                       </div>
                       <!-- /.card-body -->
-                      <div class="card-footer clearfix">
-                        <ul class="pagination pagination-sm m-0 float-right">
-                          <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                          <li class="page-item"><a class="page-link" href="#">1</a></li>
-                          <li class="page-item"><a class="page-link" href="#">2</a></li>
-                          <li class="page-item"><a class="page-link" href="#">3</a></li>
-                          <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                        </ul>
-                      </div>
                     </div>
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- /.container-fluid -->
+            </section>
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6 d-flex">
+                    <h1>Product Brand</h1>
+                    <button type="button" class="btn btn-default mx-2 bg-primary" data-toggle="modal"
+                      data-target="#modal-4">
+                      Add Brand
+                    </button>
+                  </div>
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card">
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <table id="example4" class="table table-bordered table-striped dataTable dtr-inline"
+                          aria-describedby="example1_info">
+                          <thead>
+                            <tr>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                S.No</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                color</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                            <% if (locals.brands) { %>
+                              <% brands.forEach((brand,i)=> { %>
+                                <tr id="row-<%= brand._id %>">
+                                  <td>
+                                    <%= i+1 %>
+                                  </td>
+                                  <td>
+                                    <%= brand.brand_name %>
+                                  </td>
+                                  <td>
+                                    <button type="button" class="btn btn-danger" onclick="(async (e)=> { 
+                                      const row = document.querySelector('#row-'+'<%= brand._id %>');
+                                          await fetch('http://localhost:8000/admin/api/attributes/brand/' + '<%= brand._id %>', {
+                                            method: 'DELETE',
+                                           })
+                                          .then(response => response.json())
+                                          .then(data => { 
+                                            row.remove()
+                                            AlertMessage(data.message,'Successfully Deleted!')
+                                          })
+                                        })()">
+                                      Delete
+                                    </button>
+                                  </td>
+                                </tr>
+                                <% }) %>
+                                  <% } %>
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <th rowspan="1" colspan="1">S.NO</th>
+                              <th rowspan="1" colspan="1">Colors</th>
+                              <th rowspan="1" colspan="1">Action</th>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                    <!-- /.card -->
                   </div>
                   <!-- /.col -->
                 </div>
@@ -271,7 +399,7 @@
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
+              <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Save changes</button>
             </div>
           </form>
           <!-- /.modal-content -->
@@ -301,7 +429,10 @@
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
+              <!-- <button type="button" class="btn btn-primary toastrDefaultError">Save changes</button> -->
+              <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">
+                Save Changes
+              </button>
             </div>
           </form>
           <!-- /.modal-content -->
@@ -331,7 +462,37 @@
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save changes</button>
+              <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Save changes</button>
+            </div>
+          </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+    </div>
+    <div class="modal fade" id="modal-4">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Add Brand</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form id="submitBrand">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="category">Brand Name</label>
+                    <input type="text" id="brand" name="brand_name" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Save changes</button>
             </div>
           </form>
           <!-- /.modal-content -->
@@ -340,10 +501,6 @@
       </div>
     </div>
 
-    <div id="toast-container" class="toast-top-right">
-      <div class="toast toast-error" aria-live="polite" style="opacity: 0;">
-      </div>
-    </div>
     <!-- ./wrapper -->
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
@@ -390,7 +547,9 @@
               body: JSON.stringify({ color_name: color.value })
             })
               .then(response => response.json())
-              .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
+              .then(data => {
+                AlertMessage(data.message, 'Already exists!' ?? 'unsuccessful', 'Successfully Created!')
+              })
           }
           color.value = ''
         })
@@ -409,6 +568,20 @@
           }
           size.value = ''
         })
+        document.querySelector('#submitBrand').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const brand = document.querySelector('#brand')
+          if (brand.value) {
+            await fetch('http://localhost:8000/admin/api/attributes/brand', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ brand_name: brand.value.trim() })
+            })
+              .then(response => response.json())
+              .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
+          }
+          brand.value = ''
+        })
 
         async function Fetch(api, value1, value2) {
           await fetch(api, {
@@ -424,19 +597,16 @@
         }
 
         function AlertMessage(message, erroMessage, sucsessMessage) {
-          const ToastElement = document.querySelector('#toast-container .toast')
-
-          ToastElement.style.opacity = '1'
+          const ToastElement = document.querySelector('.toast-btn')
           if (erroMessage == message) {
-            ToastElement.classList.remove('toast-success')
-            ToastElement.classList.add('toast-error')
-            ToastElement.innerHTML = message
+            ToastElement.classList.remove('toastrDefaultSuccess')
+            ToastElement.classList.add('toastrDefaultError')
+            toastr.error(message)
           } else if (sucsessMessage == message) {
-            ToastElement.classList.remove('toast-error')
-            ToastElement.classList.add('toast-success')
-            ToastElement.innerHTML = message
+            ToastElement.classList.remove('toastrDefaultError')
+            ToastElement.classList.add('toastrDefaultSuccess')
+            toastr.success(message)
           }
-          setTimeout(() => { ToastElement.style.opacity = '0' }, 3000)
         }
       </script>
   </body>
