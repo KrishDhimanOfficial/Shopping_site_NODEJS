@@ -1,9 +1,12 @@
+const mongoose = require('mongoose')
 const parent_Category = require('../Models/product_model/parent.category.model')
 const sub_Category = require('../Models/product_model/sub.category.model')
 const productSize = require('../Models/product_model/product.size.model')
 const productColor = require('../Models/product_model/product.color.model')
 const productBrand = require('../Models/product_model/product.brand.model')
 const product = require('../Models/product_model/product.model')
+const productQuery = require('../Service/query')
+const deleteImage = require('../Service/deleteUploadImage')
 
 module.exports = {
     // Product Category Controllers
@@ -39,7 +42,7 @@ module.exports = {
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log(error.message);
-            res.json({ message: error.message ?? 'Unsuccessfull!' })
+            res.json({ message: 'Unsuccessfull!' || error.message })
         }
     },
     showAllCategories: async (req, res) => {
@@ -85,22 +88,75 @@ module.exports = {
     createProduct: async (req, res) => {
         try {
             const { product_title, product_parent_category_id, product_sub_category_id,
-                product_price, product_discount, product_stock, product_description,
-                availableColor, availableSize
-            } = req.body;
-            product_image = req.files.map(file => file.filename)
+                product_price, product_discount, product_stock,
+                product_description, availableColor, availableSize,
+                shipping, brand_name } = req.body;
 
+            product_image = req.files.map(file => file.filename)
+            date = new Date()
             const data = await product.create({
-                product_title, product_parent_category_id, product_sub_category_id, product_image,
-                product_price, product_discount, product_stock, shipping: 'Free Shipping',
-                details: {
-                    product_description: product_description[1],
-                    availableColor, availableSize
-                }
+                product_title, product_parent_category_id,
+                product_sub_category_id, date, product_price, product_discount,
+                product_image, product_stock, shipping, brand_name,
+                product_description: product_description[1],
+                availableColor, availableSize
             })
-            if (!data) throw new Error('Unsuccessfull!')
+            res.json({ message: 'Successfully Created!' })
+        } catch (error) {
+            res.json({ message: 'Unsuccessfull!' })
+            console.log(error.message)
+        }
+    },
+    getProductsOnAdmin: async (req, res) => {
+        try {
+            const data = await product.aggregate(productQuery)
+            res.render('admin/product/index', { products: data })
         } catch (error) {
             console.log(error.message);
+        }
+    },
+    updateProductPage: async (req, res) => {
+        try {
+            const color = await productColor.find({})
+            const size = await productSize.find({})
+            const category = await parent_Category.find({})
+            const sub_category = await sub_Category.find({})
+            const brand = await productBrand.find({})
+
+            productQuery.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
+            const productData = await product.aggregate(productQuery)
+
+            res.render('admin/product/updateProduct', {
+                product: productData,
+                sizes: size,
+                colors: color,
+                brands: brand,
+                parent_Categories: category,
+                sub_categories: sub_category
+            })
+        } catch (error) {
+            console.log(error.message);
+        }
+    },
+    updateProduct: async (req, res) => {
+        try {
+
+            // await product.findByIdAndUpdate({ _id: req.params.id }, req.body)
+            // throw new Error('Update Successfully!')
+        } catch (error) {
+            console.log(error.message)
+            res.json({ message: error.message ?? 'Update Unsuccessfull!' })
+        }
+    },
+    deleteProduct: async (req, res) => {
+        try {
+            const Image = await product.findOne({ _id: req.params.id })
+            Image.product_image.map(image => deleteImage(image))
+            await product.findByIdAndDelete({ _id: req.params.id })
+            throw new Error('Successfully Deleted!')
+        } catch (error) {
+            console.log(error.message);
+            res.json({ message: error.message })
         }
     },
     showProductAttributes: async (req, res) => {
