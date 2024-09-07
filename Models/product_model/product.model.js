@@ -19,7 +19,11 @@ const productSchema = mongoose.Schema({
         required: true,
         min: 0
     },
-    shipping:{
+    date: {
+        type: mongoose.Schema.Types.Date,
+        require: true
+    },
+    shipping: {
         type: mongoose.Schema.Types.String,
     },
     product_image: {
@@ -27,38 +31,38 @@ const productSchema = mongoose.Schema({
         required: true
     },
     product_parent_category_id: {
-        type: mongoose.Schema.Types.String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     product_sub_category_id: {
-        type: mongoose.Schema.Types.String,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     product_stock: {
         type: mongoose.Schema.Types.String,
-        required: true,
-        min: 0
+        default: false
+    },
+    brand_name: {
+        type: mongoose.Schema.Types.ObjectId,
+        require: true
     },
     product_rating: {
         type: mongoose.Schema.Types.Number,
         min: 0,
         max: 5
     },
-    details: {
-        type: Object,
-        product_description: {
-            type: mongoose.Schema.Types.String,
-            required: true,
-            maxlength: 2000,
-            trim: true
-        },
-        availableColor: {
-            type: mongoose.Schema.Types.Array,
-            require: true
-        },
-        availableSize: {
-            type: mongoose.Schema.Types.Array
-        }
+    product_description: {
+        type: mongoose.Schema.Types.String,
+        required: true,
+        maxlength: 2000,
+        trim: true
+    },
+    availableColor: {
+        type: [mongoose.Schema.Types.ObjectId],
+        require: true
+    },
+    availableSize: {
+        type: [mongoose.Schema.Types.ObjectId]
     },
     product_comment_id: {
         type: mongoose.Schema.Types.ObjectId

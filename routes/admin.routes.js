@@ -10,9 +10,6 @@ const productControllers = require('../controllers/product.controllers.js');
 router.get('/dashboard', checkLogin, (req, res) => {
     res.render('admin/adminPanel')
 })
-router.get('/product', checkLogin, (req, res) => {
-    res.render('admin/product/index')
-})
 
 router
     .get('/login', login, (req, res) => {
@@ -36,7 +33,7 @@ router.route('/update/blog')
     .put(upload.single('blog_image'), blogControllers.updateBlog)
 
 router.get('/blogs', checkLogin, blogControllers.allPosts)
-router.get('/delete/blog/:id', checkLogin, blogControllers.deleteBlog)
+router.delete('/delete/blog/:id', checkLogin, blogControllers.deleteBlog)
 
 
 // Product Routes   
@@ -45,11 +42,17 @@ router.route('/product/create')
     .get(productControllers.showProductAttributes)
     .post(upload.array('product_image', 5), productControllers.createProduct)
 
+router.get('/products', checkLogin, productControllers.getProductsOnAdmin)
+router.route('/product/:id')
+    .all(checkLogin)
+    .get(productControllers.updateProductPage)
+    .delete(productControllers.deleteProduct)
+    .put(upload.array('product_image', 5), productControllers.updateProduct)
+
+router.post('/api/sub_category', productControllers.createScategory)
 router.route('/api/parent_category')
     .post(productControllers.createPcategory)
     .get(productControllers.parenCategory)
-
-router.post('/api/sub_category', productControllers.createScategory)
 router.route('/product/category')
     .all(checkLogin)
     .get(productControllers.showAllCategories)

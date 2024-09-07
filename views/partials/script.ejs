@@ -37,7 +37,7 @@
     $("#example2").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
     })
-     $("#example3").DataTable({
+    $("#example3").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
     })
     $("#example4").DataTable({
@@ -52,5 +52,16 @@
       height: 300
     })
   })
-
+  function AlertMessage(message, erroMessage, sucsessMessage) {
+    const ToastElement = document.querySelector('.toast-btn')
+    if (erroMessage == message) {
+      ToastElement.classList.remove('toastrDefaultSuccess')
+      ToastElement.classList.add('toastrDefaultError')
+      toastr.error(message)
+    } else if (sucsessMessage == message) {
+      ToastElement.classList.remove('toastrDefaultError')
+      ToastElement.classList.add('toastrDefaultSuccess')
+      toastr.success(message)
+    }
+  }
 </script>

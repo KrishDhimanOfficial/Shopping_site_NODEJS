@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/header') %>
+  </head>
+
+  <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+      <!-- Navbar -->
+      <%- include('../../partials/navbar') %>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <%- include('../../partials/sidebar') %>
+
+          <!-- Content Wrapper. Contains page content -->
+          <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6">
+                    <h1 class="m-0">Product</h1>
+                  </div><!-- /.col -->
+                  <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active">Product</li>
+                    </ol>
+                  </div><!-- /.col -->
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">All Products</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <% if (locals.product) { %>
+                          <form id="UpdateProduct">
+                            <div class="row">
+                              <!-- /.col -->
+                              <div class="col-md-6">
+                                <!-- /.form-group -->
+                                <div class="form-group">
+                                  <label for="title">Product Title</label>
+                                  <input type="text" id="title" name="product_title" class="form-control"
+                                    value="<%= product[0].product_title%>" placeholder="Enter Title">
+                                </div>
+                                <div class="form-group">
+                                  <label for="category">Category</label>
+                                  <select name="product_parent_category_id" id="category" class="form-control">
+                                    <option selected disabled value="<%= product[0].parent_category._id %>">
+                                      <%= product[0].parent_category.category_name %>
+                                    </option>
+                                    <% if (locals.parent_Categories) { %>
+                                      <% parent_Categories.forEach(category=> { %>
+                                        <option value="<%= category._id %>">
+                                          <%= category.category_name %>
+                                        </option>
+                                        <% }) %>
+                                          <% } %>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="category">Sub_Category</label>
+                                  <select name="product_sub_category_id" id="category" class="form-control">
+                                    <option selected disabled value="<%= product[0].sub_category._id %>">
+                                      <%= product[0].sub_category.category_name %>
+                                    </option>
+                                    <% if (locals.sub_categories) { %>
+                                      <% sub_categories.forEach(category=> { %>
+                                        <option value="<%= category._id %>">
+                                          <%= category.category_name %>
+                                        </option>
+                                        <% }) %>
+                                          <% } %>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="Aprice">Actual Price</label>
+                                  <input type="number" id="Aprice" name="product_price" class="form-control"
+                                    value="<%= product[0].product_price %>" placeholder="Enter Actual Price">
+                                </div>
+                                <div class="form-group">
+                                  <label>Sizes</label>
+                                  <select class="select2" name="availableSize" multiple="multiple"
+                                    data-placeholder="Select a Size" style="width: 100%;">
+                                    <% product[0].sizeDetails.forEach(size=> { %>
+                                      <option selected value="<%= size._id %>">
+                                        <%= size.size_name %>
+                                      </option>
+                                      <% }) %>
+                                        <% if (locals.sizes) { %>
+                                          <% sizes.forEach(size=> { %>
+                                            <option value="<%= size._id %>">
+                                              <%= size.size_name %>
+                                            </option>
+                                            <% }) %>
+                                              <% } %>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <div class="form-check">
+                                    <input type="checkbox" name="product_stock" class="form-check-input"
+                                      value="<%= product[0].product_stock %> " id="exampleCheck1">
+                                    <label class="form-check-label" for="exampleCheck1">In Stock</label>
+                                  </div>
+                                </div>
+                                <!-- /.form-group -->
+                              </div>
+                              <!-- /.col -->
+                              <!-- /.col -->
+                              <div class="col-md-6">
+                                <!-- /.form-group -->
+                                <div class="form-group">
+                                  <label for="price">Discount</label>
+                                  <input type="number" min="0" max="100" name="product_discount" id="price"
+                                    value="<%= product[0].product_discount %>" class="form-control"
+                                    placeholder="Enter Price">
+                                </div>
+                                <div class="form-group">
+                                  <label>Color</label>
+                                  <select class="select2" name="availableColor" multiple="multiple"
+                                    data-placeholder="Select a Color" style="width: 100%;">
+                                    <% product[0].colorDetails.forEach(color=> { %>
+                                      <option selected value="<%= color._id %>">
+                                        <%= color.color_name %>
+                                      </option>
+                                      <% }) %>
+                                        <% if (locals.colors) { %>
+                                          <% colors.forEach(color=> { %>
+                                            <option value="<%= color._id %>">
+                                              <%= color.color_name %>
+                                            </option>
+                                            <% }) %>
+                                              <% } %>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label>Brand</label>
+                                  <select class="form-control" name="brand_name" data-placeholder="Select a Brand"
+                                    style="width: 100%;">
+                                    <option selected disabled value="<%= product[0].brand._id %>">
+                                      <%= product[0].brand.brand_name %> %>
+                                    </option>
+                                    <% if (locals.brands) { %>
+                                      <% brands.forEach(brand=> { %>
+                                        <option value="<%= brand._id %>">
+                                          <%= brand.brand_name %>
+                                        </option>
+                                        <% }) %>
+                                          <% } %>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label>Shipping</label>
+                                  <select class="form-control" name="shipping" data-placeholder="Select Shipping"
+                                    style="width: 100%;">
+                                    <option value="Free Shipping">Free Shipping</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="image-upload">File input</label>
+                                  <div class="input-group d-flex flex-column">
+                                    <div class="custom-file w-100 mb-2">
+                                      <input type="file" name="product_image" class="custom-file-input" id="imageInput"
+                                        multiple>
+                                      <label class="custom-file-label" for="image-upload">Choose file</label>
+                                    </div>
+                                    <div id="imagePreview">
+                                      <% product[0].product_image.forEach(image=> { %>
+                                        <img src="http://localhost:8000/uploads/<%= image %> " alt="" class="img-fluid"
+                                          style="margin: 5px; width: 150px; height: auto;">
+                                        <% }) %>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!-- /.form-group -->
+                              </div>
+                              <!-- /.col -->
+                              <div class="col-12">
+                                <textarea id="summernote" name="product_description">
+                                  <%= product[0].product_description %>
+                                </textarea>
+                              </div>
+                            </div>
+                            <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Submit</button>
+                          </form>
+                          <% } %>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+          </div>
+          <!-- /.content-wrapper -->
+          <%- include('../../partials/main_footer') %>
+    </div>
+    <!-- ./wrapper -->
+
+    <%- include('../../partials/script') %>
+      <!-- AdminLTE App -->
+      <script>
+
+        const inputField = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+
+        inputField.addEventListener('change', (e) => {
+          const files = e.target.files
+
+          Array.from(files).forEach((file) => {
+            const reader = new FileReader()
+
+            reader.onload = () => {
+              const img = document.createElement('img')
+              img.src = reader.result;
+              img.alt = file.name;
+              img.style.margin = '10px';
+              img.style.width = '130px';
+              img.style.height = '100px';
+              imagePreview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+          })
+        })
+        document.querySelector('#UpdateProduct').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const blog_description = $('#summernote').summernote('code').trim()
+          const formData = new FormData(e.target)
+          formData.append('blog_description', blog_description)
+          formData.append('blog_image', inputField.value)
+
+          await fetch(`http://localhost:8000/admin/product/<%= product[0]._id %>`, {
+            method: 'PUT',
+            body: formData
+          })
+            .then(response => response.json())
+            .then(data => {
+              AlertMessage(data.message, 'Update Unsuccessfull!', 'Update Successfully!')
+            })
+        })
+
+      </script>
+  </body>
+
+</html>

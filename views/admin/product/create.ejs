@@ -71,7 +71,7 @@
                                   <option selected disabled value="">Select Category</option>
                                   <% if (locals.sub_categories) { %>
                                     <% sub_categories.forEach(category=> { %>
-                                      <option value="<%= category._id %> ">
+                                      <option value="<%= category._id %>">
                                         <%= category.category_name %>
                                       </option>
                                       <% }) %>
@@ -111,8 +111,8 @@
                               <!-- /.form-group -->
                               <div class="form-group">
                                 <label for="price">Discount</label>
-                                <input type="number" min="0" max="100" name="product_discount" id="price" class="form-control"
-                                  placeholder="Enter Price">
+                                <input type="number" min="0" max="100" name="product_discount" id="price"
+                                  class="form-control" placeholder="Enter Price">
                               </div>
                               <div class="form-group">
                                 <label>Color</label>
@@ -129,7 +129,7 @@
                               </div>
                               <div class="form-group">
                                 <label>Brand</label>
-                                <select class="form-control" name="availableColor" data-placeholder="Select a Brand"
+                                <select class="form-control" name="brand_name" data-placeholder="Select a Brand"
                                   style="width: 100%;">
                                   <option selected disabled value="">Select Brand Name</option>
                                   <% if (locals.brands) { %>
@@ -142,6 +142,13 @@
                                 </select>
                               </div>
                               <div class="form-group">
+                                <label>Brand</label>
+                                <select class="form-control" name="shipping" data-placeholder="Select Shipping"
+                                  style="width: 100%;">
+                                  <option value="Free Shipping">Free Shipping</option>
+                                </select>
+                              </div>
+                              <div class="form-group">
                                 <label for="image-upload">File input</label>
                                 <div class="input-group d-flex flex-column">
                                   <div class="custom-file w-100 mb-2">
@@ -149,7 +156,7 @@
                                       multiple>
                                     <label class="custom-file-label" for="image-upload">Choose file</label>
                                   </div>
-                                  <div id="imagePreview" class="d-flex">
+                                  <div id="imagePreview">
                                   </div>
                                 </div>
                               </div>
@@ -190,6 +197,12 @@
 
         inputField.addEventListener('change', (e) => {
           const files = e.target.files
+          console.log(imagePreview.childNodes.length);
+          if (imagePreview.childNodes.length + 1 >= 5) {
+            inputField.disabled = true;
+          } else if (imagePreview.childNodes.length + 1 <= 5) {
+            inputField.removeAttribute('disabled')
+          }
 
           Array.from(files).forEach((file) => {
             const reader = new FileReader()
@@ -206,6 +219,7 @@
             reader.readAsDataURL(file);
           })
         })
+
         document.querySelector('#submitProduct').addEventListener('submit', async (e) => {
           e.preventDefault()
           const product_description = $('#summernote').summernote('code').trim()
@@ -217,20 +231,8 @@
             body: formData
           })
             .then((res) => res.json())
-            .then((data) => console.log(data))
+            .then((data) => AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!'))
         })
-        function AlertMessage(message, erroMessage, sucsessMessage) {
-          const ToastElement = document.querySelector('.toast-btn')
-          if (erroMessage == message) {
-            ToastElement.classList.remove('toastrDefaultSuccess')
-            ToastElement.classList.add('toastrDefaultError')
-            toastr.error(message)
-          } else if (sucsessMessage == message) {
-            ToastElement.classList.remove('toastrDefaultError')
-            ToastElement.classList.add('toastrDefaultSuccess')
-            toastr.success(message)
-          }
-        }
       </script>
   </body>
 

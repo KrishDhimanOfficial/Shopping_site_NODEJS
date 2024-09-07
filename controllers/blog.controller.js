@@ -93,11 +93,13 @@ module.exports = {
     },
     deleteBlog: async (req, res) => {
         try {
-            deleteImage(req.params.id)
+            const image = await post.findOne({ _id: req.params.id })
+            deleteImage(image.blog_image)
             await post.findByIdAndDelete({ _id: req.params.id })
-            res.redirect('/admin/blogs');
+            throw new Error('Successfully Deleted!')
         } catch (error) {
             console.log(error.message);
+            res.json({ message: error.message })
         }
     },
     updateBlogPage: async (req, res) => {

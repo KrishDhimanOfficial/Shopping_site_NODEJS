@@ -73,7 +73,7 @@
                             <% if (locals.posts) { %>
                               <% posts.forEach((post ,i)=> { %>
                                 %>
-                                <tr>
+                                <tr id="row-<%= post._id  %>">
                                   <td>
                                     <%= i + 1 %>
                                   </td>
@@ -96,10 +96,18 @@
                                             btn-success">Edit</button>
 
                                     <button type="button"
-                                      onclick="((e)=>{
-                                        window.location.href='delete/blog/<%= post._id %>'
-                                      })()"
-                                      class="btn btn-block btn-danger">Delete</button>
+                                      onclick="(async (e)=> { 
+                                        const row = document.querySelector('#row-'+'<%= post._id  %>');
+                                            await fetch('http://localhost:8000/admin/delete/blog/' + '<%= post._id  %>', {
+                                              method: 'DELETE',
+                                             })
+                                            .then(response => response.json())
+                                            .then(data => { 
+                                              row.remove()
+                                              AlertMessage(data.message,'Successfully Deleted!')
+                                            })
+                                          })()"
+                                      class="toast-btn btn btn-block btn-danger toastrDefaultError">Delete</button>
                                   </td>
                                 </tr>
                                 <% }) %>
