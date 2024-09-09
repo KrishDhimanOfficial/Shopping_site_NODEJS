@@ -20,7 +20,7 @@ module.exports = {
             await parent_Category.create(req.body)
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log(error.message);
+            console.log('23' + error.message);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
@@ -29,7 +29,7 @@ module.exports = {
             const data = await parent_Category.find({})
             res.json(data)
         } catch (error) {
-            console.log(error.message);
+            console.log('32' + error.message);
         }
     },
     createScategory: async (req, res) => {
@@ -41,7 +41,7 @@ module.exports = {
             await sub_Category.create(req.body)
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log(error.message);
+            console.log('44' + error.message);
             res.json({ message: 'Unsuccessfull!' || error.message })
         }
     },
@@ -73,14 +73,14 @@ module.exports = {
                 colors: color,
             })
         } catch (error) {
-            console.log(error.message);
+            console.log('76' + error.message);
         }
     },
     deleteParentCategory: async (req, res) => {
         try {
             const data = req.body;
         } catch (error) {
-            console.log(error.message);
+            console.log('83' + error.message);
         }
     },
     // Product Category Controllers
@@ -93,8 +93,9 @@ module.exports = {
                 shipping, brand_name } = req.body;
 
             product_image = req.files.map(file => file.filename)
+
             date = new Date()
-            const data = await product.create({
+            await product.create({
                 product_title, product_parent_category_id,
                 product_sub_category_id, date, product_price, product_discount,
                 product_image, product_stock, shipping, brand_name,
@@ -104,7 +105,7 @@ module.exports = {
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             res.json({ message: 'Unsuccessfull!' })
-            console.log(error.message)
+            console.log('109' + error.message);
         }
     },
     getProductsOnAdmin: async (req, res) => {
@@ -112,7 +113,7 @@ module.exports = {
             const data = await product.aggregate(productQuery)
             res.render('admin/product/index', { products: data })
         } catch (error) {
-            console.log(error.message);
+            console.log('117' + error.message);
         }
     },
     updateProductPage: async (req, res) => {
@@ -135,16 +136,23 @@ module.exports = {
                 sub_categories: sub_category
             })
         } catch (error) {
-            console.log(error.message);
+            console.log('140' + error);
         }
     },
     updateProduct: async (req, res) => {
         try {
+            const existingImages = await product.findOne({ _id: req.params.id })
+            const new_image = req.files.map(file => file?.filename)
+            const updatedIMages = [...existingImages.product_image, ...new_image]
 
-            // await product.findByIdAndUpdate({ _id: req.params.id }, req.body)
-            // throw new Error('Update Successfully!')
+            await product.findByIdAndUpdate(
+                { _id: req.params.id },
+                { ...req.body, product_image: updatedIMages },
+                { new: true })
+
+            throw new Error('Update Successfully!')
         } catch (error) {
-            console.log(error.message)
+            console.log('156' + error.message);
             res.json({ message: error.message ?? 'Update Unsuccessfull!' })
         }
     },
@@ -155,8 +163,22 @@ module.exports = {
             await product.findByIdAndDelete({ _id: req.params.id })
             throw new Error('Successfully Deleted!')
         } catch (error) {
-            console.log(error.message);
+            console.log('167' + error.message);
             res.json({ message: error.message })
+        }
+    },
+    handlePreviewImage: async (req, res) => {
+        try {
+            const SingleProduct = await product.findOne({ _id: req.params.id })
+            const previewImage = req.body;
+            const result = SingleProduct.product_image.filter(img => img !== previewImage.image)
+            await product.findByIdAndUpdate(
+                { _id: req.params.id },
+                { product_image: result }
+            )
+            deleteImage(previewImage.image)
+        } catch (error) {
+            console.log('182' + error.message);
         }
     },
     showProductAttributes: async (req, res) => {
@@ -174,7 +196,7 @@ module.exports = {
                 sub_categories: sub_category
             })
         } catch (error) {
-            console.log(error.message);
+            console.log('200' + error.message);
         }
     },
     createColor: async (req, res) => {
@@ -188,7 +210,7 @@ module.exports = {
             res.json({ message: 'Successfully Created!' })
 
         } catch (error) {
-            console.log(error.message);
+            console.log('214' + error.message);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
@@ -202,7 +224,7 @@ module.exports = {
             await productSize.create(req.body)
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log(error.message);
+            console.log('228' + error.message);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
@@ -211,7 +233,7 @@ module.exports = {
             await productSize.findByIdAndDelete({ _id: req.params.id })
             res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
-            console.log(error.message);
+            console.log('237' + error.message);
         }
     },
     deleteColor: async (req, res) => {
@@ -219,7 +241,7 @@ module.exports = {
             await productColor.findByIdAndDelete({ _id: req.params.id })
             res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
-            console.log(error.message);
+            console.log('245' + error.message);
         }
     },
     createBrand: async (req, res) => {
@@ -232,7 +254,7 @@ module.exports = {
             await productBrand.create(req.body)
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log(error.message);
+            console.log('258' + error.message);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
@@ -241,7 +263,7 @@ module.exports = {
             await productBrand.findByIdAndDelete({ _id: req.params.id })
             res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
-            console.log(error.message);
+            console.log('267' + error.message);
         }
     },
 }

@@ -197,7 +197,6 @@
 
         inputField.addEventListener('change', (e) => {
           const files = e.target.files
-          console.log(imagePreview.childNodes.length);
           if (imagePreview.childNodes.length + 1 >= 5) {
             inputField.disabled = true;
           } else if (imagePreview.childNodes.length + 1 <= 5) {

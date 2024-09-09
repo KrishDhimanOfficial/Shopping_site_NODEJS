@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <%- include('../../partials/header') %>
-  </head>
+  <style>
+    .img {
+      cursor: pointer;
+    }
+  </style>
 
   <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -174,10 +178,11 @@
                                         multiple>
                                       <label class="custom-file-label" for="image-upload">Choose file</label>
                                     </div>
-                                    <div id="imagePreview">
+                                    <div id="imagePreview" class="d-flex">
                                       <% product[0].product_image.forEach(image=> { %>
-                                        <img src="http://localhost:8000/uploads/<%= image %> " alt="" class="img-fluid"
-                                          style="margin: 5px; width: 150px; height: auto;">
+                                        <img src="http://localhost:8000/uploads/<%= image %> " alt=""
+                                          class="img-fluid m-1 img" style="width: 150px; height: auto;">
+
                                         <% }) %>
                                     </div>
                                   </div>
@@ -221,15 +226,15 @@
 
         inputField.addEventListener('change', (e) => {
           const files = e.target.files
-
           Array.from(files).forEach((file) => {
             const reader = new FileReader()
 
             reader.onload = () => {
               const img = document.createElement('img')
+              const btn = document.createComment('button')
               img.src = reader.result;
               img.alt = file.name;
-              img.style.margin = '10px';
+              img.margin = '5px';
               img.style.width = '130px';
               img.style.height = '100px';
               imagePreview.appendChild(img);
@@ -237,12 +242,22 @@
             reader.readAsDataURL(file);
           })
         })
+
+        if (document.querySelector('.img')) {
+          document.querySelector('.img').addEventListener('dblclick', async (e) => {
+            const imgName = e.target.src.split('/')[4];
+            e.target.remove()
+            await fetch(`http://localhost:8000/admin/product/image/<%= product[0]._id %>`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ image: imgName })
+            })
+          })
+        }
         document.querySelector('#UpdateProduct').addEventListener('submit', async (e) => {
           e.preventDefault();
-          const blog_description = $('#summernote').summernote('code').trim()
+          const files = inputField.files
           const formData = new FormData(e.target)
-          formData.append('blog_description', blog_description)
-          formData.append('blog_image', inputField.value)
 
           await fetch(`http://localhost:8000/admin/product/<%= product[0]._id %>`, {
             method: 'PUT',

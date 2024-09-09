@@ -1,7 +1,7 @@
 const mongoose = require('../Connections/monodb.connection')
 
 const userSchema = mongoose.Schema({
-    name: {
+    username: {
         type: String,
         require: true
     },
@@ -14,7 +14,6 @@ const userSchema = mongoose.Schema({
     password: {
         type: String,
         minlength:6,
-        maxlength:10,
         require: true
     }
 })

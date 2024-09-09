@@ -49,13 +49,13 @@ router.route('/product/:id')
     .delete(productControllers.deleteProduct)
     .put(upload.array('product_image', 5), productControllers.updateProduct)
 
+router.put('/product/image/:id', checkLogin, productControllers.handlePreviewImage)
+
 router.post('/api/sub_category', productControllers.createScategory)
 router.route('/api/parent_category')
     .post(productControllers.createPcategory)
     .get(productControllers.parenCategory)
-router.route('/product/category')
-    .all(checkLogin)
-    .get(productControllers.showAllCategories)
+router.get('/productcategory', checkLogin, productControllers.showAllCategories)
 
 router.get('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
 router.post('/api/attributes/color', checkLogin, productControllers.createColor)
