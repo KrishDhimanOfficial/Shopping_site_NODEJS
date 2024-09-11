@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const login = require('../Middleware/login')
 const upload = require('../Middleware/multer.middleware')
+const blogUpload = require('../Middleware/blog.multer.js')
 const checkLogin = require('../Middleware/checkLogin')
 const Admin = require('../controllers/admin.controllers')
 const blogControllers = require('../controllers/blog.controller')
@@ -25,12 +26,12 @@ router.get('/blog/category', checkLogin, blogControllers.allPostsByCategory)
 router.route('/blog/create')
     .all(checkLogin)
     .get(blogControllers.allCategories)
-    .post(upload.single('blog_image'), blogControllers.createPost)
+    .post(blogUpload.single('blog_image'), blogControllers.createPost)
 
 router.route('/update/blog')
     .all(checkLogin)
     .get(blogControllers.updateBlogPage)
-    .put(upload.single('blog_image'), blogControllers.updateBlog)
+    .put(blogUpload.single('blog_image'), blogControllers.updateBlog)
 
 router.get('/blogs', checkLogin, blogControllers.allPosts)
 router.delete('/delete/blog/:id', checkLogin, blogControllers.deleteBlog)
@@ -64,5 +65,6 @@ router.post('/api/attributes/size', checkLogin, productControllers.createSize)
 router.delete('/api/attributes/size/:id', checkLogin, productControllers.deleteSize)
 router.post('/api/attributes/brand', checkLogin, productControllers.createBrand)
 router.delete('/api/attributes/brand/:id', checkLogin, productControllers.deleteBrand)
+
 
 module.exports = router;

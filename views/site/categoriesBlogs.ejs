@@ -1,0 +1,77 @@
+<html>
+<!-- Header Section Begin -->
+<%- include('../Site_partials/header') %>
+    <!-- Header Section End -->
+    <!-- breadcumb begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="/home"><i class="fa fa-home"></i> Home</a>
+                        <span>Blog</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- blog Page  -->
+    <section class="blog spad">
+        <div class="container">
+            <div class="row">
+                <% if (locals.Postcategories) { %>
+                    <% Postcategories[0].posts.forEach(post=> { %>
+                            <div class="col-lg-4 col-md-4 col-sm-6 col-one">
+                                <div class="blog__item">
+                                    <div class="blog__item__pic set-bg"
+                                        data-setbg='http://localhost:8000/uploads/blogsImages/<%= post.blog_image%>'
+                                        style="background-image: url('http://localhost:8000/uploads/blogsImages/<%= post.blog_image%>');">
+                                    </div>
+                                    <div class="blog__item__text">
+                                        <h6>
+                                            <a href="/singleblog/<%= post._id%>">
+                                                <%= post.blog_title %>
+                                            </a>
+                                        </h6>
+                                        <ul>
+                                            <li>by <span>
+                                                    <%= post.author %>
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <% const date=new Date(post.date) %>
+                                                    <% const formattedDate=date.toLocaleString() %>
+                                                        <%= formattedDate.split(',')[0] %>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <% }) %>
+                                <% } %>
+            </div>
+        </div>
+    </section>
+    <!-- Instagram Begin -->
+    <%- include('../Site_partials/social_links') %>
+        <!-- Instagram End -->
+
+        <!-- Footer Section Begin -->
+        <%- include('../Site_partials/footer') %>
+            <!-- Footer Section End -->
+
+            <!-- Search Begin -->
+            <div class="search-model">
+                <div class="h-100 d-flex align-items-center justify-content-center">
+                    <div class="search-close-switch">+</div>
+                    <form class="search-model-form">
+                        <input type="text" id="search-input" placeholder="Search here.....">
+                    </form>
+                </div>
+            </div>
+            <!-- Search End -->
+
+            <%- include('../Site_partials/script') %>
+                </body>
+
+</html>

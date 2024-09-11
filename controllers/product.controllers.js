@@ -5,7 +5,7 @@ const productSize = require('../Models/product_model/product.size.model')
 const productColor = require('../Models/product_model/product.color.model')
 const productBrand = require('../Models/product_model/product.brand.model')
 const product = require('../Models/product_model/product.model')
-const productQuery = require('../Service/query')
+const queries = require('../Service/query')
 const deleteImage = require('../Service/deleteUploadImage')
 
 module.exports = {
@@ -110,10 +110,10 @@ module.exports = {
     },
     getProductsOnAdmin: async (req, res) => {
         try {
-            const data = await product.aggregate(productQuery)
+            const data = await product.aggregate(queries.productQuery)
             res.render('admin/product/index', { products: data })
         } catch (error) {
-            console.log('117' + error.message);
+            console.log('getProductsOnAdmin :' + error.message);
         }
     },
     updateProductPage: async (req, res) => {
@@ -124,8 +124,8 @@ module.exports = {
             const sub_category = await sub_Category.find({})
             const brand = await productBrand.find({})
 
-            productQuery.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
-            const productData = await product.aggregate(productQuery)
+            queries.productQuery.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
+            const productData = await product.aggregate(queries.productQuery)
 
             res.render('admin/product/updateProduct', {
                 product: productData,
@@ -136,7 +136,7 @@ module.exports = {
                 sub_categories: sub_category
             })
         } catch (error) {
-            console.log('140' + error);
+            console.log('updateProductPage :' + error);
         }
     },
     updateProduct: async (req, res) => {

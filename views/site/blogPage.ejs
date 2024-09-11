@@ -1,0 +1,86 @@
+<html>
+<!-- Header Section Begin -->
+<%- include('../Site_partials/header') %>
+    <!-- Header Section End -->
+    <!-- breadcumb begin -->
+    <div class="breadcrumb-option">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb__links">
+                        <a href="/home"><i class="fa fa-home"></i> Home</a>
+                        <span>Blog</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- blog Page  -->
+    <section class="blog spad">
+        <div class="container">
+            <div class="row" id="blog_wrapper">
+                <div class="col-lg-12 text-center">
+                    <button type="button" id="loadmore" class="primary-btn load-btn">Load more posts</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Instagram Begin -->
+    <%- include('../Site_partials/social_links') %>
+        <!-- Instagram End -->
+
+        <!-- Footer Section Begin -->
+        <%- include('../Site_partials/footer') %>
+            <!-- Footer Section End -->
+
+            <!-- Search Begin -->
+            <div class="search-model">
+                <div class="h-100 d-flex align-items-center justify-content-center">
+                    <div class="search-close-switch">+</div>
+                    <form class="search-model-form">
+                        <input type="text" id="search-input" placeholder="Search here.....">
+                    </form>
+                </div>
+            </div>
+            <!-- Search End -->
+
+            <%- include('../Site_partials/script') %>
+                <script async>
+                    let limit = 6;
+
+                    (() => { getBlog(limit) })()// IIFE
+
+                    document.querySelector('#loadmore').addEventListener('click', async (e) => {
+                        e.preventDefault()
+                        const parent = document.querySelector('#blog_wrapper')
+                        const children = [...parent.children]
+                        for (let i = 0; i < children.length - 1; i++) { children[i].remove() }
+                        limit += 3
+                        getBlog(limit)
+                    })
+                    async function getBlog(setlimit) {
+                        await fetch(`http://localhost:8000/api/blogs/${setlimit}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                const blog = data.map(blog => {
+                                    return `<div class="col-lg-4 col-md-4 col-sm-6 col-one">
+                                         <div class="blog__item">
+                                            <div class="blog__item__pic set-bg" data-setbg="http://localhost:8000/uploads/blogsImages/${blog.blog_image}"
+                                                style="background-image: url('http://localhost:8000/uploads/blogsImages/${blog.blog_image}');"></div>
+                                            <div class="blog__item__text">
+                                                <h6><a href="singleblog/${blog._id}">${blog.blog_title}</a></h6>
+                                                <ul>
+                                                <li>by <span>${blog.author}</span></li>
+                                                <li>${blog.formattedDate}</li>
+                                                </ul>
+                                            </div>
+                                          </div> 
+                                          </div>`
+                                }).join('')
+                                document.querySelector('#blog_wrapper').insertAdjacentHTML('afterBegin', blog)
+                            })
+                    }
+                </script>
+                </body>
+
+</html>

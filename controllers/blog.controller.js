@@ -41,6 +41,7 @@ module.exports = {
                     $addFields: { length: { $size: '$posts' } }
                 },
             ])
+            
             res.render('admin/blog/blogCategory', { allPostsByCategory: data })
         } catch (error) {
             console.log(error.message);
@@ -143,6 +144,107 @@ module.exports = {
         } catch (error) {
             console.log(error.message);
             res.json({ message: 'Update Unsuccessfull!' })
+        }
+    },
+    getBlogs: async (req, res) => {
+        try {
+            const data = await post.aggregate([{
+                $project: {
+                    blog_title: 1, blog_description: 1, author: 1, blog_image: 1,
+                    formattedDate: {
+                        $dateToString: { format: '%d-%m-%Y', date: '$date' }
+                    }
+                }
+            }]).limit(parseInt(req.params.loadPosts))
+
+            res.status(200).json(data)
+        } catch (error) {
+            console.log("getBlogs :" + error.message);
+        }
+    },
+    getSingleBlog: async (req, res) => {
+        try {
+            const featuredPosts = await post.aggregate([{
+                $project: {
+                    blog_title: 1, blog_image: 1,
+                    formattedDate: {
+                        $dateToString: { format: '%d-%m-%Y', date: '$date' }
+                    }
+                }
+            }]).limit(3)
+            const data = await post.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                {
+                    $lookup: {
+                        from: 'categories',
+                        localField: 'category_id',
+                        foreignField: '_id',
+                        as: 'category'
+                    }
+                },
+                { $unwind: '$category' },
+                {
+                    $project: {
+                        blog_title: 1, blog_description: 1, author: 1, blog_image: 1, category: 1,
+                        formattedDate: {
+                            $dateToString: { format: '%d-%m-%Y', date: '$date' }
+                        },
+                    }
+                }
+            ])
+            const Postcategories = await category.aggregate([
+                {
+                    $lookup: {
+                        from: 'posts',
+                        localField: '_id',
+                        foreignField: 'category_id',
+                        as: 'posts'
+                    }
+                },
+                { $unwind: '$posts' },
+                {
+                    $group: {
+                        _id: '$posts.category_id',
+                        category_name: { $first: '$category' },
+                        postarry: { $push: '$posts' },
+                    }
+                },
+                {
+                    $addFields: {
+                        length: { $size: '$postarry' }
+                    }
+                }
+            ])
+            if (!data) res.render('site/singleBlog', { message: 'NOT FOUND' })
+            res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories })
+        } catch (error) {
+            console.log('getSingleBlog' + error.message);
+            res.render('site/singleBlog :', { message: error.message })
+        }
+    },
+    getCategoryBlogs: async (req, res) => {
+        try {
+            const data = await category.aggregate([
+                {
+                    $lookup: {
+                        from: 'posts',
+                        localField: '_id',
+                        foreignField: 'category_id',
+                        as: 'posts'
+                    }
+                },
+                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                { $unwind: '$posts' },
+                {
+                    $group: {
+                        _id: '$posts.category_id',
+                        posts: { $addToSet: '$posts' },
+                    }
+                },
+            ])
+            res.render('site/categoriesBlogs', { Postcategories :data })
+        } catch (error) {
+            console.log('getCategoryBlogs :' + error.message);
         }
     }
 }
