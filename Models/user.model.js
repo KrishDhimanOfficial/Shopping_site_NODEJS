@@ -3,20 +3,21 @@ const mongoose = require('../Connections/monodb.connection')
 const userSchema = mongoose.Schema({
     username: {
         type: String,
-        require: true
+        require: true,
+        unique: true
     },
     email: {
         type: String,
         unique: true,
         require: true,
-        match:[/^[a-z0-9]+@gmail.com$/]
+        match: [/^[a-z0-9]+@gmail.com$/]
     },
     password: {
         type: String,
-        minlength:6,
+        minlength: 6,
         require: true
     }
 })
 
-module.exports = mongoose.model('user',userSchema)
+module.exports = mongoose.model('user', userSchema)
 

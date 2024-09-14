@@ -58,6 +58,10 @@
                                 colspan="1" aria-sort="ascending"
                                 aria-label="Rendering engine: activate to sort column descending">
                                 Category</th>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                Image</th>
                               <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                 aria-label="Browser: activate to sort column ascending">
                                 Sub Category</th>
@@ -69,35 +73,40 @@
                           <tbody>
                             <% if (locals.categories) { %>
                               <% categories.forEach((category,i)=> { %>
-                                <tr>
-                                  <td>
-                                    <%= i + 1 %>
-                                  </td>
-                                  <td>
-                                    <%= category.parent_Category %>
-                                  </td>
-                                  <td>
-                                    <% category.sub_categories.forEach(category=> { %>
-                                      <p class="m-0 float-left mx-1">
-                                        <%= category.category_name %>
-                                      </p>
-                                      <% }) %>
-                                  </td>
-                                  <td>
-                                    <button type="button" class="btn btn-sm btn-primary"
-                                      onclick="(()=>{ window.location.href = 'category/update/<%= category._id %>'})()">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                      onclick="(()=>{ window.location.href = 'category/delete/<%= category._id %>'})()">
-                                      Delete</button>
-                                  </td>
-                                </tr>
-                                <% }) %>
-                                  <% } %>
+                                <% console.log(category); %>
+                                  <tr>
+                                    <td>
+                                      <%= i + 1 %>
+                                    </td>
+                                    <td>
+                                      <%= category.parent_Category %>
+                                    </td>
+                                    <td style="width: 150px; height: 150px;">
+                                      <img src="http://localhost:8000/uploads/categoryImages/<%= category.image %>" alt="" class="img-fluid d-block">
+                                    </td>
+                                    <td>
+                                      <% category.sub_categories.forEach(category=> { %>
+                                        <p class="m-0 float-left mx-1">
+                                          <%= category.category_name %>
+                                        </p>
+                                        <% }) %>
+                                    </td>
+                                    <td>
+                                      <button type="button" class="btn btn-sm btn-primary"
+                                        onclick="(()=>{ window.location.href = 'category/update/<%= category._id %>'})()">Edit</button>
+                                      <button type="button" class="btn btn-sm btn-danger"
+                                        onclick="(()=>{ window.location.href = 'category/delete/<%= category._id %>'})()">
+                                        Delete</button>
+                                    </td>
+                                  </tr>
+                                  <% }) %>
+                                    <% } %>
                           </tbody>
                           <tfoot>
                             <tr>
                               <th rowspan="1" colspan="1">S.NO</th>
                               <th rowspan="1" colspan="1">Category</th>
+                              <th rowspan="1" colspan="1">Image</th>
                               <th rowspan="1" colspan="1">Sub Category</th>
                               <th rowspan="1" colspan="1">Actions</th>
                             </tr>
@@ -378,13 +387,21 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form id="submitCategory">
+          <form id="submitCategory" enctype="multipart/form-data">
             <div class="modal-body">
               <div class="row">
                 <div class="col-12">
                   <div class="form-group">
                     <label for="category">Category Name</label>
                     <input type="text" id="category" name="category_name" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="category">Category Description</label>
+                    <input type="text" id="category_desc" name="category_desc" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="categoryImage">Category Image :</label>
+                    <input type="file" id="categoryImage" name="image">
                   </div>
                 </div>
                 <div class="col-12">
@@ -518,23 +535,36 @@
             })
         })() // IIFE
 
-        document.querySelector('#submitCategory').addEventListener('submit', (e) => {
+        document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
           e.preventDefault();
 
           const selectBox = document.querySelector('#maincategory')
           const category_name = document.querySelector('#category')
+          const category_desc = document.querySelector('#category_desc')
+          const formData = new FormData(e.target);
 
           if (selectBox.value && category_name.value) {
+
             const api = 'http://localhost:8000/admin/api/sub_category';
-            Fetch(api, category_name.value, selectBox.value)
+            await fetch(api, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ category_name: category_name.value, parent_id: selectBox.value })
+            }).then(response => response.json())
+              .then(data => AlertMessage(data.message, 'Already exists!' || 'Unsuccessfull!', 'Successfully Created!'))
+
           } else {
-            if (category_name.value) {
-              const api = 'http://localhost:8000/admin/api/parent_category';
-              Fetch(api, category_name.value)
-            }
+            const api = 'http://localhost:8000/admin/api/parent_category';
+            await fetch(api, {
+              method: 'POST',
+              body: formData
+            })
+              .then(response => response.json())
+              .then(data => {
+                AlertMessage(data.message, 'Already exists!' || 'Unsuccessfull!', 'Successfully Created!')
+              })
+            formData.reset()
           }
-          selectBox.value = ''
-          category_name.value = ''
         })
 
         document.querySelector('#submitColor').addEventListener('submit', async (e) => {
@@ -583,18 +613,6 @@
           brand.value = ''
         })
 
-        async function Fetch(api, value1, value2) {
-          await fetch(api, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              category_name: value1,
-              parent_id: value2,
-            })
-          })
-            .then(response => response.json())
-            .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
-        }
       </script>
   </body>
 

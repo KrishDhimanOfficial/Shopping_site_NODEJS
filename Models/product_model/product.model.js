@@ -30,6 +30,14 @@ const productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.Array,
         required: true
     },
+    product_new: {
+        type: mongoose.Schema.Types.Boolean,
+        default: true
+    },
+    product_on_sales: {
+        type: mongoose.Schema.Types.Boolean,
+        default: false
+    },
     product_parent_category_id: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
@@ -39,7 +47,7 @@ const productSchema = mongoose.Schema({
         required: true,
     },
     product_stock: {
-        type: mongoose.Schema.Types.String,
+        type: mongoose.Schema.Types.Boolean,
         default: false
     },
     brand_name: {

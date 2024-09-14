@@ -31,6 +31,10 @@
 /* Template default CSS
 /*----------------------------------------*/
 
+.disabled{
+	pointer-events: none;
+	cursor: not-allowed;
+}
 html,
 body {
 	height: 100%;

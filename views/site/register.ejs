@@ -178,9 +178,11 @@
                 <%= message %>
             </span>
             <% } %>
-                <button class="submit">Submit</button>
+                <button class="submit" onclick="((e)=>{e.preventDefault()})()">Submit</button>
                 <p class="signin">Already have an acount ? <a href="/login">Signin</a> </p>
     </form>
+    <script defer>
+    </script>
 </body>
 
 </html>

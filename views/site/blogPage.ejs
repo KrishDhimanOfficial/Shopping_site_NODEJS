@@ -45,19 +45,30 @@
             <!-- Search End -->
 
             <%- include('../Site_partials/script') %>
+
                 <script async>
                     let limit = 6;
-
                     (() => { getBlog(limit) })()// IIFE
 
+                    const preloader = document.querySelector('#preloder')
+                    const loader = document.querySelector('.loader')
                     document.querySelector('#loadmore').addEventListener('click', async (e) => {
                         e.preventDefault()
+
+                        preloader.style.display = 'block'
+                        loader.style.display = 'block'
                         const parent = document.querySelector('#blog_wrapper')
                         const children = [...parent.children]
                         for (let i = 0; i < children.length - 1; i++) { children[i].remove() }
                         limit += 3
                         getBlog(limit)
+
+                        setTimeout(() => {
+                            preloader.style.display = 'none'
+                            loader.style.display = 'none'
+                        }, 300);
                     })
+
                     async function getBlog(setlimit) {
                         await fetch(`http://localhost:8000/api/blogs/${setlimit}`)
                             .then(response => response.json())

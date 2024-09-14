@@ -93,6 +93,22 @@
                                     value="<%= product[0].product_price %>" placeholder="Enter Actual Price">
                                 </div>
                                 <div class="form-group">
+                                  <label for="new">Product is NEW</label>
+                                  <select class="select2" name="product_new" id="new" data-placeholder="Select a Size"
+                                    style="width: 100%;">
+                                    <option value="false" >No</option>
+                                    <option value="true">Yes</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
+                                  <label for="sales">Product ON sales</label>
+                                  <select class="select2" name="product_on_sales" id="sales"
+                                    data-placeholder="Select a Size" style="width: 100%;">
+                                    <option value="false" selected>No</option>
+                                    <option value="true">Yes</option>
+                                  </select>
+                                </div>
+                                <div class="form-group">
                                   <label>Sizes</label>
                                   <select class="select2" name="availableSize" multiple="multiple"
                                     data-placeholder="Select a Size" style="width: 100%;">

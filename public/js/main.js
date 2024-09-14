@@ -30,6 +30,7 @@ Created: Colorib
             var mixer = mixitup(containerEl);
         }
     });
+    
 
     /*------------------
         Background Set

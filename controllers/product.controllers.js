@@ -12,15 +12,20 @@ module.exports = {
     // Product Category Controllers
     createPcategory: async (req, res) => {
         try {
-            const existingCategory = parent_Category.findOne({
-                category_name: { $regex: req.body.category_name, $options: "i" }
+            const existingCategory = await parent_Category.findOne({
+                category_name: { $regex: `^${req.body.category_name}$`, $options: "i" }
             })
-            if (existingCategory) throw new Error('Already exists!')
+            console.log(existingCategory);
 
-            await parent_Category.create(req.body)
+
+            if (existingCategory) throw new Error('Already exists!')
+            const { category_name, category_desc } = req.body;
+            image = req.file ? req.file.filename : null;
+            const data = await parent_Category.create({ category_name, image, category_desc })
+
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log('23' + error.message);
+            console.log('createPcategory :' + error);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
@@ -34,14 +39,15 @@ module.exports = {
     },
     createScategory: async (req, res) => {
         try {
-            const existingCategory = sub_Category.findOne({
-                category_name: { $regex: req.body.category_name, $options: "i" }
+            const existingCategory = await sub_Category.findOne({
+                category_name: { $regex: `^${req.body.category_name}$`, $options: "i" }
             })
+
             if (existingCategory) { throw new Error('Already exists!') }
             await sub_Category.create(req.body)
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log('44' + error.message);
+            console.log('createScategory :' + error.message);
             res.json({ message: 'Unsuccessfull!' || error.message })
         }
     },
@@ -61,10 +67,11 @@ module.exports = {
                     $group: {
                         _id: '$_id',
                         parent_Category: { $first: '$category_name' },
+                        image: { $first: '$image' },
                         sub_categories: { $addToSet: '$main_categories' }
                     }
                 },
-                { $unwind: '$sub_categories' }
+                { $unwind: '$sub_categories' },
             ])
             res.render('admin/product/category', {
                 categories: data,
@@ -90,7 +97,7 @@ module.exports = {
             const { product_title, product_parent_category_id, product_sub_category_id,
                 product_price, product_discount, product_stock,
                 product_description, availableColor, availableSize,
-                shipping, brand_name } = req.body;
+                shipping, brand_name, product_on_sales, product_new } = req.body;
 
             product_image = req.files.map(file => file.filename)
 
@@ -100,17 +107,18 @@ module.exports = {
                 product_sub_category_id, date, product_price, product_discount,
                 product_image, product_stock, shipping, brand_name,
                 product_description: product_description[1],
-                availableColor, availableSize
+                availableColor, availableSize, product_on_sales, product_new
             })
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             res.json({ message: 'Unsuccessfull!' })
-            console.log('109' + error.message);
+            console.log('createProduct :' + error.message);
         }
     },
     getProductsOnAdmin: async (req, res) => {
         try {
             const data = await product.aggregate(queries.productQuery)
+            console.log(data);
             res.render('admin/product/index', { products: data })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
@@ -266,4 +274,30 @@ module.exports = {
             console.log('267' + error.message);
         }
     },
+    getProductByCategory: async (req, res) => {
+        try {
+            const product_categories = await parent_Category.aggregate([
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: '_id',
+                        foreignField: 'product_parent_category_id',
+                        as: 'product'
+                    }
+                },
+                { $addFields: { length: { $size: '$product' } } },
+                { $project: { product: 0 } }
+            ])
+            console.log(product_categories);
+
+            const products = await product.aggregate(queries.productQuery)
+
+            res.render('site/home', {
+                products, product_categories
+            })
+        } catch (error) {
+            console.log('getProductByCategory : ' + error.message);
+
+        }
+    }
 }

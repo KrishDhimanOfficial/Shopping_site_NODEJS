@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const login = require('../Middleware/login')
-const upload = require('../Middleware/multer.middleware')
-const blogUpload = require('../Middleware/blog.multer.js')
+const { blogImageupload, productImageupload,categoryImageupload} = require('../Middleware/multer.js')
 const checkLogin = require('../Middleware/checkLogin')
 const Admin = require('../controllers/admin.controllers')
 const blogControllers = require('../controllers/blog.controller')
@@ -26,35 +25,40 @@ router.get('/blog/category', checkLogin, blogControllers.allPostsByCategory)
 router.route('/blog/create')
     .all(checkLogin)
     .get(blogControllers.allCategories)
-    .post(blogUpload.single('blog_image'), blogControllers.createPost)
+    .post(blogImageupload.single('blog_image'), blogControllers.createPost)
 
 router.route('/update/blog')
     .all(checkLogin)
     .get(blogControllers.updateBlogPage)
-    .put(blogUpload.single('blog_image'), blogControllers.updateBlog)
+    .put(blogImageupload.single('blog_image'), blogControllers.updateBlog)
 
 router.get('/blogs', checkLogin, blogControllers.allPosts)
 router.delete('/delete/blog/:id', checkLogin, blogControllers.deleteBlog)
+router.get('/blog/comments', checkLogin, blogControllers.getBlogComments)
 
+router.route('/blog/comment/:id')
+    .all(checkLogin)
+    .put(blogControllers.updateBlogComments)
+    .delete(blogControllers.deleteBlogComment)
 
 // Product Routes   
 router.route('/product/create')
     .all(checkLogin)
     .get(productControllers.showProductAttributes)
-    .post(upload.array('product_image', 5), productControllers.createProduct)
+    .post(productImageupload.array('product_image', 5), productControllers.createProduct)
 
 router.get('/products', checkLogin, productControllers.getProductsOnAdmin)
 router.route('/product/:id')
     .all(checkLogin)
     .get(productControllers.updateProductPage)
     .delete(productControllers.deleteProduct)
-    .put(upload.array('product_image', 5), productControllers.updateProduct)
+    .put(productImageupload.array('product_image', 5), productControllers.updateProduct)
 
 router.put('/product/image/:id', checkLogin, productControllers.handlePreviewImage)
 
 router.post('/api/sub_category', productControllers.createScategory)
 router.route('/api/parent_category')
-    .post(productControllers.createPcategory)
+    .post(categoryImageupload.single('image'), productControllers.createPcategory)
     .get(productControllers.parenCategory)
 router.get('/productcategory', checkLogin, productControllers.showAllCategories)
 

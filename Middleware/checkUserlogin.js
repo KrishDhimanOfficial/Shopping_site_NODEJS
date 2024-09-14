@@ -1,9 +1,10 @@
 const { getUser } = require('../Service/auth')
-function checkUserlogin(req, res, next) {
+async function checkUserlogin(req, res, next) {
     try {
         const token = req.cookies?.token;
 
         const user = getUser(token)
+        
         if (!token || !user) res.redirect('/login')
         next()
     } catch (error) {
@@ -11,5 +12,18 @@ function checkUserlogin(req, res, next) {
     }
 }
 
+async function login(req, res, next) {
+    try {
+        const token = await req.cookies?.token;
 
-module.exports = checkUserlogin;
+        if (!token) {
+            next()
+        } else {
+            res.redirect('/home')
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports = { checkUserlogin, login };

@@ -1,7 +1,10 @@
 const category = require('../Models/blog_Model/category.model')
+const comment = require('../Models/blog_Model/comment.model')
 const post = require('../Models/blog_Model/post.model')
 const deleteImage = require('../Service/deleteUploadImage')
 const mongoose = require('mongoose')
+const { getUser } = require('../Service/auth')
+const query = require('../Service/query')
 
 module.exports = {
     createCategory: async (req, res) => {
@@ -27,24 +30,16 @@ module.exports = {
                 {
                     $lookup: {
                         from: 'posts', localField: '_id',
-                        foreignField: 'category_id', as: 'categoryPosts'
+                        foreignField: 'category_id', as: 'Posts'
                     }
                 },
                 {
-                    $group: {
-                        _id: '$_id', category_name: { $first: '$category' },
-                        posts: { $addToSet: '$categoryPosts' },
-                    }
-                },
-                { $unwind: '$posts' },
-                {
-                    $addFields: { length: { $size: '$posts' } }
+                    $addFields: { length: { $size: '$Posts' } }
                 },
             ])
-            
             res.render('admin/blog/blogCategory', { allPostsByCategory: data })
         } catch (error) {
-            console.log(error.message);
+            console.log('allPostsByCategory :' + error.message);
         }
     },
     allCategories: async (req, res) => {
@@ -123,7 +118,7 @@ module.exports = {
             res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata })
             if (!data) res.redirect('/admin/blogs')
         } catch (error) {
-            console.log(error.message)
+            console.log('updateBlogPage :' + error.message)
             res.redirect('/admin/blogs')
         }
     },
@@ -142,7 +137,7 @@ module.exports = {
             if (!data) res.json({ message: 'Update Unsuccessfull!' })
             res.json({ message: 'Update Successfully!' })
         } catch (error) {
-            console.log(error.message);
+            console.log("updateBlog : " + error.message);
             res.json({ message: 'Update Unsuccessfull!' })
         }
     },
@@ -163,15 +158,38 @@ module.exports = {
         }
     },
     getSingleBlog: async (req, res) => {
-        try {
-            const featuredPosts = await post.aggregate([{
-                $project: {
-                    blog_title: 1, blog_image: 1,
-                    formattedDate: {
-                        $dateToString: { format: '%d-%m-%Y', date: '$date' }
+        try { 
+            const featuredPosts = await post.aggregate(query.featuredPosts).limit(3)
+            const Postcategories = await category.aggregate(query.getCategoryPostLength)
+            const comments = await post.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                {
+                    $lookup: {
+                        from: 'blogcomments',
+                        localField: '_id',
+                        foreignField: 'post_id',
+                        as: 'comments'
                     }
-                }
-            }]).limit(3)
+                },
+                {
+                    $addFields: {
+                        comments: {
+                            $filter: {
+                                input: '$comments',
+                                as: 'comment',
+                                cond: { $eq: ['$$comment.status', true] }
+                            }
+                        }
+                    }
+                },
+                { $unwind: '$comments' },
+                {
+                    $group: {
+                        _id: '_id',
+                        comments: { $push: '$comments' }
+                    }
+                },
+            ])
             const data = await post.aggregate([
                 { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
                 {
@@ -192,39 +210,16 @@ module.exports = {
                     }
                 }
             ])
-            const Postcategories = await category.aggregate([
-                {
-                    $lookup: {
-                        from: 'posts',
-                        localField: '_id',
-                        foreignField: 'category_id',
-                        as: 'posts'
-                    }
-                },
-                { $unwind: '$posts' },
-                {
-                    $group: {
-                        _id: '$posts.category_id',
-                        category_name: { $first: '$category' },
-                        postarry: { $push: '$posts' },
-                    }
-                },
-                {
-                    $addFields: {
-                        length: { $size: '$postarry' }
-                    }
-                }
-            ])
             if (!data) res.render('site/singleBlog', { message: 'NOT FOUND' })
-            res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories })
+            res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories, postComments: comments })
         } catch (error) {
             console.log('getSingleBlog' + error.message);
-            res.render('site/singleBlog :', { message: error.message })
         }
     },
     getCategoryBlogs: async (req, res) => {
         try {
             const data = await category.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
                 {
                     $lookup: {
                         from: 'posts',
@@ -233,7 +228,7 @@ module.exports = {
                         as: 'posts'
                     }
                 },
-                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+
                 { $unwind: '$posts' },
                 {
                     $group: {
@@ -242,9 +237,56 @@ module.exports = {
                     }
                 },
             ])
-            res.render('site/categoriesBlogs', { Postcategories :data })
+            res.render('site/categoriesBlogs', { Postcategories: data })
         } catch (error) {
             console.log('getCategoryBlogs :' + error.message);
         }
-    }
+    },
+    // Admin
+    createPostComment: async (req, res) => {
+        try {
+            const token = req.cookies.token;
+            const user = getUser(token)
+
+            const data = await comment.create({
+                comment: req.body.comment,
+                post_id: new mongoose.Types.ObjectId(req.params.postId),
+                user_name: user.username,
+                date: new Date(),
+                user_image: 'user.webp'
+            })
+            res.json(data)
+        } catch (error) {
+            console.log('getPostComment : ' + error.message);
+        }
+    },
+    getBlogComments: async (req, res) => {
+        try {
+            const data = await comment.find({})
+            res.render('admin/blog/blogComments', { comments: data })
+        } catch (error) {
+            console.log('getBlogComments :' + error.message);
+        }
+    },
+    updateBlogComments: async (req, res) => {
+        try {
+
+            const data = await comment.findByIdAndUpdate({ _id: req.params.id },
+                req.body,
+                { new: true }
+            )
+            res.status(200).json(data)
+        } catch (error) {
+            console.log('updateBlogComments :' + error.message);
+        }
+    },
+    deleteBlogComment: async (req, res) => {
+        try {
+            await comment.findByIdAndDelete({ _id: req.params.id })
+            res.json({ message: 'Successfully Deleted!' })
+        } catch (error) {
+            console.log('deleteBlogComment :' + error.message);
+        }
+    },
+    // Admin
 }

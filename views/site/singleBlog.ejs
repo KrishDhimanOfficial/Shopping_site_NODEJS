@@ -27,33 +27,34 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-md-8">
-                        <% if (locals.blog) { %>
-                            <div class="blog__details__content">
-                                <div class="blog__details__item" style="width: 100%;">
-                                    <img src="http://localhost:8000/uploads/blogsImages/<%= blog[0].blog_image %> "
-                                        alt="" style="object-fit: cover;">
-                                    <div class="blog__details__item__title">
-                                        <span class="tip">
-                                            <%= blog[0].category.category%>
-                                        </span>
-                                        <h4>
-                                            <%= blog[0].blog_title %>
-                                        </h4>
-                                        <ul>
-                                            <li>by <span>
-                                                    <%= blog[0].author %>
-                                                </span></li>
-                                            <li>
-                                                <%= blog[0].formattedDate %>
-                                            </li>
-                                        </ul>
-                                    </div>
+                    <% if (locals.blog) { %>
+                        <div class="blog__details__content">
+                            <div class="blog__details__item" style="width: 100%;">
+                                <img src="http://localhost:8000/uploads/blogsImages/<%= blog[0].blog_image %> " alt=""
+                                    style="object-fit: cover;" loading="lazy">
+                                <div class="blog__details__item__title">
+                                    <span class="tip">
+                                        <%= blog[0].category.category%>
+                                    </span>
+                                    <h4>
+                                        <%= blog[0].blog_title %>
+                                    </h4>
+                                    <ul>
+                                        <li>by <span>
+                                                <%= blog[0].author %>
+                                            </span></li>
+                                        <li>
+                                            <%= blog[0].formattedDate %>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <div class="blog__details__desc">
-                                    <p>
-                                        <%= blog[0].blog_description %>
-                                    </p>
-                                </div>
+                            </div>
+                            <div class="blog__details__desc">
+                                <p>
+                                    <%- blog[0].blog_description %>
+                                </p>
+                            </div>
+                            <% } %>
                                 <div class="blog__details__tags">
                                     <% if (locals.Postcategories) { %>
                                         <% Postcategories.forEach(category=> { %>
@@ -79,60 +80,48 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="blog__details__comment">
-                                    <h5>3 Comment</h5>
-                                    <a href="#" class="leave-btn">Leave a comment</a>
-                                    <div class="blog__comment__item">
-                                        <div class="blog__comment__item__pic">
-                                            <img src="/images/blog/details/comment-1.jpg" alt="">
-                                        </div>
-                                        <div class="blog__comment__item__text">
-                                            <h6>Brandon Kelley</h6>
-                                            <p>Duis voluptatum. Id vis consequat consetetur dissentiet, ceteros
-                                                commune perpetua
-                                                mei et. Simul viderer facilisis egimus tractatos splendi.</p>
-                                            <ul>
-                                                <li><i class="fa fa-clock-o"></i> Seb 17, 2019</li>
-                                                <li><i class="fa fa-heart-o"></i> 12</li>
-                                                <li><i class="fa fa-share"></i> 1</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="blog__comment__item blog__comment__item--reply">
-                                        <div class="blog__comment__item__pic">
-                                            <img src="/images/blog/details/comment-2.jpg" alt="">
-                                        </div>
-                                        <div class="blog__comment__item__text">
-                                            <h6>Brandon Kelley</h6>
-                                            <p>Consequat consetetur dissentiet, ceteros commune perpetua mei et.
-                                                Simul viderer
-                                                facilisis egimus ulla mcorper.</p>
-                                            <ul>
-                                                <li><i class="fa fa-clock-o"></i> Seb 17, 2019</li>
-                                                <li><i class="fa fa-heart-o"></i> 12</li>
-                                                <li><i class="fa fa-share"></i> 1</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <div class="blog__comment__item">
-                                        <div class="blog__comment__item__pic">
-                                            <img src="/images/blog/details/comment-3.jpg" alt="">
-                                        </div>
-                                        <div class="blog__comment__item__text">
-                                            <h6>Brandon Kelley</h6>
-                                            <p>Duis voluptatum. Id vis consequat consetetur dissentiet, ceteros
-                                                commune perpetua
-                                                mei et. Simul viderer facilisis egimus tractatos splendi.</p>
-                                            <ul>
-                                                <li><i class="fa fa-clock-o"></i> Seb 17, 2019</li>
-                                                <li><i class="fa fa-heart-o"></i> 12</li>
-                                                <li><i class="fa fa-share"></i> 1</li>
-                                            </ul>
-                                        </div>
-                                    </div>
+                                <div class="form-floating mb-3">
+                                    <textarea class="form-control" name="comment" placeholder="Leave a comment here"
+                                        id="floatingTextarea"></textarea>
                                 </div>
-                            </div>
-                            <% } %>
+                                <div class="blog__details__comment">
+                                    <h5>
+                                        <%= postComments[0]?.comments.length ?? 0 %> Comment
+                                    </h5>
+                                    <a href="#" class="leave-btn">Leave a
+                                        comment</a>
+                                    <p id="message"></p>
+                                    <% if (locals.postComments) { %>
+                                        <% postComments[0]?.comments.forEach(comment=> { %>
+                                            <div class="blog__comment__item">
+                                                <div class="blog__comment__item__pic" style="width: 85px;">
+                                                    <img src="http://localhost:8000/images/<%= comment.user_image %>"
+                                                        alt="" class="img-fluid">
+                                                </div>
+                                                <div class="blog__comment__item__text">
+                                                    <h6>
+                                                        <%= comment.user_name %>
+                                                    </h6>
+                                                    <p>
+                                                        <%= comment.comment %>
+                                                    </p>
+                                                    <ul>
+                                                        <li><i class="fa fa-clock-o"></i>
+                                                            <% const date=comment.date %>
+                                                                <%= date.toLocaleDateString() %>
+                                                        </li>
+                                                        <li style="cursor: pointer;" id="like"
+                                                            onclick="increaseLike('<%= comment._id %>','<%= comment.likes %>')">
+                                                            <i id="heart" class="fa fa-heart-o mr-2"></i>
+                                                            <%= comment.likes %>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <% }) %>
+                                                <% } %>
+                                </div>
+                        </div>
                 </div>
                 <div class="col-lg-4 col-md-4">
                     <div class="blog__sidebar">
@@ -142,21 +131,24 @@
                             </div>
                             <ul>
                                 <% if (locals.Postcategories) { %>
-                                    <% let count = 0; %>
-                                
-                                    <% Postcategories.forEach(category=> { %>
-                                        <% count += category.length %>
-                                        <li>
-                                            <a href="/category/<%= category.category_name %>/<%= category._id %>">
-                                                <%= category.category_name %>
-                                                <span>
-                                                    <%= category.length %>
-                                                </span>
-                                            </a>
-                                        </li>
-                                        <% }) %>
-                                        <li><a href="/blogs">All <span><%= count %> </span></a></li>
-                                        <% } %>
+                                    <% let count=0; %>
+
+                                        <% Postcategories.forEach(category=> { %>
+                                            <% count +=category.length %>
+                                                <li>
+                                                    <a
+                                                        href="/category/<%= category.category_name %>/<%= category._id %>">
+                                                        <%= category.category_name %>
+                                                            <span>
+                                                                <%= category.length %>
+                                                            </span>
+                                                    </a>
+                                                </li>
+                                                <% }) %>
+                                                    <li><a href="/blogs">All <span>
+                                                                <%= count %>
+                                                            </span></a></li>
+                                                    <% } %>
                             </ul>
                         </div>
                         <div class="blog__sidebar__item">
@@ -220,8 +212,51 @@
                 </div>
             </div>
             <!-- Search End -->
-
             <%- include('../site_partials/script') %>
+                <script defer>
+
+                    async function increaseLike(id, likes) {
+                        let like = parseInt(likes);
+                        like += 1;
+                        if (id == id) document.querySelector('#like').classList.remove('disabled')
+                        await fetch(`http://localhost:8000/api/comment/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ likes: like })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.likes) {
+                                    document.querySelector('#like').classList.add('disabled')
+                                    document.querySelector('#heart').classList.remove('fa-heart-o')
+                                    document.querySelector('#heart').classList.add('fa-heart')
+                                }
+                            })
+                    }
+                    if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+                        document.querySelector('#like').classList.add('disabled')
+                    } 
+                    document.querySelector('.leave-btn').addEventListener('click', async (e) => {
+                        e.preventDefault()
+                        const id = window.location.href.split('/')[4];
+                        const comment = document.querySelector('#floatingTextarea')
+                        await fetch(`http://localhost:8000/api/comment/${id}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', },
+                            body: JSON.stringify({
+                                comment: comment.value.trim(),
+                                post_id: id
+                            })
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data) {
+                                    comment.value = ''
+                                    document.querySelector('#message').innerHTML = 'You Comment Has Been Sent For Approval!';
+                                }
+                            })
+                    })
+                </script>
                 </body>
 
 </html>
