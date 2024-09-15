@@ -6,6 +6,7 @@ const productColor = require('../Models/product_model/product.color.model')
 const productBrand = require('../Models/product_model/product.brand.model')
 const product = require('../Models/product_model/product.model')
 const queries = require('../Service/query')
+const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
 
 module.exports = {
@@ -42,13 +43,18 @@ module.exports = {
             const existingCategory = await sub_Category.findOne({
                 category_name: { $regex: `^${req.body.category_name}$`, $options: "i" }
             })
-
-            if (existingCategory) { throw new Error('Already exists!') }
-            await sub_Category.create(req.body)
+            if (existingCategory) {
+                const existing = [...existingCategory.parent_id, req.body.parent_id]
+                await sub_Category.updateOne({
+                    category_name: { $regex: `^${req.body.category_name}$`, $options: "i" }
+                }, { parent_id: existing })
+            } else {
+                await sub_Category.create(req.body)
+            }
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log('createScategory :' + error.message);
-            res.json({ message: 'Unsuccessfull!' || error.message })
+            res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
     showAllCategories: async (req, res) => {
@@ -60,18 +66,9 @@ module.exports = {
                 {
                     $lookup: {
                         from: 'sub_categories', localField: '_id',
-                        foreignField: 'parent_id', as: 'main_categories'
+                        foreignField: 'parent_id', as: 'sub_categories'
                     }
                 },
-                {
-                    $group: {
-                        _id: '$_id',
-                        parent_Category: { $first: '$category_name' },
-                        image: { $first: '$image' },
-                        sub_categories: { $addToSet: '$main_categories' }
-                    }
-                },
-                { $unwind: '$sub_categories' },
             ])
             res.render('admin/product/category', {
                 categories: data,
@@ -80,7 +77,7 @@ module.exports = {
                 colors: color,
             })
         } catch (error) {
-            console.log('76' + error.message);
+            console.log('showAllCategories :' + error.message);
         }
     },
     deleteParentCategory: async (req, res) => {
@@ -117,8 +114,7 @@ module.exports = {
     },
     getProductsOnAdmin: async (req, res) => {
         try {
-            const data = await product.aggregate(queries.productQuery)
-            console.log(data);
+            const data = await product.aggregate(queries.productQuery)            
             res.render('admin/product/index', { products: data })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
@@ -160,7 +156,7 @@ module.exports = {
 
             throw new Error('Update Successfully!')
         } catch (error) {
-            console.log('156' + error.message);
+            console.log('updateProduct :' + error.message);
             res.json({ message: error.message ?? 'Update Unsuccessfull!' })
         }
     },
@@ -171,7 +167,7 @@ module.exports = {
             await product.findByIdAndDelete({ _id: req.params.id })
             throw new Error('Successfully Deleted!')
         } catch (error) {
-            console.log('167' + error.message);
+            console.log('deleteProduct :' + error.message);
             res.json({ message: error.message })
         }
     },
@@ -186,7 +182,7 @@ module.exports = {
             )
             deleteImage(previewImage.image)
         } catch (error) {
-            console.log('182' + error.message);
+            console.log('handlePreviewImage :' + error.message);
         }
     },
     showProductAttributes: async (req, res) => {
@@ -288,9 +284,8 @@ module.exports = {
                 { $addFields: { length: { $size: '$product' } } },
                 { $project: { product: 0 } }
             ])
-            console.log(product_categories);
 
-            const products = await product.aggregate(queries.productQuery)
+            const products = await product.aggregate(queries.productQuery).limit(8)
 
             res.render('site/home', {
                 products, product_categories
@@ -298,6 +293,167 @@ module.exports = {
         } catch (error) {
             console.log('getProductByCategory : ' + error.message);
 
+        }
+    },
+    getProductByCategoryonShop: async (req, res) => {
+        try {
+            const colors = await productColor.find({})
+            const sizes = await productSize.find({})
+            const categories = await parent_Category.aggregate([
+                {
+                    $lookup: {
+                        from: 'sub_categories',
+                        localField: '_id',
+                        foreignField: 'parent_id',
+                        as: 'sub'
+                    }
+                },
+                { $project: { category_name: 1, sub: 1 } }
+            ])
+
+            const projection = [
+                { $match: { category_name: { $regex: req.params.name, $options: 'i' } } },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: '_id',
+                        foreignField: 'product_parent_category_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $project: {
+                        image: 0, category_desc: 0
+                    }
+                }
+            ]
+            const products = await handleAggregatePagination(parent_Category, projection, '')
+            res.render('site/shop', { products, categories, colors, sizes })
+        } catch (error) {
+            console.log('getProductByCategoryonShop :' + error.message);
+        }
+    },
+    showAllproducts: async (req, res) => {
+        try {
+            const colors = await productColor.find({})
+            const sizes = await productSize.find({})
+            const categories = await parent_Category.aggregate([
+                {
+                    $lookup: {
+                        from: 'sub_categories',
+                        localField: '_id',
+                        foreignField: 'parent_id',
+                        as: 'sub'
+                    }
+                },
+                { $project: { category_name: 1, sub: 1 } }
+            ])
+
+            const projection = [
+                {
+                    $project: {
+                        product_title: 1, product_image: 1, product_on_sales: 1, product_new: 1,
+                        product_price: 1
+                    }
+                }
+            ]
+            const allProducts = await handleAggregatePagination(product, projection, '')
+            console.log(allProducts);
+            
+            res.render('site/shop', { allProducts, categories, colors, sizes })
+        } catch (error) {
+            console.log('showAllproducts :' + error.message);
+        }
+    },
+    getSub_categoryProduct: async (req, res) => {
+        try {
+            const colors = await productColor.find({})
+            const sizes = await productSize.find({})
+            const categories = await parent_Category.aggregate([
+                {
+                    $lookup: {
+                        from: 'sub_categories',
+                        localField: '_id',
+                        foreignField: 'parent_id',
+                        as: 'sub'
+                    }
+                },
+                { $project: { category_name: 1, sub: 1 } }
+            ])
+            const projection = [
+                { $match: { category_name: { $regex: req.params.parent_category, $options: 'i' } } },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: '_id',
+                        foreignField: 'product_parent_category_id',
+                        as: 'product'
+                    }
+                },
+                {
+                    $addFields: {
+                        sub_category_products: {
+                            $filter: {
+                                input: "$product",
+                                cond: {
+                                    $eq: [
+                                        '$$this.product_sub_category_id',
+                                        new mongoose.Types.ObjectId(req.params.id)
+                                    ]
+                                }
+                            }
+                        },
+                    }
+                },
+                { $project: { sub: 0, product: 0, image: 0, category_desc: 0, _id: 0 } }
+            ]
+
+            const sub_category_products = await handleAggregatePagination(parent_Category, projection, '')
+            res.render('site/shop', { sub_category_products, colors, sizes, categories })
+        } catch (error) {
+            console.log('getSub_categoryProduct :' + error.message);
+        }
+    },
+    getSingleProductDetails: async (req, res) => {
+        try {
+            const singleProduct = await product.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                {
+                    $lookup: {
+                        from: 'productcolors',
+                        localField: 'availableColor',
+                        foreignField: '_id',
+                        as: 'colors',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'productsizes',
+                        localField: 'availableSize',
+                        foreignField: '_id',
+                        as: 'sizeDetails',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'productbrands',
+                        localField: 'brand_name',
+                        foreignField: '_id',
+                        as: 'brand',
+                    }
+                },
+                { $unwind: '$brand' },
+                {
+                    $project: {
+                        product_title: 1, product_price: 1, product_discount: 1, product_image: 1,
+                        sizeDetails: 1, brand: 1, colors: 1, product_stock: 1, shipping: 1,
+                        product_description: 1
+                    }
+                }
+            ])
+            res.render('site/productDetails', { singleProduct })
+        } catch (error) {
+            console.log('getSingleProductDetails :' + error.message);
         }
     }
 }
