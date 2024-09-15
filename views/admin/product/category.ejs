@@ -79,10 +79,11 @@
                                       <%= i + 1 %>
                                     </td>
                                     <td>
-                                      <%= category.parent_Category %>
+                                      <%= category.category_name %>
                                     </td>
                                     <td style="width: 150px; height: 150px;">
-                                      <img src="http://localhost:8000/uploads/categoryImages/<%= category.image %>" alt="" class="img-fluid d-block">
+                                      <img src="http://localhost:8000/uploads/categoryImages/<%= category.image %>"
+                                        alt="" class="img-fluid d-block">
                                     </td>
                                     <td>
                                       <% category.sub_categories.forEach(category=> { %>
@@ -517,7 +518,6 @@
         <!-- /.modal-dialog -->
       </div>
     </div>
-
     <!-- ./wrapper -->
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
@@ -551,7 +551,9 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ category_name: category_name.value, parent_id: selectBox.value })
             }).then(response => response.json())
-              .then(data => AlertMessage(data.message, 'Already exists!' || 'Unsuccessfull!', 'Successfully Created!'))
+              .then(data => {
+                AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!')
+              })
 
           } else {
             const api = 'http://localhost:8000/admin/api/parent_category';

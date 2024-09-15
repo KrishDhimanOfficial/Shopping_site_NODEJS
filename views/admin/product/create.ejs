@@ -97,7 +97,7 @@
                               <div class="form-group">
                                 <label>Sizes</label>
                                 <select class="select2" name="availableSize" data-placeholder="Select a Size"
-                                  style="width: 100%;">
+                                  style="width: 100%;" multiple>
                                   <% if (locals.sizes) { %>
                                     <% sizes.forEach(size=> { %>
                                       <option value="<%= size._id %>">
@@ -227,9 +227,13 @@
               img.src = reader.result;
               img.alt = file.name;
               img.style.margin = '10px';
-              img.style.width = '130px';
-              img.style.height = '100px';
-              imagePreview.appendChild(img);
+              img.style.width = '150px';
+              img.className = 'img'
+              imagePreview.appendChild(img)
+
+              document.querySelector('.img').addEventListener('dblclick', async (e) => {
+                e.target.remove()
+              })
             }
             reader.readAsDataURL(file);
           })
@@ -246,7 +250,11 @@
             body: formData
           })
             .then((res) => res.json())
-            .then((data) => AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!'))
+            .then((data) => {
+              AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!')
+              e.target.reset()
+              $('#summernote').summernote('code', '')
+            })
         })
       </script>
   </body>

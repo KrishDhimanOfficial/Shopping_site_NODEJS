@@ -1,3 +1,4 @@
+const mongoosePaginate = require('mongoose-aggregate-paginate-v2')
 const mongoose = require('../../Connections/monodb.connection')
 
 const productSchema = mongoose.Schema({
@@ -77,5 +78,6 @@ const productSchema = mongoose.Schema({
     }
 })
 
+productSchema.plugin(mongoosePaginate)
 module.exports = mongoose.model('product', productSchema)
 

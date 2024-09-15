@@ -158,7 +158,7 @@ module.exports = {
         }
     },
     getSingleBlog: async (req, res) => {
-        try { 
+        try {
             const featuredPosts = await post.aggregate(query.featuredPosts).limit(3)
             const Postcategories = await category.aggregate(query.getCategoryPostLength)
             const comments = await post.aggregate([
@@ -219,7 +219,7 @@ module.exports = {
     getCategoryBlogs: async (req, res) => {
         try {
             const data = await category.aggregate([
-                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                { $match: { category: { $regex: req.params.category_name, $options: 'i' } } },
                 {
                     $lookup: {
                         from: 'posts',

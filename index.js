@@ -32,4 +32,8 @@ app.set('view engine', 'ejs')
 app.use('/admin', adminRoutes)
 app.use('/', siteRoutes)
 
+app.use((req, res, next) => {
+    res.status(404).render('Site_partials/404')
+})
+
 app.listen(port, console.log('Running...'))

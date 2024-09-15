@@ -21,7 +21,7 @@
                                         <p>
                                             <%= category.category_desc %>
                                         </p>
-                                        <a href="/category/<%= category.parent_category %>">Shop now</a>
+                                        <a href="products/<%= category.category_name %>">Shop now</a>
                                     </div>
                                 </div>
                                 <% } %>
@@ -39,7 +39,7 @@
                                             <div class="categories__text">
                                                 <h4><%= category.category_name %></h4>
                                                 <p><%= category.length %> items</p>
-                                                <a href="#">Shop now</a>
+                                                <a href="products/<%= category.category_name %>">Shop now</a>
                                             </div>
                                         </div>
                                     </div>
@@ -102,7 +102,7 @@
                                                     </ul>
                                 </div>
                                 <div class="product__item__text">
-                                    <h6><a href="#">
+                                    <h6><a href="product/<%= product._id %>">
                                             <%= product.product_title %>
                                         </a></h6>
                                     <div class="rating">
@@ -176,7 +176,9 @@
                                     </div>
                                     <div class="trend__item__text">
                                         <h6>
-                                            <%= product.product_title %>
+                                            <a href="product/<%= product._id %>" style="color: black;">
+                                                <%= product.product_title %>
+                                            </a>
                                         </h6>
                                         <div class="rating">
                                             <i class="fa fa-star"></i>
@@ -206,7 +208,9 @@
                                     </div>
                                     <div class="trend__item__text">
                                         <h6>
-                                            <%= product.product_title %>
+                                            <a href="product/<%= product._id %>" style="color: black;">
+                                                <%= product.product_title %>
+                                            </a>
                                         </h6>
                                         <div class="rating">
                                             <i class="fa fa-star"></i>
@@ -236,7 +240,9 @@
                                     </div>
                                     <div class="trend__item__text">
                                         <h6>
-                                            <%= product.product_title %>
+                                            <a href="product/<%= product._id %>" style="color: black;">
+                                                <%= product.product_title %>
+                                            </a>
                                         </h6>
                                         <div class="rating">
                                             <i class="fa fa-star"></i>
