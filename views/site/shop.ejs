@@ -32,8 +32,6 @@
                                 <div class="accordion" id="accordionExample">
                                     <% if (locals.categories) { %>
                                         <% categories.forEach((category,i)=> { %>
-                                            <% console.log(category);
-                                             %> 
                                             <div class="card">
                                                 <div class="card-heading active">
                                                     <a data-toggle="collapse" data-target="#collapse-<%= i %>">
@@ -51,13 +49,13 @@
                                                                         <%= sub_category.category_name %>
                                                                     </a>
                                                                 </li>
-                                                                <% }) %>
+                                                            <% }) %>
                                                         </ul>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <% }) %>
-                                                <% } %>
+                                        <% }) %>
+                                    <% } %>
                                 </div>
                             </div>
                         </div>
@@ -90,8 +88,8 @@
                                                 <input type="checkbox" id="<%= size.size_name %>">
                                                 <span class="checkmark"></span>
                                         </label>
-                                        <% }) %>
-                                            <% } %>
+                                    <% }) %>
+                                <% } %>
                             </div>
                         </div>
                         <div class="sidebar__color">
@@ -106,8 +104,8 @@
                                                 <input type="checkbox" id="<%= color.color_name %>">
                                                 <span class="checkmark"></span>
                                         </label>
-                                        <% }) %>
-                                            <% } %>
+                                    <% }) %>
+                                <% } %>
                             </div>
                         </div>
                     </div>
@@ -115,7 +113,7 @@
                 <div class="col-lg-9 col-md-9">
                     <div class="row">
                         <% if (locals.products) { %>
-                            <% const productArray=products.collectionData[0]?.product; %>
+                                <% const productArray=products.collectionData[0]?.product; %>
                                 <% productArray?.forEach(product=> { %>
                                     <div class="col-lg-4 col-md-6">
                                         <div class="product__item">
@@ -125,23 +123,27 @@
                                                     <div class="label new">
                                                         New
                                                     </div>
-                                                    <% } %>
-                                                        <% if(product.product_on_sales==true) {%>
-                                                            <div class="label sale">
-                                                                Sale
-                                                            </div>
-                                                            <% }%>
-                                                                <ul class="product__hover">
-                                                                    <li><a href="/uploads/<%= product.product_image[0] %>"
-                                                                            class="image-popup"><span
-                                                                                class="arrow_expand"></span></a></li>
-                                                                    <li><a href="#"><span
-                                                                                class="icon_heart_alt"></span></a>
-                                                                    </li>
-                                                                    <li><a href="#"><span
-                                                                                class="icon_bag_alt"></span></a>
-                                                                    </li>
-                                                                </ul>
+                                                <% } %>
+                                                <% if(product.product_on_sales==true) {%>
+                                                    <div class="label sale">Sale</div>
+                                                <% }%>
+                                                    <ul class="product__hover">
+                                                        <li>
+                                                            <a href="/uploads/<%= product.product_image[0] %>" class="image-popup">
+                                                                <span class="arrow_expand"></span>
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <button onclick="(()=>{ likebtn('<%= product._id %>') })()">
+                                                                <span class="icon_heart_alt like"></span>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button onclick="((e)=>{ addToCart('<%= product._id %>') })()">
+                                                                <span class="icon_bag_alt"></span>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
                                             </div>
                                             <div class="product__item__text">
                                                 <h6><a href="/product/<%= product._id%>">
@@ -159,55 +161,56 @@
                                             </div>
                                         </div>
                                     </div>
-                            <% }) %>
+                                <% }) %>
                         <% } %>
-
                         <!-- show All product -->
                         <% if (locals.allProducts) { %>
                             <% allProducts.collectionData.forEach(product=> { %>
                                 <div class="col-lg-4 col-md-6">
-                                                        <div class="product__item">
-                                                            <div class="product__item__pic set-bg"
-                                                                data-setbg="/uploads/<%= product.product_image[0] %>">
-                                                                <% if (product.product_new==true) { %>
-                                                                    <div class="label new">
-                                                                        New
-                                                                    </div>
-                                                                    <% } %>
-                                                                        <% if(product.product_on_sales==true) {%>
-                                                                            <div class="label sale">
-                                                                                Sale
-                                                                            </div>
-                                                                            <% }%>
-                                                                                <ul class="product__hover">
-                                                                                    <li><a href="/uploads/<%= product.product_image[0] %>"
-                                                                                            class="image-popup"><span
-                                                                                                class="arrow_expand"></span></a>
-                                                                                    </li>
-                                                                                    <li><a href="#"><span
-                                                                                                class="icon_heart_alt"></span></a>
-                                                                                    </li>
-                                                                                    <li><a href="#"><span
-                                                                                                class="icon_bag_alt"></span></a>
-                                                                                    </li>
-                                                                                </ul>
-                                                            </div>
-                                                            <div class="product__item__text">
-                                                                <h6><a href="/product/<%= product._id%>">
-                                                                        <%= product.product_title %>
-                                                                    </a></h6>
-                                                                <div class="rating">
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                </div>
-                                                                <div class="product__price">$ <%= product.product_price
-                                                                        %>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                    <div class="product__item">
+                                        <div class="product__item__pic set-bg" data-setbg="/uploads/<%= product.product_image[0] %>">
+                                            <% if (product.product_new==true) { %>
+                                                <div class="label new"> New</div>
+                                            <% } %>
+                                            <% if(product.product_on_sales==true) {%>
+                                                <div class="label sale"> Sale</div>
+                                            <% }%>
+                                            <ul class="product__hover">
+                                                <li>
+                                                    <a href="/uploads/<%= product.product_image[0] %>" class="image-popup">
+                                                        <span class="arrow_expand"></span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <button>
+                                                        <span class="icon_heart_alt like"></span>
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button onclick="((e)=>{ addToCart('<%= product._id %>') })()">
+                                                        <span class="icon_bag_alt"></span>
+                                                    </button>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <h6>
+                                                <a href="/product/<%= product._id%>">
+                                                    <%= product.product_title %>
+                                                </a>
+                                            </h6>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product__price">
+                                                $ <%= product.product_price %> 
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             <% }) %>
                         <% } %>
@@ -216,71 +219,77 @@
                             <% sub_category_products.collectionData[0].sub_category_products?.forEach(product=> { %>
                                 <div class="col-lg-4 col-md-6">
                                     <div class="product__item">
-                                                            <div class="product__item__pic set-bg"
-                                                                data-setbg="/uploads/<%= product.product_image[0] %>">
-                                                                <% if (product.product_new==true) { %>
-                                                                    <div class="label new">
-                                                                        New
-                                                                    </div>
-                                                                    <% } %>
-                                                                        <% if(product.product_on_sales==true) {%>
-                                                                            <div class="label sale">
-                                                                                Sale
-                                                                            </div>
-                                                                            <% }%>
-                                                                                <ul class="product__hover">
-                                                                                    <li><a href="/uploads/<%= product.product_image[0] %>"
-                                                                                            class="image-popup"><span
-                                                                                                class="arrow_expand"></span></a>
-                                                                                    </li>
-                                                                                    <li><a href="#"><span
-                                                                                                class="icon_heart_alt"></span></a>
-                                                                                    </li>
-                                                                                    <li><a href="#"><span
-                                                                                                class="icon_bag_alt"></span></a>
-                                                                                    </li>
-                                                                                </ul>
-                                                            </div>
-                                                            <div class="product__item__text">
-                                                                <h6><a href="/product/<%= product._id%>">
-                                                                        <%= product.product_title %>
-                                                                    </a></h6>
-                                                                <div class="rating">
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                    <i class="fa fa-star"></i>
-                                                                </div>
-                                                                <div class="product__price">$ <%= product.product_price
-                                                                        %>
-                                                                </div>
-                                                            </div>
+                                        <div class="product__item__pic set-bg" data-setbg="/uploads/<%= product.product_image[0] %>">
+                                        <% if (product.product_new==true) { %>
+                                            <div class="label new"> New </div>
+                                        <% } %>
+                                        <% if(product.product_on_sales==true){%>
+                                            <div class="label sale">Sale</div>
+                                        <% }%>
+                                        <ul class="product__hover">
+                                            <li>
+                                                <a href="/uploads/<%= product.product_image[0] %>" class="image-popup">
+                                                    <span class="arrow_expand"></span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <button onclick="(()=>{ likebtn('<%= product._id %>') })()">
+                                                    <span class="icon_heart_alt like"></span>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button onclick="((e)=>{ addToCart('<%= product._id %>') })()">
+                                                    <span class="icon_bag_alt"></span>
+                                                </button>
+                                            </li>
+                                        </ul>
+                                        </div>
+                                        <div class="product__item__text">
+                                            <h6>
+                                                <a href="/product/<%= product._id%>">
+                                                    <%= product.product_title %>
+                                                 </a>
+                                            </h6>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product__price">
+                                                $ <%= product.product_price %>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            <% }) %>
+                               </div>
+                           <% }) %>
                         <% } %>
                         <div class="col-lg-12 text-center">
                             <div class="pagination__option">
-
-
                                 <% if (locals.products) { %>
-                                    <% if (products.totoalDocs > products.limit) { %>
+                                    <% if (products.totalDocs > products.limit) { %>
                                         <% for( let i=1; i<=products.totalPages; ++i ) { %>
-                                            <a href="<%= i  %>"> <%= i %> </a>
+                                            <a href="page/<%= i  %>"> <%= i %> </a>
                                         <% } %>
                                     <% } %>
-                                        <% } %>
+                                <% } %>
 
                                 <!-- show All product pagination-->
                                 <% if (locals.allProducts) { %>
-                                    <% if (allProducts.totoalDocs> allProducts.limit) { %>
+                                    <% if (allProducts.totalDocs> allProducts.limit) { %>
                                         <% for( let i=1; i<=allProducts.totalPages; ++i ) { %>
-                                            <a href="<%= i  %>">
-                                                    <%= i %>
-                                            </a>
+                                            <a href="/shop/<%= i  %>"> <%= i %></a>
                                         <% } %>
-                                     <% } %>
+                                    <% } %>
+                                <% } %>
+                                <!-- show sub_category_products pagination -->
+                                <% if (locals.sub_category_products) { %>
+                                    <% if (sub_category_products.totalDocs> sub_category_products.limit) { %>
+                                        <% for(  let  i=1;  i<=sub_category_products.totalPages;  ++i  )  {  %>
+                                            <a href="<%= i  %>">  <%= i %> </a>
+                                        <% } %>
+                                    <% }  %>
                                 <% } %>
                             </div>
                         </div>
@@ -295,20 +304,27 @@
         <!-- Instagram End -->
 
         <!-- Footer Section Begin -->
-        <%- include('../site_partials/footer') %>
+    <%- include('../site_partials/footer') %>
             <!-- Footer Section End -->
 
             <!-- Search Begin -->
-            <div class="search-model">
-                <div class="h-100 d-flex align-items-center justify-content-center">
-                    <div class="search-close-switch">+</div>
-                    <form class="search-model-form">
-                        <input type="text" id="search-input" placeholder="Search here.....">
-                    </form>
-                </div>
-            </div>
+    <div class="search-model">
+        <div class="h-100 d-flex align-items-center justify-content-center">
+            <div class="search-close-switch">+</div>
+            <form class="search-model-form">
+                <input type="text" id="search-input" placeholder="Search here.....">
+            </form>
+        </div>
+    </div>
             <!-- Search End -->
-            <%- include('../site_partials/script') %>
-                </body>
+    <%- include('../site_partials/script') %>
+    <script>
+        const productID = []
+        function addToCart(id) {
+            productID.push(id)
+            localStorage.setItem("IDs", productID)
+        }
+    </script>
+    </body>
 
 </html>

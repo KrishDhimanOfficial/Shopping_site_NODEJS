@@ -20,23 +20,28 @@ router.get('/contact', checkUserlogin, (req, res) => {
     res.render('site/contact')
 })
 
-router.get('/home', checkUserlogin, productControllers.getProductByCategory)
-router.get('/products/:name', checkUserlogin, productControllers.getProductByCategoryonShop)
-router.get('/product/:id', checkUserlogin, productControllers.getSingleProductDetails)
-router.get('/shop', checkUserlogin, productControllers.showAllproducts)
-router.get('/category/:parent_category/:sub_category/:id', checkUserlogin, productControllers.getSub_categoryProduct)
-
-
+router.get('/Shoppping/cart', checkUserlogin, (req, res) => {
+    res.render('site/shop-cart')
+})
 
 router.get('/blogs', checkUserlogin, (req, res) => {
     res.render('site/blogPage');
 })
+
+router.get('/home', checkUserlogin, productControllers.getProductByCategory)
+router.get('/products/:name/:page?', checkUserlogin, productControllers.getProductByCategoryonShop)
+router.get('/shop/:page?', checkUserlogin, productControllers.showAllproducts)
+router.get('/category/:parent_category/:sub_category/:id/:page?', checkUserlogin, productControllers.getSub_categoryProduct)
+router.get('/api/singleproduct/:id', productControllers.singleproductonCart)
 router.get('/api/blogs/:loadPosts', blogControllers.getBlogs)
 router.get('/singleblog/:id', checkUserlogin, blogControllers.getSingleBlog)
 router.get('/category/:category_name', checkUserlogin, blogControllers.getCategoryBlogs)
 router.post('/api/comment/:postId', blogControllers.createPostComment)
 router.put('/api/comment/:id', blogControllers.updateBlogComments)
 
-
+router.route('/product/:id')
+    .all(checkUserlogin)
+    .get(productControllers.getSingleProductDetails)
+    .put(productControllers.updateProductRating)
 
 module.exports = router

@@ -97,7 +97,9 @@ button:focus,
 textarea:focus {
 	outline: none;
 }
-
+button{
+	border: none;
+}
 a:hover,
 a:focus {
 	text-decoration: none;
@@ -1225,7 +1227,7 @@ ol {
 	transition: all 0.4s ease 0.15s;
 }
 
-.product__hover li:nth-child(3) {
+.product__hover li:nth-child(3){
 	-webkit-transition: all 0.4s ease 0.2s;
 	-o-transition: all 0.4s ease 0.2s;
 	transition: all 0.4s ease 0.2s;
@@ -1235,18 +1237,26 @@ ol {
 	margin-right: 0;
 }
 
-.product__hover li:hover a {
+.product__hover li:hover a,
+.product__hover li:hover button {
 	background: #ca1515;
 }
 
-.product__hover li:hover a span {
+.product__hover li:hover a span{
+	color: #ffffff;
+	-webkit-transform: rotate(360deg);
+	-ms-transform: rotate(360deg);
+	transform: rotate(360deg);
+}
+.product__hover li:hover button span{
 	color: #ffffff;
 	-webkit-transform: rotate(360deg);
 	-ms-transform: rotate(360deg);
 	transform: rotate(360deg);
 }
 
-.product__hover li a {
+.product__hover li a, 
+.product__hover li button{
 	font-size: 18px;
 	color: #111111;
 	display: block;
@@ -1261,7 +1271,7 @@ ol {
 	transition: all, 0.5s;
 }
 
-.product__hover li a span {
+.product__hover li :is(a, button) span {
 	position: relative;
 	-webkit-transform: rotate(0);
 	-ms-transform: rotate(0);
