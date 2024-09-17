@@ -114,7 +114,7 @@ module.exports = {
     },
     getProductsOnAdmin: async (req, res) => {
         try {
-            const data = await product.aggregate(queries.productQuery)            
+            const data = await product.aggregate(queries.productQuery)
             res.render('admin/product/index', { products: data })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
@@ -327,7 +327,9 @@ module.exports = {
                     }
                 }
             ]
-            const products = await handleAggregatePagination(parent_Category, projection, '')
+            const products = await handleAggregatePagination(parent_Category, projection, req.params)
+            console.log(products.collectionData[0].product);
+
             res.render('site/shop', { products, categories, colors, sizes })
         } catch (error) {
             console.log('getProductByCategoryonShop :' + error.message);
@@ -357,9 +359,7 @@ module.exports = {
                     }
                 }
             ]
-            const allProducts = await handleAggregatePagination(product, projection, '')
-            console.log(allProducts);
-            
+            const allProducts = await handleAggregatePagination(product, projection, req.params)
             res.render('site/shop', { allProducts, categories, colors, sizes })
         } catch (error) {
             console.log('showAllproducts :' + error.message);
@@ -408,7 +408,7 @@ module.exports = {
                 { $project: { sub: 0, product: 0, image: 0, category_desc: 0, _id: 0 } }
             ]
 
-            const sub_category_products = await handleAggregatePagination(parent_Category, projection, '')
+            const sub_category_products = await handleAggregatePagination(parent_Category, projection, req.params)
             res.render('site/shop', { sub_category_products, colors, sizes, categories })
         } catch (error) {
             console.log('getSub_categoryProduct :' + error.message);
@@ -454,6 +454,22 @@ module.exports = {
             res.render('site/productDetails', { singleProduct })
         } catch (error) {
             console.log('getSingleProductDetails :' + error.message);
+        }
+    },
+    singleproductonCart: async (req, res) => {
+        try {
+            const singleProduct = await product.findOne({ _id: req.params.id })
+            if (!singleProduct) res.json({ message: "NOT FOUND" })
+            res.json(singleProduct)
+        } catch (error) {
+            console.log('singleproductonCart' + error.message);
+        }
+    },
+    updateProductRating: async (req, res) => {
+        try {
+            await product.findByIdAndUpdate({ _id: req.params.id }, req.body)
+        } catch (error) {
+            console.log('updateProductRating : ' + error.message);
         }
     }
 }
