@@ -30,7 +30,7 @@ Created: Colorib
             var mixer = mixitup(containerEl);
         }
     });
-    
+
 
     /*------------------
         Background Set
@@ -209,11 +209,12 @@ Created: Colorib
     var proQty = $('.pro-qty');
     proQty.prepend('<span class="dec qtybtn">-</span>');
     proQty.append('<span class="inc qtybtn">+</span>');
-    proQty.on('click', '.qtybtn', function () {
+    proQty.on('click', '.qtybtn', function (e) {
         var $button = $(this);
         var oldValue = $button.parent().find('input').val();
         if ($button.hasClass('inc')) {
             var newVal = parseFloat(oldValue) + 1;
+
         } else {
             // Don't allow decrementing below zero
             if (oldValue > 0) {
@@ -222,8 +223,20 @@ Created: Colorib
                 newVal = 0;
             }
         }
+
+        const price = e.target.parentNode.parentNode.parentNode.querySelector('.cart__price')
+        const priceValue = parseInt(price.innerHTML.split('$')[1])
+        const total = e.target.parentNode.parentNode.parentNode.querySelector('.cart__total')
+        total.innerHTML = `$${priceValue * newVal}`;
+
+        let product_price = 0;
+        document.querySelectorAll('.cart__total').forEach(price => {
+            product_price += parseInt(price.innerHTML.split('$')[1])
+            document.querySelector('#subtotal').innerHTML = `$${product_price}`
+            document.querySelector('#total').innerHTML = `$${product_price}`
+        })                                           
         $button.parent().find('input').val(newVal);
-    });
+    })
 
     /*-------------------
         Radio Btn

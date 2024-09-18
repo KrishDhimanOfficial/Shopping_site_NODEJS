@@ -11,12 +11,7 @@
                 <div class="col-lg-12">
                     <div class="breadcrumb__links">
                         <a href="/home"><i class="fa fa-home"></i> Home</a>
-                        <a href="/blogs">Blog</a>
-                        <span>
-                            <% if (locals.blog) { %>
-                                <%= blog[0].blog_title %>
-                                    <% } %>
-                        </span>
+                        <span>cart</span>
                     </div>
                 </div>
             </div>
@@ -40,30 +35,45 @@
                                 </tr>
                             </thead>
                             <tbody id="cartBody">
-
-                                <tr>
-                                    <td class="cart__product__item">
-                                        <img src="img/shop-cart/cp-4.jpg" alt="">
-                                        <div class="cart__product__item__title">
-                                            <h6>Cotton Shirt</h6>
-                                            <div class="rating">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price">$ 55.0</td>
-                                    <td class="cart__quantity">
-                                        <div class="pro-qty">
-                                            <input type="text" value="1">
-                                        </div>
-                                    </td>
-                                    <td class="cart__total">$ 110.0</td>
-                                    <td class="cart__close"><span class="icon_close"></span></td>
-                                </tr> 
+                                <% if (locals.products) { %>
+                                    <% const length = products[0].product.length %>
+                                    <% products[0].product.forEach(product=> { %>
+                                        <tr id="p-<%= product._id %>">
+                                            <td class="cart__product__item">
+                                                <img src="http://localhost:8000/uploads/<%= product.product_image[0] %>"
+                                                    alt="" class="img-fluid" style="width: 150px; height: 200px;">
+                                                <div class="cart__product__item__title">
+                                                    <h6>
+                                                        <%= product.product_title %>
+                                                    </h6>
+                                                    <div class="rating">
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                        <i class="fa fa-star"></i>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="cart__price">
+                                                $ <%= product.product_discount %>
+                                            </td>
+                                            <td class="cart__quantity">
+                                                <div class="pro-qty">
+                                                    <input type="text" value="0" class="product_quantity">
+                                                </div>
+                                            </td>
+                                            <td class="cart__total"> $ 0</td>
+                                            <td class="cart__close">
+                                                <span class="icon_close" onclick="(()=>{
+                                                const pId = document.getElementById('p-<%= product._id %>');
+                                                pId.remove()
+                                                UPdateCartProduct('<%= product._id %>')
+                                            })()"></span>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                            <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -77,26 +87,19 @@
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="cart__btn update__btn">
-                        <a href="#"><span class="icon_loading"></span> Update cart</a>
+                        <a href="#" id="Updatecart"><span class="icon_loading"></span> Update cart</a>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="discount__content">
-                        <h6>Discount codes</h6>
-                        <form action="#">
-                            <input type="text" placeholder="Enter your coupon code">
-                            <button type="submit" class="site-btn">Apply</button>
-                        </form>
-                    </div>
                 </div>
                 <div class="col-lg-4 offset-lg-2">
                     <div class="cart__total__procced">
                         <h6>Cart total</h6>
                         <ul>
-                            <li>Subtotal <span>$ 750.0</span></li>
-                            <li>Total <span>$ 750.0</span></li>
+                            <li>Subtotal <span id="subtotal"></span></li>
+                            <li>Total <span id="total"></span></li>
                         </ul>
                         <a href="#" class="primary-btn">Proceed to checkout</a>
                     </div>
@@ -126,44 +129,11 @@
             <!-- Search End -->
             <%- include('../site_partials/script') %>
                 <script>
-                    window.addEventListener('load', async () => {
-                        const productids = sessionStorage.getItem('IDs')
-                        const productidsArray = productids.split(',')
+                    async function UPdateCartProduct(id) {
+                        await fetch(`http://localhost:8000/Shoppping/cart/${id}`, { method: 'PUT', })
+                    }
 
-                        let cart = ''
-                        for (const id of productidsArray) {
-                            await fetch(`http://localhost:8000/api/singleproduct/${id}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    cart += `
-                                     <tr>
-                                    <td class="cart__product__item">
-                                        <img src="img/shop-cart/cp-1.jpg" alt="">
-                                        <div class="cart__product__item__title">
-                                            <h6>${data.product_title}</h6>
-                                            <div class="rating">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="cart__price">$ ${data.product_discount}</td>
-                                    <td class="cart__quantity">
-                                        <div class="pro-qty">
-                                            <input type="text" value="0">
-                                        </div>
-                                    </td>
-                                    <td class="cart__total">$ 300.0</td>
-                                    <td class="cart__close"><span class="icon_close"></span></td>
-                                </tr>
-                                    `
-                                })
-                        }
-                        document.querySelector('#cartBody').insertAdjacentHTML('afterBegin', cart);
-                    })
+
                 </script>
                 </body>
 

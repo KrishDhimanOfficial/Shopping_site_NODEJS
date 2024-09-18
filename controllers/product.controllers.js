@@ -5,7 +5,9 @@ const productSize = require('../Models/product_model/product.size.model')
 const productColor = require('../Models/product_model/product.color.model')
 const productBrand = require('../Models/product_model/product.brand.model')
 const product = require('../Models/product_model/product.model')
+const product_Cart = require('../Models/product_model/addToCart.model')
 const queries = require('../Service/query')
+const { getUser } = require('../Service/auth')
 const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
 
@@ -328,8 +330,6 @@ module.exports = {
                 }
             ]
             const products = await handleAggregatePagination(parent_Category, projection, req.params)
-            console.log(products.collectionData[0].product);
-
             res.render('site/shop', { products, categories, colors, sizes })
         } catch (error) {
             console.log('getProductByCategoryonShop :' + error.message);
@@ -470,6 +470,53 @@ module.exports = {
             await product.findByIdAndUpdate({ _id: req.params.id }, req.body)
         } catch (error) {
             console.log('updateProductRating : ' + error.message);
+        }
+    },
+    productcart: async (req, res) => {
+        try {
+            const user = getUser(req.cookies.token)
+            const cartuser = await product_Cart.findOne({ username: user.username })
+            const newpid = [...cartuser.product_id, req.body.product_id]
+            if (user) {
+                await product_Cart.updateOne(
+                    { username: user.username },
+                    { product_id: newpid })
+            }
+        } catch (error) {
+            console.log('productcart : ' + error.message);
+        }
+    },
+    getProductAddtoCart: async (req, res) => {
+        try {
+            const user = getUser(req.cookies.token)
+            const data = await product_Cart.aggregate([
+                { $match: { username: user.username } },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: 'product_id',
+                        foreignField: '_id',
+                        as: 'product'
+                    }
+                },
+            ])
+            res.render('site/shop-cart', { products: data })
+        } catch (error) {
+            console.log('getProductAddtoCart : ' + error.message);
+        }
+    },
+    deleteShoppingcartOptions: async (req, res) => {
+        try {
+            const user = getUser(req.cookies.token)
+            const req_id = new mongoose.Types.ObjectId(req.params.id);
+            const userShoppingCart = await product_Cart.findOne({ username: user.username })
+            const new_ids = userShoppingCart.product_id.filter(id => !id.equals(req_id))
+            await product_Cart.updateOne(
+                { username: user.username },
+                { $set: { product_id: new_ids } }
+            )
+        } catch (error) {
+            console.log('deleteShoppingcartOptions : ' + error.message);
         }
     }
 }

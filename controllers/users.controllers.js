@@ -1,5 +1,6 @@
 const user = require('../Models/user.model')
 const bcrypt = require('bcryptjs')
+const product_Cart = require('../Models/product_model/addToCart.model')
 const { setUser } = require('../Service/auth');
 module.exports = {
     handleUserRegister: async (req, res) => {
@@ -37,6 +38,8 @@ module.exports = {
             } else {
                 const setuser = { username: data.username }
                 const token = setUser(setuser)
+                const existing_user = await product_Cart.findOne({ username: data.username })
+                if (!existing_user) await product_Cart.create({ username: data.username })
                 res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 })
                 res.redirect('/home')
             }
