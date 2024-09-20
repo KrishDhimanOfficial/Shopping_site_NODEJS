@@ -36,10 +36,13 @@
                             </thead>
                             <tbody id="cartBody">
                                 <% if (locals.products) { %>
-                                    <% const length = products[0].product.length %>
-                                    <% products[0].product.forEach(product=> { %>
-                                        <tr id="p-<%= product._id %>">
+                                    <% products[0].cartproduct?.forEach(product=> { %>
+                                        <tr id="p-<%= product._id %>" class="rows">
                                             <td class="cart__product__item">
+                                                <input type="text" hidden class="price"
+                                                    value="<%= product.product_discount %>">
+                                                <input type="text" hidden class="p_id" value="<%= product._id %>">
+                                                <input type="text" hidden value="0" class="product_total">
                                                 <img src="http://localhost:8000/uploads/<%= product.product_image[0] %>"
                                                     alt="" class="img-fluid" style="width: 150px; height: 200px;">
                                                 <div class="cart__product__item__title">
@@ -63,7 +66,8 @@
                                                     <input type="text" value="0" class="product_quantity">
                                                 </div>
                                             </td>
-                                            <td class="cart__total"> $ 0</td>
+                                            <td class="cart__total"> $ 0
+                                            </td>
                                             <td class="cart__close">
                                                 <span class="icon_close" onclick="(()=>{
                                                 const pId = document.getElementById('p-<%= product._id %>');
@@ -82,7 +86,7 @@
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6">
                     <div class="cart__btn">
-                        <a href="#">Continue Shopping</a>
+                        <a href="/shop">Continue Shopping</a>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-sm-6">
@@ -101,7 +105,7 @@
                             <li>Subtotal <span id="subtotal"></span></li>
                             <li>Total <span id="total"></span></li>
                         </ul>
-                        <a href="#" class="primary-btn">Proceed to checkout</a>
+                        <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                     </div>
                 </div>
             </div>
@@ -132,8 +136,42 @@
                     async function UPdateCartProduct(id) {
                         await fetch(`http://localhost:8000/Shoppping/cart/${id}`, { method: 'PUT', })
                     }
+                    const rows = document.querySelectorAll('.rows')
+
+                    let grandTotal = 0;
+                    document.querySelector('#Updatecart').addEventListener('click', (e) => {
+                        e.preventDefault()
+
+                        rows.forEach((row, i) => {
+                            const id = row.querySelector('.p_id')
+                            const quantity = row.querySelector('.product_quantity')
+                            const price = row.querySelector('.price')
+                            const total = row.querySelector('.product_total')
+                            
+                            if (grandTotal <= parseInt(total.value)) grandTotal += parseInt(total.value)
+
+                            updateshopppingCart(id.value, price.value, quantity.value, total.value, grandTotal)
+                        })
+                        document.querySelector('#subtotal').innerHTML = `$${grandTotal}`
+                        document.querySelector('#total').innerHTML = `$${grandTotal}`
+                    })
 
 
+                    async function updateshopppingCart(id, p_price, p_quantity, p_total, grandtotal) {
+                        await fetch(`http://localhost:8000/updatecart/${id}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                grandTotal: grandtotal,
+                                product_details: {
+                                    pid: id,
+                                    price: parseInt(p_price),
+                                    quantity: parseInt(p_quantity),
+                                    total: parseInt(p_total)
+                                }
+                            })
+                        })
+                    }
                 </script>
                 </body>
 

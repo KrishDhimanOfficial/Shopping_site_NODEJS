@@ -392,7 +392,11 @@
                             await fetch('http://localhost:8000/addtocart', {
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ product_id: productId })
+                                body: JSON.stringify({
+                                    product_cart: {
+                                        product_details: { pid: productId }
+                                    }
+                                })
                             })
                         })
                     })

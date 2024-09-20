@@ -58,7 +58,7 @@
                                 <div class="blog__details__tags">
                                     <% if (locals.Postcategories) { %>
                                         <% Postcategories.forEach(category=> { %>
-                                            <a href="/category/<%= category.category_name %>/<%= category._id %>">
+                                            <a href="/category/<%= category.category_name %>">
                                                 <%= category.category_name %>
                                             </a>
                                             <% }) %>
@@ -181,7 +181,7 @@
                             <div class="blog__sidebar__tags">
                                 <% if (locals.Postcategories) { %>
                                     <% Postcategories.forEach(category=> { %>
-                                        <a href="/category/<%= category.category_name %>/<%= category._id %>">
+                                        <a href="/category/<%= category.category_name %>">
                                             <%= category.category_name %>
                                         </a>
                                         <% }) %>

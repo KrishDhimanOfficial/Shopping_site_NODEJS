@@ -24,6 +24,9 @@ router.get('/contact', checkUserlogin, (req, res) => {
 router.get('/blogs', checkUserlogin, (req, res) => {
     res.render('site/blogPage');
 })
+router.get('/checkout', checkUserlogin, (req, res) => {
+    res.render('site/checkout')
+})
 
 router.get('/home', checkUserlogin, productControllers.getProductByCategory)
 router.get('/products/:name/:page?', checkUserlogin, productControllers.getProductByCategoryonShop)
@@ -40,6 +43,7 @@ router.route('/product/:id')
     .get(productControllers.getSingleProductDetails)
     .put(productControllers.updateProductRating)
 router.put('/addtocart', checkUserlogin, productControllers.productcart)
-router.get('/Shoppping/cart', checkUserlogin, productControllers.getProductAddtoCart)
+router.put('/updatecart/:id', checkUserlogin, productControllers.updatecart)
+router.get('/Shoppping/cart', checkUserlogin, productControllers.getProductonAddtoCart)
 router.put('/Shoppping/cart/:id', checkUserlogin, productControllers.deleteShoppingcartOptions)
 module.exports = router
