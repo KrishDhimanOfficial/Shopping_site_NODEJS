@@ -475,18 +475,39 @@ module.exports = {
     productcart: async (req, res) => {
         try {
             const user = getUser(req.cookies.token)
-            const cartuser = await product_Cart.findOne({ username: user.username })
-            const newpid = [...cartuser.product_id, req.body.product_id]
-            if (user) {
+            const pid = new mongoose.Types.ObjectId(req.body.product_cart.product_details.pid)
+            const userShoppingCart = await product_Cart.findOne({ username: user.username })
+            const Updatedcart = [...userShoppingCart.product_cart, { product_details: { pid: pid } }]
+
+            if (userShoppingCart) {
                 await product_Cart.updateOne(
                     { username: user.username },
-                    { product_id: newpid })
+                    { product_cart: Updatedcart })
             }
         } catch (error) {
             console.log('productcart : ' + error.message);
         }
     },
-    getProductAddtoCart: async (req, res) => {
+    updatecart: async (req, res) => {
+        try {
+            const productid = new mongoose.Types.ObjectId(req.params.id)
+            const { price, quantity, total } = req.body.product_details;
+            const { grandTotal } = req.body;
+            await product_Cart.findOneAndUpdate(
+                { "product_cart.product_details.pid": productid },
+                {
+                    $set: {
+                        "product_cart.$.product_details": { pid: productid, price, quantity, total },
+                    },
+                    $set: { grandTotal }
+                },
+                { new: true }
+            )
+        } catch (error) {
+            console.log('updatecart : ' + error.message);
+        }
+    },
+    getProductonAddtoCart: async (req, res) => {
         try {
             const user = getUser(req.cookies.token)
             const data = await product_Cart.aggregate([
@@ -494,9 +515,9 @@ module.exports = {
                 {
                     $lookup: {
                         from: 'products',
-                        localField: 'product_id',
+                        localField: 'product_cart.product_details.pid',
                         foreignField: '_id',
-                        as: 'product'
+                        as: 'cartproduct'
                     }
                 },
             ])
@@ -510,10 +531,11 @@ module.exports = {
             const user = getUser(req.cookies.token)
             const req_id = new mongoose.Types.ObjectId(req.params.id);
             const userShoppingCart = await product_Cart.findOne({ username: user.username })
-            const new_ids = userShoppingCart.product_id.filter(id => !id.equals(req_id))
+
+            const new_cart = userShoppingCart.product_cart.filter(cart => !cart.product_details.pid.equals(req_id))
             await product_Cart.updateOne(
                 { username: user.username },
-                { $set: { product_id: new_ids } }
+                { $set: { product_cart: new_cart } }
             )
         } catch (error) {
             console.log('deleteShoppingcartOptions : ' + error.message);
