@@ -10,6 +10,8 @@ const queries = require('../Service/query')
 const { getUser } = require('../Service/auth')
 const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
+const Razorpay = require('razorpay')
+
 
 module.exports = {
     // Product Category Controllers
@@ -18,13 +20,11 @@ module.exports = {
             const existingCategory = await parent_Category.findOne({
                 category_name: { $regex: `^${req.body.category_name}$`, $options: "i" }
             })
-            console.log(existingCategory);
-
 
             if (existingCategory) throw new Error('Already exists!')
             const { category_name, category_desc } = req.body;
             image = req.file ? req.file.filename : null;
-            const data = await parent_Category.create({ category_name, image, category_desc })
+            await parent_Category.create({ category_name, image, category_desc })
 
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
@@ -476,33 +476,38 @@ module.exports = {
         try {
             const user = getUser(req.cookies.token)
             const pid = new mongoose.Types.ObjectId(req.body.product_cart.product_details.pid)
-            const userShoppingCart = await product_Cart.findOne({ username: user.username })
-            const Updatedcart = [...userShoppingCart.product_cart, { product_details: { pid: pid } }]
 
-            if (userShoppingCart) {
+            const userShoppingCart = await product_Cart.findOne({ username: user.username })
+            const existingpId = userShoppingCart.product_cart.filter(id => id.product_details.pid.equals(pid))
+            if (existingpId == '') {
+                const Updatedcart = [...userShoppingCart.product_cart, { product_details: { pid: pid } }]
                 await product_Cart.updateOne(
                     { username: user.username },
                     { product_cart: Updatedcart })
             }
+
         } catch (error) {
             console.log('productcart : ' + error.message);
         }
     },
     updatecart: async (req, res) => {
         try {
+            const user = getUser(req.cookies.token)
             const productid = new mongoose.Types.ObjectId(req.params.id)
             const { price, quantity, total } = req.body.product_details;
             const { grandTotal } = req.body;
+
             await product_Cart.findOneAndUpdate(
-                { "product_cart.product_details.pid": productid },
+                { username: user.username, "product_cart.product_details.pid": productid },
                 {
                     $set: {
                         "product_cart.$.product_details": { pid: productid, price, quantity, total },
+                        grandTotal
                     },
-                    $set: { grandTotal }
                 },
                 { new: true }
             )
+
         } catch (error) {
             console.log('updatecart : ' + error.message);
         }
@@ -520,7 +525,15 @@ module.exports = {
                         as: 'cartproduct'
                     }
                 },
+                {
+                    $addFields:{
+                        length:{
+                            $size: "$product_cart"
+                        }
+                    }
+                }
             ])
+            
             res.render('site/shop-cart', { products: data })
         } catch (error) {
             console.log('getProductAddtoCart : ' + error.message);
@@ -539,6 +552,44 @@ module.exports = {
             )
         } catch (error) {
             console.log('deleteShoppingcartOptions : ' + error.message);
+        }
+    },
+    getcartdetails: async (req, res) => {
+        try {
+            const user = getUser(req.cookies.token)
+            const data = await product_Cart.aggregate([
+                {
+                    $match: { username: user.username }
+                },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: 'product_cart.product_details.pid',
+                        foreignField: '_id',
+                        as: 'cartproduct'
+                    }
+                }
+            ])
+            res.render('site/checkout', { products: data[0], grandTotal: data[0].grandTotal })
+        } catch (error) {
+            console.log('getcartdetails :' + error.message);
+        }
+    },
+    orders: async (req, res) => {
+        try {
+            const razorpay = new Razorpay({
+                key_id: process.env.RazorpayID,
+                key_secret: process.env.RazorpayKEY
+            })
+            const options = req.body
+            const order = await razorpay.orders.create(options)
+            console.log(order);
+
+
+            if (!order) return res.status(500).json('Error')
+            res.json(order)
+        } catch (error) {
+            console.log('orders : ' + error.message)
         }
     }
 }

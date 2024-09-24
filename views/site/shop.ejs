@@ -140,7 +140,8 @@
                                                                         </button>
                                                                     </li>
                                                                     <li>
-                                                                        <button class="cart">
+                                                                        <button class="cart"
+                                                                            data-id="<%= product._id %>">
                                                                             <span class="icon_bag_alt"></span>
                                                                         </button>
                                                                     </li>
@@ -255,7 +256,8 @@
                                                                                                     </li>
                                                                                                     <li>
                                                                                                         <button
-                                                                                                            class="cart">
+                                                                                                            class="cart"
+                                                                                                            data-id="<%= product._id %>">
                                                                                                             <span
                                                                                                                 class="icon_bag_alt"></span>
                                                                                                         </button>
@@ -385,7 +387,6 @@
             <%- include('../site_partials/script') %>
                 <script>
                     const cartbtn = document.querySelectorAll('.cart');
-
                     cartbtn.forEach(btn => {
                         btn.addEventListener('click', async () => {
                             const productId = btn.dataset.id;
@@ -393,9 +394,7 @@
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    product_cart: {
-                                        product_details: { pid: productId }
-                                    }
+                                    product_cart: { product_details: { pid: productId } }
                                 })
                             })
                         })

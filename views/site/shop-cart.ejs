@@ -105,7 +105,8 @@
                             <li>Subtotal <span id="subtotal"></span></li>
                             <li>Total <span id="total"></span></li>
                         </ul>
-                        <a href="/checkout" class="primary-btn">Proceed to checkout</a>
+                        <a href="/checkout" id="checkoutbtn" class="primary-btn">Proceed to checkout</a>
+                        <input type="number" hidden id="grandtotal">
                     </div>
                 </div>
             </div>
@@ -137,6 +138,8 @@
                         await fetch(`http://localhost:8000/Shoppping/cart/${id}`, { method: 'PUT', })
                     }
                     const rows = document.querySelectorAll('.rows')
+                    document.querySelector('#checkoutbtn').classList.add('disabled')
+
 
                     let grandTotal = 0;
                     document.querySelector('#Updatecart').addEventListener('click', (e) => {
@@ -147,15 +150,19 @@
                             const quantity = row.querySelector('.product_quantity')
                             const price = row.querySelector('.price')
                             const total = row.querySelector('.product_total')
-                            
-                            if (grandTotal <= parseInt(total.value)) grandTotal += parseInt(total.value)
-
+                            if (grandTotal < parseInt(total.value)) grandTotal += parseInt(total.value)
                             updateshopppingCart(id.value, price.value, quantity.value, total.value, grandTotal)
                         })
+
+                        const cartalltotal = document.querySelector('#grandtotal')
+                        cartalltotal.value = grandTotal;
+                        if (cartalltotal.value && cartalltotal.value > 0) {
+                            document.querySelector('#checkoutbtn').classList.remove('disabled')
+                        }
+
                         document.querySelector('#subtotal').innerHTML = `$${grandTotal}`
                         document.querySelector('#total').innerHTML = `$${grandTotal}`
                     })
-
 
                     async function updateshopppingCart(id, p_price, p_quantity, p_total, grandtotal) {
                         await fetch(`http://localhost:8000/updatecart/${id}`, {

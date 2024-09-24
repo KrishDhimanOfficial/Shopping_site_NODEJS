@@ -24,7 +24,7 @@ module.exports = {
             }
             res.redirect('/home');
         } catch (error) {
-            console.log(error.message);
+            console.log(' handleUserRegister : ' + error.message);
         }
     },
     handleUserLogin: async (req, res) => {
@@ -44,7 +44,7 @@ module.exports = {
                 res.redirect('/home')
             }
         } catch (error) {
-            console.log(error.message);
+            console.log('handleUserLogin : ' + error.message);
         }
-    }
+    }                                                                                                                                                                                     
 }
