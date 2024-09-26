@@ -1,4 +1,3 @@
-
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Ashion Template">
@@ -52,46 +51,85 @@
         </div>
     </div>
     <!-- Offcanvas Menu End -->
-<header class="header">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-3 col-lg-2">
-                <div class="header__logo">
-                    <a href="/home"><img src="/images/logo.png" alt=""></a>
-                </div>
-            </div>
-            <div class="col-xl-6 col-lg-7">
-                <nav class="header__menu">
-                    <ul class="d-flex justify-content-center">
-                        <li class="active"><a href="/home">Home</a></li>
-                        <li><a href="/products/women">Women’s</a></li>
-                        <li><a href="/products/men">Men’s</a></li>
-                        <li><a href="/shop">Shop</a></li>
-                        <li><a href="/blogs">Blog</a></li>
-                        <li><a href="/contact">Contact</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <div class="col-lg-3">
-                <div class="header__right">
-                    <div class="header__right__auth">
-                        <a href="/login">Login</a>
-                        <a href="/register">Register</a>
+    <header class="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-3 col-lg-2">
+                    <div class="header__logo">
+                        <a href="/home"><img src="/images/logo.png" alt=""></a>
                     </div>
-                    <ul class="header__right__widget">
-                        <li><span class="icon_search search-switch"></span></li>
-                        <li><a href="#"><span class="icon_heart_alt"></span>
-                            <div class="tip">0</div>
-                        </a></li>
-                        <li><a href="/Shoppping/cart"><span class="icon_bag_alt"></span>
-                            <div id="cart" class="tip"></div>
-                        </a></li>
-                    </ul>
+                </div>
+                <div class="col-xl-6 col-lg-7">
+                    <nav class="header__menu">
+                        <ul class="d-flex justify-content-center">
+                            <% if (locals.route) { %>
+                                <li class="<%= route === '/home' ? 'active' : ''%>">
+                                    <a href="/home">Home</a>
+                                </li>
+                                <li class="<%= route  === '/products/women' ? 'active' : ''%>">
+                                    <a href="/products/women">Women’s</a>
+                                </li>
+                                <li class="<%= route === '/products/men' ? 'active' : ''%>">
+                                    <a href="/products/men">Men’s</a>
+                                </li>
+                                <li class="<%= route  === '/shop' ? 'active' : ''%>">
+                                    <a href="/shop">Shop</a>
+                                </li>
+                                <li class="<%= route  === '/blogs' ? 'active' : ''%>">
+                                    <a href="/blogs">Blog</a>
+                                </li>
+                                <li class="<%= route === '/contact' ? 'active' : ''%>">
+                                    <a href="/contact">Contact</a>
+                                </li>
+                                <% } else { %>
+                                    <li>
+                                        <a href="/home">Home</a>
+                                    </li>
+                                    <li>
+                                        <a href="/products/women">Women’s</a>
+                                    </li>
+                                    <li>
+                                        <a href="/products/men">Men’s</a>
+                                    </li>
+                                    <li>
+                                        <a href="/shop">Shop</a>
+                                    </li>
+                                    <li>
+                                        <a href="/blogs">Blog</a>
+                                    </li>
+                                    <li>
+                                        <a href="/contact">Contact</a>
+                                    </li>
+                                    <% } %>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3">
+                    <div class="header__right">
+                        <div class="header__right__auth">
+                            <a href="/login">Login</a>
+                            <a href="/register">Register</a>
+                        </div>
+                        <ul class="header__right__widget">
+                            <li><span class="icon_search search-switch"></span></li>
+                            <li>
+                                <a href="#">
+                                    <span class="icon_heart_alt"></span>
+                                    <div class="tip">0</div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/Shoppping/cart">
+                                    <span class="icon_bag_alt"></span>
+                                    <div id="cart" class="tip"></div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
+            <div class="canvas__open">
+                <i class="fa fa-bars"></i>
+            </div>
         </div>
-        <div class="canvas__open">
-            <i class="fa fa-bars"></i>
-        </div>
-    </div>
-</header>
+    </header>

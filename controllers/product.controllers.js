@@ -11,6 +11,7 @@ const { getUser } = require('../Service/auth')
 const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
 const Razorpay = require('razorpay')
+const { login } = require('../Middleware/checkUserlogin')
 
 
 module.exports = {
@@ -290,7 +291,8 @@ module.exports = {
             const products = await product.aggregate(queries.productQuery).limit(8)
 
             res.render('site/home', {
-                products, product_categories
+                products, product_categories,
+                route: req.path
             })
         } catch (error) {
             console.log('getProductByCategory : ' + error.message);
@@ -330,7 +332,7 @@ module.exports = {
                 }
             ]
             const products = await handleAggregatePagination(parent_Category, projection, req.params)
-            res.render('site/shop', { products, categories, colors, sizes })
+            res.render('site/shop', { products, categories, colors, sizes,route:req.path })
         } catch (error) {
             console.log('getProductByCategoryonShop :' + error.message);
         }
@@ -360,7 +362,7 @@ module.exports = {
                 }
             ]
             const allProducts = await handleAggregatePagination(product, projection, req.params)
-            res.render('site/shop', { allProducts, categories, colors, sizes })
+            res.render('site/shop', { allProducts, categories, colors, sizes, route: req.path })
         } catch (error) {
             console.log('showAllproducts :' + error.message);
         }
@@ -380,35 +382,49 @@ module.exports = {
                 },
                 { $project: { category_name: 1, sub: 1 } }
             ])
+
             const projection = [
-                { $match: { category_name: { $regex: req.params.parent_category, $options: 'i' } } },
                 {
                     $lookup: {
-                        from: 'products',
-                        localField: '_id',
-                        foreignField: 'product_parent_category_id',
-                        as: 'product'
+                        from: 'parent_categories',
+                        localField: 'product_parent_category_id',
+                        foreignField: '_id',
+                        as: 'parent_category',
+                    }
+                },
+                { $unwind: '$parent_category' },
+                {
+                    $match: {
+                        'parent_category.category_name': {
+                            $regex: req.params.parent_category,
+                            $options: 'i'
+                        }
                     }
                 },
                 {
-                    $addFields: {
-                        sub_category_products: {
-                            $filter: {
-                                input: "$product",
-                                cond: {
-                                    $eq: [
-                                        '$$this.product_sub_category_id',
-                                        new mongoose.Types.ObjectId(req.params.id)
-                                    ]
-                                }
-                            }
-                        },
+                    $lookup: {
+                        from: 'sub_categories',
+                        localField: 'product_sub_category_id',
+                        foreignField: '_id',
+                        as: 'sub_category',
                     }
                 },
-                { $project: { sub: 0, product: 0, image: 0, category_desc: 0, _id: 0 } }
+                { $unwind: '$sub_category' },
+                {
+                    $match: {
+                        'sub_category.category_name': {
+                            $regex: req.params.sub_category,
+                            $options: 'i'
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        sub_category: 0, parent_category: 0
+                    }
+                }
             ]
-
-            const sub_category_products = await handleAggregatePagination(parent_Category, projection, req.params)
+            const sub_category_products = await handleAggregatePagination(product, projection, req.params)
             res.render('site/shop', { sub_category_products, colors, sizes, categories })
         } catch (error) {
             console.log('getSub_categoryProduct :' + error.message);
@@ -416,6 +432,7 @@ module.exports = {
     },
     getSingleProductDetails: async (req, res) => {
         try {
+            const relatedProducts = await product.find({}).limit(4)
             const singleProduct = await product.aggregate([
                 { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
                 {
@@ -451,7 +468,7 @@ module.exports = {
                     }
                 }
             ])
-            res.render('site/productDetails', { singleProduct })
+            res.render('site/productDetails', { singleProduct, relatedProducts })
         } catch (error) {
             console.log('getSingleProductDetails :' + error.message);
         }
@@ -479,13 +496,13 @@ module.exports = {
 
             const userShoppingCart = await product_Cart.findOne({ username: user.username })
             const existingpId = userShoppingCart.product_cart.filter(id => id.product_details.pid.equals(pid))
+
             if (existingpId == '') {
                 const Updatedcart = [...userShoppingCart.product_cart, { product_details: { pid: pid } }]
                 await product_Cart.updateOne(
                     { username: user.username },
                     { product_cart: Updatedcart })
             }
-
         } catch (error) {
             console.log('productcart : ' + error.message);
         }
@@ -497,11 +514,17 @@ module.exports = {
             const { price, quantity, total } = req.body.product_details;
             const { grandTotal } = req.body;
 
+
             await product_Cart.findOneAndUpdate(
-                { username: user.username, "product_cart.product_details.pid": productid },
+                {
+                    username: user.username,
+                    "product_cart.product_details.pid": productid
+                },
                 {
                     $set: {
-                        "product_cart.$.product_details": { pid: productid, price, quantity, total },
+                        "product_cart.$.product_details": {
+                            pid: productid, price, quantity, total
+                        },
                         grandTotal
                     },
                 },
@@ -524,16 +547,8 @@ module.exports = {
                         foreignField: '_id',
                         as: 'cartproduct'
                     }
-                },
-                {
-                    $addFields:{
-                        length:{
-                            $size: "$product_cart"
-                        }
-                    }
                 }
             ])
-            
             res.render('site/shop-cart', { products: data })
         } catch (error) {
             console.log('getProductAddtoCart : ' + error.message);

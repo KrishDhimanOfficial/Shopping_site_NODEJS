@@ -67,12 +67,12 @@
                                 <div class="quantity">
                                     <span>Quantity:</span>
                                     <div class="pro-qty">
-                                        <input type="text" value="1">
+                                        <input type="text" value="0" id="single_product_quantity">
                                     </div>
                                 </div>
-                                <button type="button" class="cart-btn" onclick="((e)=>{
-                                        addToCart('<%= singleProduct[0]._id %>')
-                                        })()"><span class="icon_bag_alt"></span>
+                                <button type="button" class="cart-btn" id="addtocart"
+                                    data-id="<%= singleProduct[0]._id  %>">
+                                    <span class="icon_bag_alt"></span>
                                     Add to cart</button>
                                 <ul>
                                     <li><a href="#"><span class="icon_heart_alt"></span></a></li>
@@ -204,100 +204,59 @@
                             <h5>RELATED PRODUCTS</h5>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/images/product/related/rp-1.jpg">
-                                <div class="label new">New</div>
-                                <ul class="product__hover">
-                                    <li><a href="/images/product/related/rp-1.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Buttons tweed blazer</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
+                    <% if (locals.relatedProducts) { %>
+                        <% relatedProducts.forEach(product=> { %>
+                            <div class="col-lg-3 col-md-4 col-sm-6">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg"
+                                        data-setbg="/uploads/<%= product.product_image[0] %>">
+                                        <% if (product.product_new==true) { %>
+                                            <div class="label new"> New </div>
+                                            <% } %>
+                                                <% if( product.product_on_sales==true) { %>
+                                                    <div class="label sale">Sale
+                                                    </div>
+                                                    <% }%>
+                                                        <ul class="product__hover">
+                                                            <li>
+                                                                <a href="/uploads/<%= product.product_image[0] %>"
+                                                                    class="image-popup">
+                                                                    <span class="arrow_expand"></span>
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <button>
+                                                                    <span class="icon_heart_alt like"></span>
+                                                                </button>
+                                                            </li>
+                                                            <li>
+                                                                <button class="cart" data-id="<%= product._id %>">
+                                                                    <span class="icon_bag_alt"></span>
+                                                                </button>
+                                                            </li>
+                                                        </ul>
+                                    </div>
+                                    <div class="product__item__text">
+                                        <h6>
+                                            <a href="/product/<%= product._id%>">
+                                                <%= product.product_title %>
+                                            </a>
+                                        </h6>
+                                        <div class="rating">
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                            <i class="fa fa-star"></i>
+                                        </div>
+                                        <div class="product__price">
+                                            $ <%= product.product_price %>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="product__price">$ 59.0</div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/images/product/related/rp-2.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="/images/product/related/rp-2.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Flowy striped skirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 49.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/images/product/related/rp-3.jpg">
-                                <div class="label stockout">out of stock</div>
-                                <ul class="product__hover">
-                                    <li><a href="/images/product/related/rp-3.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Cotton T-Shirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6">
-                        <div class="product__item">
-                            <div class="product__item__pic set-bg" data-setbg="/images/product/related/rp-4.jpg">
-                                <ul class="product__hover">
-                                    <li><a href="/images/product/related/rp-4.jpg" class="image-popup"><span
-                                                class="arrow_expand"></span></a></li>
-                                    <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                                    <li><a href="#"><span class="icon_bag_alt"></span></a></li>
-                                </ul>
-                            </div>
-                            <div class="product__item__text">
-                                <h6><a href="#">Slim striped pocket shirt</a></h6>
-                                <div class="rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                </div>
-                                <div class="product__price">$ 59.0</div>
-                            </div>
-                        </div>
-                    </div>
+                            <% }) %>
+                                <% } %>
                 </div>
             </div>
             <% } %>
@@ -323,10 +282,29 @@
             <!-- Search End -->
             <%- include('../site_partials/script') %>
                 <script>
-                    const productID = []
-                    async function addToCart(id) {
-                        productID.push(id)
-                        localStorage.setItem("IDs", productID)
+                    const cartBtn = document.querySelector('#addtocart')
+                    cartBtn.onclick = async () => {
+                        const quantity = document.querySelector('#single_product_quantity')
+                        const productId = cartBtn.dataset.id;
+
+                        if (quantity.value) {
+                            await fetch(`http://localhost:8000/updatecart/${productId}`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    product_details: {
+                                        pid: productId, quantity: parseInt(quantity.value),
+                                    }
+                                })
+                            })
+                        }
+                        await fetch('http://localhost:8000/addtocart', {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                product_cart: { product_details: { pid: productId } }
+                            })
+                        })
                     }
                 </script>
                 </body>

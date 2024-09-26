@@ -197,13 +197,13 @@
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                 <script>
                     var options = {
-                        key: "rzp_test_MJo0dgy1G9lLYA", // Enter the Key ID generated from the Dashboard
-                        amount: "<%= grandTotal %>", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        key: "rzp_test_MJo0dgy1G9lLYA", 
+                        amount: "<%= grandTotal %>", 
                         currency: "INR",
                         name: "Ashion", //your business name
                         description: "Test Transaction",
                         image: "http://localhost:8000/images/logo.png",
-                        order_id: "order_P0wbse6khQix4W", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                        order_id: "order_P1NesoZoCiQSDG",
                         handler: function (response) {
                             alert(response.razorpay_payment_id);
                             alert(response.razorpay_order_id);
@@ -215,7 +215,7 @@
                         theme: {
                             color: "#3399cc"
                         }
-                    };
+                    }
                     var rzp1 = new Razorpay(options);
                     rzp1.on('payment.failed', function (response) {
                         alert(response.error.code);
@@ -225,7 +225,8 @@
                         alert(response.error.reason);
                         alert(response.error.metadata.order_id);
                         alert(response.error.metadata.payment_id);
-                    });
+                    })
+
                     document.getElementById('rzp-button1').onclick = async function (e) {
                         rzp1.open();
                         e.preventDefault();

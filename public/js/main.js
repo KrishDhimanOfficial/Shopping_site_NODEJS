@@ -224,12 +224,14 @@ Created: Colorib
             }
         }
 
-        const price = e.target.parentNode.parentNode.parentNode.querySelector('.cart__product__item .price').value;
+        const price = e.target.parentNode.parentNode.parentNode.querySelector('.cart__product__item .price')?.value;
         const total_price = e.target.parentNode.parentNode.parentNode.querySelector('.cart__total')
         const total_priceField = e.target.parentNode.parentNode.parentNode.querySelector('.product_total')
 
-        total_price.innerHTML = `$${parseInt(price) * newVal}`
-        total_priceField.value = parseInt(price) * newVal
+        if (price) {
+            total_price.innerHTML = `$${parseInt(price) * newVal}`
+            total_priceField.value = parseInt(price) * newVal
+        }
 
 
         $button.parent().find('input').val(newVal);

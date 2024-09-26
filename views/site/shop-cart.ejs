@@ -42,7 +42,7 @@
                                                 <input type="text" hidden class="price"
                                                     value="<%= product.product_discount %>">
                                                 <input type="text" hidden class="p_id" value="<%= product._id %>">
-                                                <input type="text" hidden value="0" class="product_total">
+                                                <input type="text" hidden class="product_total" value="0">
                                                 <img src="http://localhost:8000/uploads/<%= product.product_image[0] %>"
                                                     alt="" class="img-fluid" style="width: 150px; height: 200px;">
                                                 <div class="cart__product__item__title">
@@ -63,7 +63,7 @@
                                             </td>
                                             <td class="cart__quantity">
                                                 <div class="pro-qty">
-                                                    <input type="text" value="0" class="product_quantity">
+                                                    <input type="text" value="<%= product.quantity ?? 0 %>" class="product_quantity">
                                                 </div>
                                             </td>
                                             <td class="cart__total"> $ 0
@@ -137,20 +137,21 @@
                     async function UPdateCartProduct(id) {
                         await fetch(`http://localhost:8000/Shoppping/cart/${id}`, { method: 'PUT', })
                     }
-                    const rows = document.querySelectorAll('.rows')
+
                     document.querySelector('#checkoutbtn').classList.add('disabled')
 
+                    const rows = document.querySelectorAll('.rows')
 
-                    let grandTotal = 0;
                     document.querySelector('#Updatecart').addEventListener('click', (e) => {
+                        let grandTotal = 0;
                         e.preventDefault()
 
-                        rows.forEach((row, i) => {
+                        rows.forEach(row => {
                             const id = row.querySelector('.p_id')
                             const quantity = row.querySelector('.product_quantity')
                             const price = row.querySelector('.price')
                             const total = row.querySelector('.product_total')
-                            if (grandTotal < parseInt(total.value)) grandTotal += parseInt(total.value)
+                            grandTotal += parseInt(total.value)
                             updateshopppingCart(id.value, price.value, quantity.value, total.value, grandTotal)
                         })
 
