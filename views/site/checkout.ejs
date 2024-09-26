@@ -196,50 +196,47 @@
             <%- include('../site_partials/script') %>
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
                 <script>
-                    var options = {
-                        key: "rzp_test_MJo0dgy1G9lLYA", 
-                        amount: "<%= grandTotal %>", 
-                        currency: "INR",
-                        name: "Ashion", //your business name
-                        description: "Test Transaction",
-                        image: "http://localhost:8000/images/logo.png",
-                        order_id: "order_P1NesoZoCiQSDG",
-                        handler: function (response) {
-                            alert(response.razorpay_payment_id);
-                            alert(response.razorpay_order_id);
-                            alert(response.razorpay_signature)
-                        },
-                        notes: {
-                            address: "Razorpay Corporate Office"
-                        },
-                        theme: {
-                            color: "#3399cc"
-                        }
-                    }
-                    var rzp1 = new Razorpay(options);
-                    rzp1.on('payment.failed', function (response) {
-                        alert(response.error.code);
-                        alert(response.error.description);
-                        alert(response.error.source);
-                        alert(response.error.step);
-                        alert(response.error.reason);
-                        alert(response.error.metadata.order_id);
-                        alert(response.error.metadata.payment_id);
-                    })
+                    document.querySelector('#rzp-button1').onclick = async (e) => {
+                        e.preventDefault()
 
-                    document.getElementById('rzp-button1').onclick = async function (e) {
-                        rzp1.open();
-                        e.preventDefault();
-
-                        await fetch('http://localhost:8000/order', {
+                        const response = await fetch('http://localhost:8000/orders', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', },
                             body: JSON.stringify({
-                                amount: "<%= grandTotal %>",
-                                currency: "INR",
-                                receiptId: "qwsaq1"
+                                amount: parseInt('<%= grandTotal %>') * 100,
+                                currency: "USD",
+                                receipt: "qwsaq1"
                             })
                         })
+
+                        const order = await response.json()
+                        var options = {
+                            key: "rzp_test_MJo0dgy1G9lLYA",
+                            amount: "<%= grandTotal %>",
+                            currency: "USD",
+                            name: "Ashion",
+                            description: "Test Transaction",
+                            image: "http://localhost:8000/images/logo.png",
+                            order_id: `${order.id}`,
+                            // handler: function (response) {
+                            //     alert(response.razorpay_payment_id);
+                            //     alert(response.razorpay_order_id);
+                            //     alert(response.razorpay_signature)
+                            // },
+                            notes: { address: "Razorpay Corporate Office" },
+                            theme: { color: "#3399cc" }
+                        }
+                        var rzp1 = new window.Razorpay(options);
+                        rzp1.on('payment.failed', function (response) {
+                            // alert(response.error.code);
+                            // alert(response.error.description);
+                            // alert(response.error.source);
+                            // alert(response.error.step);
+                            // alert(response.error.reason);
+                            // alert(response.error.metadata.order_id);
+                            // alert(response.error.metadata.payment_id);
+                        })
+                        rzp1.open()
                     }
                 </script>
                 </body>

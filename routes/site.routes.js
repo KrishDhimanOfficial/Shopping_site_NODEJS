@@ -46,7 +46,7 @@ router.put('/updatecart/:id', checkUserlogin, productControllers.updatecart)
 router.get('/Shoppping/cart', checkUserlogin, productControllers.getProductonAddtoCart)
 router.put('/Shoppping/cart/:id', checkUserlogin, productControllers.deleteShoppingcartOptions)
 router.get('/checkout', checkUserlogin, productControllers.getcartdetails)
-router.post('/order', checkUserlogin, productControllers.orders)
+router.post('/orders', checkUserlogin, productControllers.order)
 
 
 module.exports = router

@@ -29,7 +29,7 @@ module.exports = {
     },
     handleUserLogin: async (req, res) => {
         try {
-            const { email, password } = req.body
+            const { email, password } = req.body;
             const data = await user.findOne({ email })
             const ismatch = await bcrypt.compare(password, data.password)
 

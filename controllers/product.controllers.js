@@ -11,7 +11,6 @@ const { getUser } = require('../Service/auth')
 const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
 const Razorpay = require('razorpay')
-const { login } = require('../Middleware/checkUserlogin')
 
 
 module.exports = {
@@ -332,7 +331,7 @@ module.exports = {
                 }
             ]
             const products = await handleAggregatePagination(parent_Category, projection, req.params)
-            res.render('site/shop', { products, categories, colors, sizes,route:req.path })
+            res.render('site/shop', { products, categories, colors, sizes, route: req.path })
         } catch (error) {
             console.log('getProductByCategoryonShop :' + error.message);
         }
@@ -590,16 +589,14 @@ module.exports = {
             console.log('getcartdetails :' + error.message);
         }
     },
-    orders: async (req, res) => {
+    order: async (req, res) => {
         try {
             const razorpay = new Razorpay({
                 key_id: process.env.RazorpayID,
                 key_secret: process.env.RazorpayKEY
             })
-            const options = req.body
+            const options = req.body;
             const order = await razorpay.orders.create(options)
-            console.log(order);
-
 
             if (!order) return res.status(500).json('Error')
             res.json(order)
