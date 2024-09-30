@@ -47,6 +47,6 @@ router.get('/Shoppping/cart', checkUserlogin, productControllers.getProductonAdd
 router.put('/Shoppping/cart/:id', checkUserlogin, productControllers.deleteShoppingcartOptions)
 router.get('/checkout', checkUserlogin, productControllers.getcartdetails)
 router.post('/orders', checkUserlogin, productControllers.order)
-
+router.post('/order/validate',checkUserlogin, productControllers.validateOrder)
 
 module.exports = router

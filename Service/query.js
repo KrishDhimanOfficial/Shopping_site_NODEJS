@@ -1,4 +1,46 @@
 module.exports = {
+    getOrderData:[
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'userDetails'
+            }
+        },
+        {
+            $unwind: '$userDetails'
+        },
+        {
+            $lookup: {
+                from: "products",
+                localField: "items.pid",
+                foreignField: "_id",
+                as: "product"
+            }
+        },
+        {
+            $project: {
+                'product.product_title': 1,
+                'product.product_image': 1,
+                // 'product.product_discount': 1,
+                'userDetails.username': 1,
+                shippingAddress: 1,
+                // contact: 1,
+                // order_note: 1,
+                status: 1,
+                totalAmount: 1,
+                // razorpay_payment_id: 1,
+                // razorpay_order_id: 1,
+                formattedDate: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$createdAt"
+                    }
+                }
+            }
+        }
+    ],
     getCategorizeProduct: [
         {
             $lookup: {

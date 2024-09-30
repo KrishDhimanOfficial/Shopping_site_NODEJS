@@ -28,7 +28,7 @@
                         here to enter your code.</h6>
                 </div>
             </div>
-            <form action="#" class="checkout__form">
+            <form class="checkout__form">
                 <div class="row">
                     <div class="col-lg-8">
                         <h5>Billing detail</h5>
@@ -36,48 +36,49 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="checkout__form__input">
                                     <p>First Name <span>*</span></p>
-                                    <input type="text">
+                                    <input type="text" id="first_name">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="checkout__form__input">
                                     <p>Last Name <span>*</span></p>
-                                    <input type="text">
+                                    <input type="text" id="last_name">
                                 </div>
                             </div>
                             <div class="col-lg-12">
                                 <div class="checkout__form__input">
                                     <p>Country <span>*</span></p>
-                                    <input type="text">
+                                    <input type="text" id="country">
                                 </div>
                                 <div class="checkout__form__input">
                                     <p>Address <span>*</span></p>
-                                    <input type="text" placeholder="Street Address">
-                                    <input type="text" placeholder="Apartment. suite, unite ect ( optinal )">
+                                    <input type="text" placeholder="Street Address" id="street_address">
+                                    <input type="text" placeholder="Apartment. suite, unite ect ( optinal )"
+                                        id="address">
                                 </div>
                                 <div class="checkout__form__input">
                                     <p>Town/City <span>*</span></p>
-                                    <input type="text">
+                                    <input type="text" id="city">
                                 </div>
                                 <div class="checkout__form__input">
                                     <p>Country/State <span>*</span></p>
-                                    <input type="text">
+                                    <input type="text" id="state">
                                 </div>
                                 <div class="checkout__form__input">
                                     <p>Postcode/Zip <span>*</span></p>
-                                    <input type="text">
+                                    <input type="text" id="pincode">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="checkout__form__input">
                                     <p>Phone <span>*</span></p>
-                                    <input type="text">
+                                    <input type="text" id="phone_no">
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="checkout__form__input">
                                     <p>Email <span>*</span></p>
-                                    <input type="text">
+                                    <input type="email" id="email">
                                 </div>
                             </div>
                             <div class="col-lg-12">
@@ -90,20 +91,14 @@
                                     <p>Create am acount by entering the information below. If you are a returing
                                         customer login at the <br />top of the page</p>
                                 </div>
-                                <div class="checkout__form__input">
-                                    <p>Account Password <span>*</span></p>
-                                    <input type="text">
-                                </div>
                                 <div class="checkout__form__checkbox">
-                                    <label for="note">
+                                    <label for="note" class="pl-0">
                                         Note about your order, e.g, special noe for delivery
-                                        <input type="checkbox" id="note">
-                                        <span class="checkmark"></span>
                                     </label>
                                 </div>
                                 <div class="checkout__form__input">
                                     <p>Oder notes <span>*</span></p>
-                                    <input type="text"
+                                    <input type="text" id="order_note"
                                         placeholder="Note about your order, e.g, special noe for delivery">
                                 </div>
                             </div>
@@ -118,15 +113,26 @@
                                         <span class="top__text">Product</span>
                                         <span class="top__text__right">Total</span>
                                     </li>
-                                    <% for( let i=0; i < products.product_cart.length; i++ ) { %>
-                                        <% const obj=products.product_cart[i].product_details %>
-                                            <% let product_name=products.cartproduct[i].product_title %>
-                                                <li> 0
-                                                    <%= i + 1 %>.
-                                                        <%= product_name %>
-                                                            <span>$ <%= obj.total %></span>
-                                                </li>
-                                                <% } %>
+                                    <% if (locals.products) { %>
+                                        <input type="text" hidden id="userObjId" value="<%= userDetails[0]._id %>">
+                                        <% } %>
+                                            <% for( let i=0; i < products.product_cart.length; ++i ) { %>
+                                                <% const obj=products.product_cart[i].product_details %>
+                                                    <% const product_name=products.cartproduct[i].product_title %>
+                                                        <% const pid=products.cartproduct[i]._id %>
+                                                            <% const
+                                                                quantity=products.product_cart[i].product_details.quantity
+                                                                %>
+                                                                <li> 0
+                                                                    <%= i + 1 %>.
+                                                                        <%= product_name %>
+                                                                            <span>$ <%= obj.total %> </span>
+                                                                            <input type="number" class="p_quantity"
+                                                                                value="<%= quantity %>" hidden>
+                                                                            <input type="text" class="pid"
+                                                                                value="<%= pid %>" hidden>
+                                                                </li>
+                                                                <% } %>
                                 </ul>
                             </div>
                             <div class="checkout__order__total">
@@ -142,6 +148,8 @@
                                         <span>$
                                             <% if (locals.grandTotal) { %>
                                                 <%= grandTotal %>
+                                                    <input type="number" hidden id="grandtotal"
+                                                        value="<%= grandTotal %>">
                                                     <% } %>
                                         </span>
                                     </li>
@@ -160,9 +168,9 @@
                                     <input type="checkbox" id="check-payment">
                                     <span class="checkmark"></span>
                                 </label>
-                                <label for="paypal">
-                                    PayPal
-                                    <input type="checkbox" id="paypal">
+                                <label for="razorpay">
+                                    Razorpay
+                                    <input type="checkbox" id="razorpay">
                                     <span class="checkmark"></span>
                                 </label>
                             </div>
@@ -198,7 +206,18 @@
                 <script>
                     document.querySelector('#rzp-button1').onclick = async (e) => {
                         e.preventDefault()
+                        const q_input = document.querySelectorAll('.p_quantity')
+                        const pid_input = document.querySelectorAll('.pid')
+                        const quantity = q_input.forEach(quantity => quantity.value)
 
+                        const items = []
+                        for (let i = 0; i < pid_input.length; ++i) {
+                            let obj = {
+                                pid: pid_input[i].value,
+                                quantity: parseInt(q_input[i].value)
+                            }
+                            items.push(obj)
+                        }
                         const response = await fetch('http://localhost:8000/orders', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', },
@@ -214,15 +233,41 @@
                             key: "rzp_test_MJo0dgy1G9lLYA",
                             amount: "<%= grandTotal %>",
                             currency: "USD",
-                            name: "Ashion",
+                            id: "Ashion",
                             description: "Test Transaction",
-                            image: "http://localhost:8000/images/logo.png",
+                            image: "/images/logo.png",
                             order_id: `${order.id}`,
-                            // handler: function (response) {
-                            //     alert(response.razorpay_payment_id);
-                            //     alert(response.razorpay_order_id);
-                            //     alert(response.razorpay_signature)
-                            // },
+                            handler: async (response) => {
+                                await fetch('http://localhost:8000/order/validate', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json', },
+                                    body: JSON.stringify({
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                        razorpay_signature: response.razorpay_signature,
+                                        userId: document.querySelector('#userObjId').value,
+                                        order_note: document.querySelector('#order_note').value,
+                                        totalAmount: parseInt(document.querySelector('#grandtotal').value),
+                                        items: items,
+                                        contact: {
+                                            first_name: document.querySelector('#first_name').value,
+                                            last_name: document.querySelector('#last_name').value,
+                                            phone_no: parseInt(document.querySelector('#phone_no').value),
+                                            email: document.querySelector('#email').value,
+                                        },
+                                        shippingAddress: {
+                                            main_address: document.querySelector('#street_address').value,
+                                            optional_address: document.querySelector('#address').value,
+                                            city: document.querySelector('#city').value,
+                                            state: document.querySelector('#state').value,
+                                            country: document.querySelector('#country').value,
+                                            pincode: document.querySelector('#pincode').value,
+                                        }
+                                    })
+                                })
+                                    .then(res => res.json())
+                                    .then(data => window.location.href = 'http://localhost:8000/home')
+                            },
                             notes: { address: "Razorpay Corporate Office" },
                             theme: { color: "#3399cc" }
                         }

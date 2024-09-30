@@ -301,7 +301,7 @@
                     const cartbtn = document.querySelectorAll('.cart');
                     cartbtn.forEach(btn => {
                         btn.addEventListener('click', async () => {
-                            const productId = btn.dataset.id;
+                            const productId = btn.dataset.id;                            
                             await fetch('http://localhost:8000/addtocart', {
                                 method: 'PUT',
                                 headers: { 'Content-Type': 'application/json' },

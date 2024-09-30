@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const login = require('../Middleware/login')
-const { blogImageupload, productImageupload,categoryImageupload} = require('../Middleware/multer.js')
+const { blogImageupload, productImageupload, categoryImageupload } = require('../Middleware/multer.js')
 const checkLogin = require('../Middleware/checkLogin')
 const Admin = require('../controllers/admin.controllers')
 const blogControllers = require('../controllers/blog.controller')
@@ -63,12 +63,17 @@ router.route('/api/parent_category')
 router.get('/productcategory', checkLogin, productControllers.showAllCategories)
 
 router.get('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
+
 router.post('/api/attributes/color', checkLogin, productControllers.createColor)
 router.delete('/api/attributes/color/:id', checkLogin, productControllers.deleteColor)
+
 router.post('/api/attributes/size', checkLogin, productControllers.createSize)
 router.delete('/api/attributes/size/:id', checkLogin, productControllers.deleteSize)
+
 router.post('/api/attributes/brand', checkLogin, productControllers.createBrand)
 router.delete('/api/attributes/brand/:id', checkLogin, productControllers.deleteBrand)
 
+// Product orders Routes
+router.get('/products/orders', checkLogin, productControllers.getOrders)
 
 module.exports = router;

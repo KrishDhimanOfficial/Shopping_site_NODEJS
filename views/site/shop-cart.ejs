@@ -36,7 +36,7 @@
                             </thead>
                             <tbody id="cartBody">
                                 <% if (locals.products) { %>
-                                    <% products[0].cartproduct?.forEach(product=> { %>
+                                    <% products[0]?.cartproduct.forEach(product=> { %>
                                         <tr id="p-<%= product._id %>" class="rows">
                                             <td class="cart__product__item">
                                                 <input type="text" hidden class="price"

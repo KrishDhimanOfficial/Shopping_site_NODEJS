@@ -6,11 +6,14 @@ const productColor = require('../Models/product_model/product.color.model')
 const productBrand = require('../Models/product_model/product.brand.model')
 const product = require('../Models/product_model/product.model')
 const product_Cart = require('../Models/product_model/addToCart.model')
+const order = require('../Models/product_model/order.model');
+const userModel = require('../Models/user.model')
 const queries = require('../Service/query')
 const { getUser } = require('../Service/auth')
 const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
 const Razorpay = require('razorpay')
+const crypto = require("crypto")
 
 
 module.exports = {
@@ -571,6 +574,7 @@ module.exports = {
     getcartdetails: async (req, res) => {
         try {
             const user = getUser(req.cookies.token)
+            const userDetails = await userModel.find({ username: user.username })
             const data = await product_Cart.aggregate([
                 {
                     $match: { username: user.username }
@@ -584,7 +588,7 @@ module.exports = {
                     }
                 }
             ])
-            res.render('site/checkout', { products: data[0], grandTotal: data[0].grandTotal })
+            res.render('site/checkout', { products: data[0], grandTotal: data[0].grandTotal, userDetails })
         } catch (error) {
             console.log('getcartdetails :' + error.message);
         }
@@ -599,9 +603,74 @@ module.exports = {
             const order = await razorpay.orders.create(options)
 
             if (!order) return res.status(500).json('Error')
-            res.json(order)
+            res.status(200).json(order)
         } catch (error) {
             console.log('orders : ' + error.message)
+        }
+    },
+    validateOrder: async (req, res) => {
+        try {
+            const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+            const hmac = crypto.createHmac('sha256', process.env.RazorpayKEY)
+            hmac.update(razorpay_order_id + "|" + razorpay_payment_id)
+            const generatedSignature = hmac.digest('hex')
+
+            if (generatedSignature === razorpay_signature) {
+                const { razorpay_order_id, razorpay_payment_id, contact, shippingAddress,
+                    userId, order_note, totalAmount } = req.body;
+
+                const items = []
+                for (let i = 0; i < req.body.items.length; ++i) {
+                    let obj = {
+                        pid: new mongoose.Types.ObjectId(req.body.items[i].pid),
+                        quantity: req.body.items[i].quantity
+                    }
+                    items.push(obj)
+                }
+                await order.create({
+                    razorpay_order_id, razorpay_payment_id, contact, shippingAddress,
+                    userId, order_note, totalAmount, items, createdAt: new Date()
+                })
+                res.status(200).json({ message: "Payment is successful" })
+            } else {
+                res.status(200).json({ message: "Payment verification failed" })
+            }
+        } catch (error) {
+            console.log('validateOrder :' + error.message)
+        }
+    },
+    getOrders: async (req, res) => {
+        try {
+            const data = await order.aggregate([
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'userId',
+                        foreignField: '_id',
+                        as: 'userDetails'
+                    }
+                },
+                {
+                    $unwind: '$userDetails'
+                },
+                {
+                    $project: {
+                        'userDetails.username': 1,
+                        shippingAddress: 1,
+                        status: 1,
+                        totalAmount: 1,
+                        formattedDate: {
+                            $dateToString: {
+                                format: "%Y-%m-%d",
+                                date: "$createdAt"
+                            }
+                        }
+                    }
+                }
+            ])
+            res.render('admin/product/orders', { orders: data })
+        } catch (error) {
+            console.log('getOrders : ' + error.message);
         }
     }
 }

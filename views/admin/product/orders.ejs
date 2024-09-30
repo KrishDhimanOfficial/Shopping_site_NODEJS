@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/header') %>
+  </head>
+
+  <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+      <!-- Navbar -->
+      <%- include('../../partials/navbar') %>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <%- include('../../partials/sidebar') %>
+
+          <!-- Content Wrapper. Contains page content -->
+          <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+              <div class="container-fluid">
+                <div class="row mb-2">
+                  <div class="col-sm-6 d-flex align-items-center">
+                    <h1 class="m-0">Orders</h1>
+                  </div><!-- /.col -->
+                  <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                      <li class="breadcrumb-item"><a href="#">Home</a></li>
+                      <li class="breadcrumb-item active">orders</li>
+                    </ol>
+                  </div><!-- /.col -->
+                </div>
+              </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">All Products</h3>
+                      </div>
+                      <!-- /.card-header -->
+                      <div class="card-body">
+                        <table id="example1" class="table table-bordered table-striped dataTable dtr-inline"
+                          aria-describedby="example1_info">
+                          <thead>
+                            <tr>
+                              <th class="sorting sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
+                                colspan="1" aria-sort="ascending"
+                                aria-label="Rendering engine: activate to sort column descending">
+                                S.No</th>
+                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Platform(s): activate to sort column ascending">
+                                Total</th>
+                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Platform(s): activate to sort column ascending">
+                                Location</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Engine version: activate to sort column ascending">
+                                Status</th>
+                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Engine version: activate to sort column ascending">
+                                CreatedAt</th>
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="CSS grade: activate to sort column ascending">
+                                Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody id="orderTable">
+                            <% if (locals.orders) { %>
+                              <% orders.forEach((order,i) => { %>
+                                <tr>
+                                  <td> <%= i + 1 %>  </td>
+                                  <td> <%= order.totalAmount %> </td>
+                                  <td> 
+                                    <%= order.shippingAddress.state %>,
+                                    <%= order.shippingAddress.country %> 
+                                  </td>
+                                  <td> <%= order.status %> </td>
+                                  <td> <%= order.formattedDate %> </td>
+                                  <td> <a href="/admin/order/<%= order._id %> " class="btn btn-success">View Details</a> </td>
+                                </tr>
+                              <% }) %>
+                            <% } %>
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <th rowspan="1" colspan="1">S.NO</th>
+                              <th rowspan="1" colspan="1">Total</th>
+                              <th rowspan="1" colspan="1">Location</th>
+                              <th rowspan="1" colspan="1">Status</th>
+                              <th rowspan="1" colspan="1">CreatedAt</th>
+                              <th rowspan="1" colspan="1">Actions</th>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div>
+                      <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                  </div>
+                  <!-- /.col -->
+                </div>
+                <!-- /.row -->
+              </div>
+              <!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+          </div>
+          <!-- /.content-wrapper -->
+          <%- include('../../partials/main_footer') %>
+    </div>
+    <!-- ./wrapper -->
+    <%- include('../../partials/script') %>
+      <!-- AdminLTE App -->
+  </body>
+
+</html>
