@@ -18,16 +18,17 @@ const cartSchema = mongoose.Schema({
             },
             quantity: {
                 type: mongoose.Schema.Types.Number,
+                default: 1
             },
             total: {
                 type: mongoose.Schema.Types.Number,
             }
         },
     },
-    grandTotal:{
+    grandTotal: {
         type: mongoose.Schema.Types.Number,
         required: true,
-        default:0
+        default: 0
     }
 })
 module.exports = mongoose.model('product_Cart', cartSchema)

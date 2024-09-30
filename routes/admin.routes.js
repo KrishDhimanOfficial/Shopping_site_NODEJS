@@ -75,5 +75,6 @@ router.delete('/api/attributes/brand/:id', checkLogin, productControllers.delete
 
 // Product orders Routes
 router.get('/products/orders', checkLogin, productControllers.getOrders)
+router.get('/order/:id', checkLogin, productControllers.getorderDetais)
 
 module.exports = router;

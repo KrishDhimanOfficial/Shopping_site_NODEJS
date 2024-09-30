@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/header') %>
+    </head>
+
+    <body class="hold-transition sidebar-mini">
+        <div class="wrapper">
+            <!-- Navbar -->
+            <%- include('../../partials/navbar') %>
+                <!-- /.navbar -->
+
+                <!-- Main Sidebar Container -->
+                <%- include('../../partials/sidebar') %>
+
+                    <!-- Content Wrapper. Contains page content -->
+                    <div class="content-wrapper">
+                        <!-- Content Header (Page header) -->
+                        <section class="content-header">
+                            <div class="container-fluid">
+                                <div class="row mb-2">
+                                    <div class="col-sm-6 d-flex align-items-center">
+                                        <h1 class="m-0">Orders</h1>
+                                    </div><!-- /.col -->
+                                    <div class="col-sm-6">
+                                        <ol class="breadcrumb float-sm-right">
+                                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                            <li class="breadcrumb-item active">orders</li>
+                                        </ol>
+                                    </div><!-- /.col -->
+                                </div>
+                            </div><!-- /.container-fluid -->
+                        </section>
+
+                        <!-- Main content -->
+                        <section class="content">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <h3 class="card-title">order</h3>
+                                            </div>
+                                            <!-- /.card-header -->
+                                            <div class="card-body">
+                                                <table id="example1"
+                                                    class="table table-bordered table-striped dataTable dtr-inline"
+                                                    aria-describedby="example1_info">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="sorting sorting_asc" tabindex="0"
+                                                                aria-controls="example1" rowspan="1" colspan="1"
+                                                                aria-sort="ascending"
+                                                                aria-label="Rendering engine: activate to sort column descending">
+                                                                S.No</th>
+                                                            <th class="sorting sorting_asc" tabindex="0"
+                                                                aria-controls="example1" rowspan="1" colspan="1"
+                                                                aria-sort="ascending"
+                                                                aria-label="Rendering engine: activate to sort column descending">
+                                                                Product Name</th>
+                                                            <th class="sorting sorting_asc" tabindex="0"
+                                                                aria-controls="example1" rowspan="1" colspan="1"
+                                                                aria-sort="ascending"
+                                                                aria-label="Rendering engine: activate to sort column descending">
+                                                                Image</th>
+                                                            <th class="sorting sorting_asc" tabindex="0"
+                                                                aria-controls="example1" rowspan="1" colspan="1"
+                                                                aria-sort="ascending"
+                                                                aria-label="Rendering engine: activate to sort column descending">
+                                                                Price</th>
+                                                            <th class="sorting sorting_asc" tabindex="0"
+                                                                aria-controls="example1" rowspan="1" colspan="1"
+                                                                aria-sort="ascending"
+                                                                aria-label="Rendering engine: activate to sort column descending">
+                                                                Quantity</th>
+                                                            <th class="sorting sorting_asc" tabindex="0"
+                                                                aria-controls="example1" rowspan="1" colspan="1"
+                                                                aria-sort="ascending"
+                                                                aria-label="Rendering engine: activate to sort column descending">
+                                                                Mark</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% if (locals.orderDetails) { %>
+                                                            <% for( let i=0; i < orderDetails[0]?.product.length; i++ ) { %>
+                                                                <% let product=orderDetails[0]?.product %>
+                                                                    <% let product_quantity=orderDetails[0]?.items %>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <%= i + 1 %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= product[i].product_title %>
+                                                                            </td>
+                                                                            <td style="width: 250px; height: 150px;">
+                                                                                <img src="http://localhost:8000/uploads/<%= product[i].product_image[0] %>"
+                                                                                    alt=""
+                                                                                    style="object-fit: contain;width: 100%; height: 100%;">
+                                                                            </td>
+                                                                            <td>
+                                                                                $<%= product[i].product_discount %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= product_quantity[i].quantity %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <div
+                                                                                    class="custom-control custom-switch">
+                                                                                    <input type="checkbox"
+                                                                                        class="custom-control-input"
+                                                                                        id="<%= i %>">
+                                                                                    <label class="custom-control-label"
+                                                                                        for="<%= i %>"></label>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <% } %>
+                                                                            <% } %>
+                                                    </tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th rowspan="1" colspan="1">S.NO</th>
+                                                            <th rowspan="1" colspan="1">Product Name</th>
+                                                            <th rowspan="1" colspan="1">Image</th>
+                                                            <th rowspan="1" colspan="1">Price</th>
+                                                            <th rowspan="1" colspan="1">Quantity</th>
+                                                            <th rowspan="1" colspan="1">Mark</th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                                <div class="row mt-4">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for=""> order Id</label>
+                                                            <div class="d-flex">
+                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].razorpay_order_id %>">
+                                                                <button class="btn btn-sm btn-primary"
+                                                                onclick="copyToClipboard('<%= orderDetails[0].razorpay_order_id %>')">Copy to Clipboard</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for=""> Payment Id</label>
+                                                            <div class="d-flex">
+                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].razorpay_payment_id %>">
+                                                                <button class="btn btn-sm btn-primary"
+                                                                onclick="copyToClipboard('<%= orderDetails[0].razorpay_payment_id %>')">Copy to Clipboard</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                          <label>Address</label>
+                                                          <div class="border border-1 p-2">
+                                                            <%= orderDetails[0].shippingAddress.main_address %> <br>
+                                                            <% if (locals.orderDetails[0].shippingAddress.optional_address) { %>
+                                                                <%= orderDetails[0].shippingAddress.optional_address %> <br>
+                                                            <% } %>
+                                                            <%= orderDetails[0].shippingAddress.city %><br>
+                                                            <%= orderDetails[0].shippingAddress.state %>,
+                                                            <%= orderDetails[0].shippingAddress.country %> <br>
+                                                            <%= orderDetails[0].shippingAddress.pincode %>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                </div>
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="">Phone No.</label>
+                                                            <div class="d-flex">
+                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].contact.phone_no %>">
+                                                                <button class="btn btn-sm btn-primary"
+                                                                onclick="copyToClipboard('<%= orderDetails[0].contact.phone_no %>')">Copy to Clipboard</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="">Email</label>
+                                                            <div class="d-flex">
+                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].contact.email %>">
+                                                                <button class="btn btn-sm btn-primary"
+                                                                onclick="copyToClipboard('<%= orderDetails[0].contact.email %>')">Copy to Clipboard</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="">Name</label>
+                                                            <div class="d-flex">
+                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].contact.first_name %> <%= orderDetails[0].contact.last_name %>">
+                                                                <button class="btn btn-sm btn-primary"
+                                                                onclick="copyToClipboard('<%= orderDetails[0].contact.first_name %> <%= orderDetails[0].contact.last_name %>')">Copy to Clipboard</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-4">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label>Order Intrusction</label>
+                                                            <div class="border border-1 p-3">
+                                                                <%= orderDetails[0].order_note %>
+                                                            </div>
+                                                          </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+                            <!-- /.container-fluid -->
+                        </section>
+                        <!-- /.content -->
+                    </div>
+                    <!-- /.content-wrapper -->
+                    <%- include('../../partials/main_footer') %>
+        </div>
+        <!-- ./wrapper -->
+        <%- include('../../partials/script') %>
+            <!-- AdminLTE App -->
+    </body>
+
+</html>

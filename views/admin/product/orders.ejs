@@ -38,7 +38,7 @@
                   <div class="col-12">
                     <div class="card">
                       <div class="card-header">
-                        <h3 class="card-title">All Products</h3>
+                        <h3 class="card-title">All orders</h3>
                       </div>
                       <!-- /.card-header -->
                       <div class="card-body">
@@ -50,6 +50,9 @@
                                 colspan="1" aria-sort="ascending"
                                 aria-label="Rendering engine: activate to sort column descending">
                                 S.No</th>
+                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Platform(s): activate to sort column ascending">
+                                Name</th>
                                 <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                 aria-label="Platform(s): activate to sort column ascending">
                                 Total</th>
@@ -72,7 +75,8 @@
                               <% orders.forEach((order,i) => { %>
                                 <tr>
                                   <td> <%= i + 1 %>  </td>
-                                  <td> <%= order.totalAmount %> </td>
+                                  <td> <%= order.userDetails.username %>  </td>
+                                  <td> $<%= order.totalAmount %> </td>
                                   <td> 
                                     <%= order.shippingAddress.state %>,
                                     <%= order.shippingAddress.country %> 
@@ -87,6 +91,7 @@
                           <tfoot>
                             <tr>
                               <th rowspan="1" colspan="1">S.NO</th>
+                              <th rowspan="1" colspan="1">Name</th>
                               <th rowspan="1" colspan="1">Total</th>
                               <th rowspan="1" colspan="1">Location</th>
                               <th rowspan="1" colspan="1">Status</th>

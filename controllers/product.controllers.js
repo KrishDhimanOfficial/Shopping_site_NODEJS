@@ -672,5 +672,32 @@ module.exports = {
         } catch (error) {
             console.log('getOrders : ' + error.message);
         }
+    },
+    getorderDetais: async (req, res) => {
+        try {
+            queries.getOrderData.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
+            const data = await order.aggregate(queries.getOrderData)
+            if (!data) res.render('partials/404')
+            res.render('admin/product/singleOrderDetails', { orderDetails: data })
+        } catch (error) {
+            console.log('getorderDetais : ' + error.message)
+        }
+    },
+    getfilterProducts: async (req, res) => {
+        try {
+            console.log(req.body)
+            const data = await product.aggregate([
+                {
+                    $match: {
+                        $and: [
+                            { product_discount: { $gte: req.body.minamount } },
+                            { product_discount: { $lte: req.body.maxamount } }]
+                    }
+                },
+            ])
+            
+        } catch (error) {
+            console.log('getfilterProducts : ' + error.message);
+        }
     }
 }

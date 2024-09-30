@@ -17,7 +17,7 @@ router.route('/register').get(login, (req, res) => {
     .post(login, user.handleUserRegister)
 
 router.get('/contact', checkUserlogin, (req, res) => {
-    res.render('site/contact',{ route: req.path })
+    res.render('site/contact', { route: req.path })
 })
 
 
@@ -47,6 +47,7 @@ router.get('/Shoppping/cart', checkUserlogin, productControllers.getProductonAdd
 router.put('/Shoppping/cart/:id', checkUserlogin, productControllers.deleteShoppingcartOptions)
 router.get('/checkout', checkUserlogin, productControllers.getcartdetails)
 router.post('/orders', checkUserlogin, productControllers.order)
-router.post('/order/validate',checkUserlogin, productControllers.validateOrder)
+router.post('/order/validate', checkUserlogin, productControllers.validateOrder)
 
+router.post('/filter', checkUserlogin, productControllers.getfilterProducts)
 module.exports = router
