@@ -4,6 +4,7 @@ const { checkUserlogin, login } = require('../Middleware/checkUserlogin')
 const user = require('../controllers/users.controllers')
 const blogControllers = require('../controllers/blog.controller')
 const productControllers = require('../controllers/product.controllers')
+const userControllers = require('../controllers/users.controllers')
 
 
 router.route('/login').get(login, (req, res) => {
@@ -16,7 +17,7 @@ router.route('/register').get(login, (req, res) => {
 })
     .post(login, user.handleUserRegister)
 
-router.get('/contact', checkUserlogin, (req, res) => {
+router.get('/contact', (req, res) => {
     res.render('site/contact', { route: req.path })
 })
 
@@ -49,5 +50,10 @@ router.get('/checkout', checkUserlogin, productControllers.getcartdetails)
 router.post('/orders', checkUserlogin, productControllers.order)
 router.post('/order/validate', checkUserlogin, productControllers.validateOrder)
 
-router.post('/filter', checkUserlogin, productControllers.getfilterProducts)
+router.get('/api/cart/length',checkUserlogin,productControllers.getCartLength)
+
+router.post('/filter', productControllers.getfilterProducts)
+router.post('/filter/price', productControllers.getpriceRangeProducts)
+
+router.post('/contact/details',userControllers.contactMessage)
 module.exports = router

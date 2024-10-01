@@ -1,5 +1,5 @@
 module.exports = {
-    getOrderData:[
+    getOrderData: [
         {
             $lookup: {
                 from: 'users',
@@ -28,7 +28,7 @@ module.exports = {
                 shippingAddress: 1,
                 contact: 1,
                 items: 1,
-                quantity:1,
+                quantity: 1,
                 order_note: 1,
                 status: 1,
                 totalAmount: 1,

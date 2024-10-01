@@ -244,5 +244,4 @@ Created: Colorib
         $(".size__btn label").removeClass('active');
         $(this).addClass('active');
     });
-
 })(jQuery);

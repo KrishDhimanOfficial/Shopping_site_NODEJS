@@ -41,7 +41,7 @@
             </div>
             <div class="filter-range-wrap">
                 <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-                    data-min="10" data-max="100"></div>
+                    data-min="0" data-max="100"></div>
                 <div class="range-slider">
                     <div class="price-input">
                         <p>Price:</p>
@@ -59,9 +59,9 @@
             <div class="size__list">
                 <% if (locals.sizes) { %>
                     <% sizes.forEach(size=> { %>
-                        <label for="<%= size.size_name %>">
+                        <label for="<%= size._id %>">
                             <%= size.size_name %>
-                                <input type="checkbox" id="<%= size.size_name %>" class="product_size">
+                                <input type="checkbox" id="<%= size._id %>" class="product_size">
                                 <span class="checkmark"></span>
                         </label>
                         <% }) %>
@@ -75,9 +75,9 @@
             <div class="size__list color__list">
                 <% if (locals.colors) { %>
                     <% colors.forEach(color=> { %>
-                        <label for="<%= color.color_name %>">
+                        <label for="<%= color._id %>">
                             <%= color.color_name %>
-                                <input type="checkbox" id="<%= color.color_name %>" class="colorfilter">
+                                <input type="checkbox" id="<%= color._id %>" class="colorfilter">
                                 <span class="checkmark"></span>
                         </label>
                         <% }) %>

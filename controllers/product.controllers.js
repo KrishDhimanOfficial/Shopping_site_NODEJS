@@ -6,7 +6,7 @@ const productColor = require('../Models/product_model/product.color.model')
 const productBrand = require('../Models/product_model/product.brand.model')
 const product = require('../Models/product_model/product.model')
 const product_Cart = require('../Models/product_model/addToCart.model')
-const order = require('../Models/product_model/order.model');
+const order = require('../Models/product_model/order.model')
 const userModel = require('../Models/user.model')
 const queries = require('../Service/query')
 const { getUser } = require('../Service/auth')
@@ -354,15 +354,12 @@ module.exports = {
                 },
                 { $project: { category_name: 1, sub: 1 } }
             ])
-
-            const projection = [
-                {
-                    $project: {
-                        product_title: 1, product_image: 1, product_on_sales: 1, product_new: 1,
-                        product_price: 1
-                    }
+            const projection = [{
+                $project: {
+                    product_title: 1, product_image: 1, product_on_sales: 1, product_new: 1,
+                    product_discount: 1
                 }
-            ]
+            }]
             const allProducts = await handleAggregatePagination(product, projection, req.params)
             res.render('site/shop', { allProducts, categories, colors, sizes, route: req.path })
         } catch (error) {
@@ -571,6 +568,15 @@ module.exports = {
             console.log('deleteShoppingcartOptions : ' + error.message);
         }
     },
+    getCartLength: async (req, res) => {
+        try {
+            const user = getUser(req.cookies.token)
+            const cart = await product_Cart.findOne({ username: user.username })
+            res.status(200).json(cart.product_cart.length)
+        } catch (error) {
+            console.log('getCartLength :' + error.message);
+        }
+    },
     getcartdetails: async (req, res) => {
         try {
             const user = getUser(req.cookies.token)
@@ -683,19 +689,56 @@ module.exports = {
             console.log('getorderDetais : ' + error.message)
         }
     },
+    getpriceRangeProducts: async (req, res) => {
+        try {
+            const obj = req.body;
+            if (obj.minamount || obj.maxamount) {
+                const priceFilter = await product.aggregate([{
+                    $match: {
+                        product_discount: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) }
+                    }
+                }])
+                res.status(200).json(priceFilter)
+            }
+        } catch (error) {
+            console.log('getpriceRangeProducts :' + error.message);
+        }
+    },
     getfilterProducts: async (req, res) => {
         try {
-            console.log(req.body)
-            const data = await product.aggregate([
-                {
-                    $match: {
-                        $and: [
-                            { product_discount: { $gte: req.body.minamount } },
-                            { product_discount: { $lte: req.body.maxamount } }]
-                    }
-                },
-            ])
-            
+            const obj = req.body;
+
+            if (obj.colorArray?.length > 0) {
+                const priceFilter = await product.aggregate([{ $match: { product_discount: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) } } }])
+
+                const colorFilter = priceFilter.filter(item => {
+                    return item.availableColor.some(colorId => obj.colorArray.includes(colorId.toString()))
+                })
+
+                if (obj.sizeArray?.length > 0) {
+                    const sizeColorFilter = colorFilter.filter(item => {
+                        return item.availableSize.some(sizeId => obj.sizeArray.includes(sizeId.toString()))
+                    })
+                    res.status(200).json(sizeColorFilter)
+                }
+                res.status(200).json(colorFilter)
+            }
+
+            if (obj.sizeArray?.length > 0) {
+                const priceFilter = await product.aggregate([{ $match: { product_discount: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) } } }])
+
+                const sizeFilter = priceFilter.filter(item => {
+                    return item.availableSize.some(sizeId => obj.sizeArray.includes(sizeId.toString()))
+                })
+
+                if (obj.colorArray?.length > 0) {
+                    const colorSizeFilter = sizeFilter.filter(item => {
+                        return item.availableColor.some(colorId => obj.colorArray.includes(colorId.toString()))
+                    })
+                    res.status(200).json(colorSizeFilter)
+                }
+                res.status(200).json(sizeFilter)
+            }
         } catch (error) {
             console.log('getfilterProducts : ' + error.message);
         }

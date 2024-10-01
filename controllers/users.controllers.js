@@ -1,7 +1,37 @@
 const user = require('../Models/user.model')
 const bcrypt = require('bcryptjs')
 const product_Cart = require('../Models/product_model/addToCart.model')
-const { setUser } = require('../Service/auth');
+const contact = require('../Models/contact.model')
+const { setUser } = require('../Service/auth')
+const { default: mongoose } = require('mongoose')
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+    host: process.env.HOST,
+    service: process.env.SERVICE,
+    port: 587,
+    secure: true,
+    auth: {
+        user: process.env.USER,
+        pass: process.env.PASS,
+    },
+})
+// const sendEmail = async (email, subject, text) => {
+//     try {
+
+//         await transporter.sendMail({
+//             from: process.env.USER,
+//             to: dhimany149@gmail.com,
+//             subject: subject,
+//             text: text
+//         });
+
+//         console.log("email sent sucessfully");
+//     } catch (error) {
+//         console.log(error, "email not sent");
+//     }
+// };
+
 module.exports = {
     handleUserRegister: async (req, res) => {
         try {
@@ -46,5 +76,33 @@ module.exports = {
         } catch (error) {
             console.log('handleUserLogin : ' + error.message);
         }
-    }                                                                                                                                                                                     
+    },
+    contactMessage: async (req, res) => {
+        try {
+            const data = await contact.create(req.body)
+            if (!data) res.json({ message: 'unsuccessfully!' })
+            res.json({ message: 'successfully Sent!' })
+        } catch (error) {
+            res.json({ message: 'unsuccessfully!' })
+            console.log('contactMessage : ' + error.message)
+        }
+    },
+    getAllMessages: async (req, res) => {
+        try {
+            const data = await contact.find({})
+            console.log(data);
+            res.render('admin/contactMessage', { contactsMessages: data })
+        } catch (error) {
+            console.log('getAllMessages : ' + error.message);
+        }
+    },
+    getSingleContactMessage: async (req, res) => {
+        try {
+            const data = await contact.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) })
+            if (!data) res.render('admin/sendResponseMessage', { message: 'NOT FOUND' })
+            res.render('admin/sendResponseMessage', { singleMessage: data })
+        } catch (error) {
+            console.log('sendResponse : ' + error.message);
+        }
+    }
 }

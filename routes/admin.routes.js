@@ -6,6 +6,7 @@ const checkLogin = require('../Middleware/checkLogin')
 const Admin = require('../controllers/admin.controllers')
 const blogControllers = require('../controllers/blog.controller')
 const productControllers = require('../controllers/product.controllers.js');
+const usersControllers = require('../controllers/users.controllers.js');
 
 router.get('/dashboard', checkLogin, (req, res) => {
     res.render('admin/adminPanel')
@@ -77,4 +78,8 @@ router.delete('/api/attributes/brand/:id', checkLogin, productControllers.delete
 router.get('/products/orders', checkLogin, productControllers.getOrders)
 router.get('/order/:id', checkLogin, productControllers.getorderDetais)
 
+// Contact Form Routes
+router.get('/contact/messages',checkLogin, usersControllers.getAllMessages)
+router.get('/send/response/',checkLogin, usersControllers.getAllMessages)
+router.get('/send/response/:id',checkLogin, usersControllers.getSingleContactMessage)
 module.exports = router;

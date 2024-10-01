@@ -315,35 +315,58 @@
 
                     const priceFilter = document.querySelector('#priceFilter')
                     const sizeFilter = document.querySelectorAll('.product_size')
+                    const colorFilter = document.querySelectorAll('.colorfilter')
+                    const minamount = document.querySelector('#minamount')
+                    const maxamount = document.querySelector('#maxamount')
 
-                    const sizeArray = []
+                    let sizeArray = []
+                    let colorArray = []
                     sizeFilter.forEach(filter => {
                         filter.addEventListener('change', () => {
-                            if (filter.checked) {
+                            if (!filter.checked) {
+                                sizeArray = [...new Set(sizeArray)]
+                            } else {
                                 const size = filter.getAttribute('id')
                                 sizeArray.push(size)
                             }
-                            fetchFilterData(0, 100, sizeArray)
+                            fetchFilterData(minamount.value, maxamount.value, sizeArray, colorArray)
+                        })
+                    })
+                    colorFilter.forEach(filter => {
+                        filter.addEventListener('change', () => {
+                            const color = filter.getAttribute('id')
+                            if (!filter.checked) {
+                                colorArray = [...new Set(colorArray)]
+                            } else {
+                                colorArray.push(color)
+                                fetchFilterData(minamount.value, maxamount.value, sizeArray, colorArray)
+                            }
                         })
                     })
 
                     priceFilter.addEventListener('click', async (e) => {
                         e.preventDefault()
-                        const minamount = document.querySelector('#minamount')
-                        const maxamount = document.querySelector('#maxamount')
-                        fetchFilterData(parseInt(minamount.value), parseInt(maxamount.value))
-                    })
-
-                    async function fetchFilterData(minamount = 0, maxamount = 100, sizeArray) {
-                        await fetch('http://localhost:8000/filter', {
+                        await fetch('http://localhost:8000/filter/price', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                 minamount,
-                                 maxamount,
-                                sizes: sizeArray
+                                minamount: parseInt(minamount.value),
+                                maxamount: parseInt(maxamount.value)
                             })
                         })
+                            .then(response => response.json())
+                            .then(data => console.log(data))
+                    })
+
+                    async function fetchFilterData(minamount, maxamount, sizeArray, colorArray) {
+                        await fetch(`http://localhost:8000/filter`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ minamount, maxamount, sizeArray, colorArray })
+                        })
+                            .then(response => response.json())
+                            .then(data => console.log(data))
+
                     }                  
                 </script>
                 </body>
