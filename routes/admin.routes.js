@@ -47,7 +47,7 @@ router.route('/product/create')
     .all(checkLogin)
     .get(productControllers.showProductAttributes)
     .post(productImageupload.array('product_image', 5), productControllers.createProduct)
-
+    
 router.get('/products', checkLogin, productControllers.getProductsOnAdmin)
 router.route('/product/:id')
     .all(checkLogin)
@@ -80,6 +80,6 @@ router.get('/order/:id', checkLogin, productControllers.getorderDetais)
 
 // Contact Form Routes
 router.get('/contact/messages',checkLogin, usersControllers.getAllMessages)
-router.get('/send/response/',checkLogin, usersControllers.getAllMessages)
-router.get('/send/response/:id',checkLogin, usersControllers.getSingleContactMessage)
+router.get('/message/:id',checkLogin, usersControllers.getSingleContactMessage)
+router.post('/send/response',checkLogin, usersControllers.sendEmailResponse)
 module.exports = router;

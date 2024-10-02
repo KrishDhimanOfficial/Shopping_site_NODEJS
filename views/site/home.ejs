@@ -10,7 +10,7 @@
             <div class="row">
                 <div class="col-lg-6 p-0">
                     <% if (locals.product_categories) { %>
-                        <% product_categories.forEach(category=> { %>
+                        <% product_categories.forEach(category => { %>
                             <% if (category.category_name == 'women' ) { %>
                                 <div class="categories__item categories__large__item set-bg"
                                     data-setbg="http://localhost:8000/uploads/categoryImages/<%= category.image %>">
@@ -24,28 +24,32 @@
                                         <a href="products/<%= category.category_name %>">Shop now</a>
                                     </div>
                                 </div>
-                                <% } %>
-                                    <% }) %>
-                                        <% } %>
+                            <% } %>
+                        <% }) %>
+                    <% } %>
                 </div>
                 <div class="col-lg-6">
                     <div class="row">
                         <% if (locals.product_categories) { %>
-                            <% product_categories.forEach(category=> { %>
-                                <% if (category.category_name != 'women' ) { %>
+                            <% for( let i = 0; i < 5; i++ ) { %>
+                                <% if (product_categories[i].category_name != 'women' ) { %>
                                     <div class="col-lg-6 col-md-6 col-sm-6 p-0">
                                         <div class="categories__item set-bg"
-                                            data-setbg="/uploads/categoryImages/<%= category.image %>">
+                                            data-setbg="/uploads/categoryImages/<%= product_categories[i].image %>">
                                             <div class="categories__text">
-                                                <h4><%= category.category_name %></h4>
-                                                <p><%= category.length %> items</p>
-                                                <a href="products/<%= category.category_name %>">Shop now</a>
+                                                <h4>
+                                                    <%= product_categories[i].category_name %>
+                                                </h4>
+                                                <p>
+                                                    <%= product_categories[i].length %> items
+                                                </p>
+                                                <a href="products/<%= product_categories[i].category_name %>">Shop now</a>
                                             </div>
                                         </div>
                                     </div>
-                                    <% } %>
-                                        <% }) %>
-                                            <% } %>
+                                <% } %>
+                            <% } %>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -169,15 +173,15 @@
                             <h4>Hot Trend</h4>
                         </div>
                         <% if (locals.products) { %>
-                            <% products.forEach(product=> { %>
+                            <% for( let i = 0; i < 3; ++i ) { %>  
                                 <div class="trend__item">
                                     <div class="trend__item__pic" style="width: 90px; height: 90px;">
-                                        <img src="/uploads/<%= product.product_image[0] %>" alt="" class="w-100">
+                                        <img src="/uploads/<%= products[i].product_image[0] %>" alt="" class="w-100">
                                     </div>
                                     <div class="trend__item__text">
                                         <h6>
-                                            <a href="product/<%= product._id %>" style="color: black;">
-                                                <%= product.product_title %>
+                                            <a href="product/<%= products[i]._id %>" style="color: black;">
+                                                <%= products[i].product_title %>
                                             </a>
                                         </h6>
                                         <div class="rating">
@@ -187,12 +191,12 @@
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                         </div>
-                                        <div class="product__price">$ <%= product.product_price %>
+                                        <div class="product__price">$ <%= products[i].product_price %>
                                         </div>
                                     </div>
                                 </div>
-                                <% }) %>
-                                    <% } %>
+                                <% } %>
+                            <% } %>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6">
@@ -201,30 +205,32 @@
                             <h4>Best seller</h4>
                         </div>
                         <% if (locals.products) { %>
-                            <% products.forEach(product=> { %>
-                                <div class="trend__item">
-                                    <div class="trend__item__pic" style="width: 90px; height: 90px;">
-                                        <img src="/uploads/<%= product.product_image[0] %>" alt="" class="w-100">
-                                    </div>
-                                    <div class="trend__item__text">
-                                        <h6>
-                                            <a href="product/<%= product._id %>" style="color: black;">
-                                                <%= product.product_title %>
-                                            </a>
-                                        </h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                            <% products.forEach((product,i) => { %>
+                                <% if (i > 1 && 5) { %>
+                                    <div class="trend__item">
+                                        <div class="trend__item__pic" style="width: 90px; height: 90px;">
+                                            <img src="/uploads/<%= product.product_image[0] %>" alt="" class="w-100">
                                         </div>
-                                        <div class="product__price">$ <%= product.product_price %>
+                                        <div class="trend__item__text">
+                                            <h6>
+                                                <a href="product/<%= product._id %>" style="color: black;">
+                                                    <%= product.product_title %>
+                                                </a>
+                                            </h6>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product__price">$ <%= product.product_price %>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                <% } %>
                                 <% }) %>
-                                    <% } %>
+                        <% } %>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-4 col-sm-6">
@@ -233,28 +239,30 @@
                             <h4>Feature</h4>
                         </div>
                         <% if (locals.products) { %>
-                            <% products.reverse().forEach(product=> { %>
-                                <div class="trend__item">
-                                    <div class="trend__item__pic" style="width: 90px; height: 90px;">
-                                        <img src="/uploads/<%= product.product_image[0] %>" alt="" class="w-100">
-                                    </div>
-                                    <div class="trend__item__text">
-                                        <h6>
-                                            <a href="product/<%= product._id %>" style="color: black;">
-                                                <%= product.product_title %>
-                                            </a>
-                                        </h6>
-                                        <div class="rating">
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
+                            <% products.reverse().forEach((product,i)=> { %>
+                                <% if (i < 3) { %>
+                                    <div class="trend__item">
+                                        <div class="trend__item__pic" style="width: 90px; height: 90px;">
+                                            <img src="/uploads/<%= product.product_image[0] %>" alt="" class="w-100">
                                         </div>
-                                        <div class="product__price">$ <%= product.product_price %>
+                                        <div class="trend__item__text">
+                                            <h6>
+                                                <a href="product/<%= product._id %>" style="color: black;">
+                                                    <%= product.product_title %>
+                                                </a>
+                                            </h6>
+                                            <div class="rating">
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                            <div class="product__price">$ <%= product.product_price %>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                <% } %>
                                 <% }) %>
                                     <% } %>
                     </div>

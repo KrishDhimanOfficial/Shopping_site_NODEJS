@@ -238,6 +238,7 @@
                             image: "/images/logo.png",
                             order_id: `${order.id}`,
                             handler: async (response) => {
+                                // Send Details to validate order AND save Entry 
                                 await fetch('http://localhost:8000/order/validate', {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'application/json', },
@@ -266,7 +267,17 @@
                                     })
                                 })
                                     .then(res => res.json())
-                                    .then(data => window.location.href = 'http://localhost:8000/home')
+                                    .then(data => window.location.href = 'http://localhost:8000/account')
+                                // Send Email to User 
+                                await fetch('http://localhost:8000/send/confirm/order', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json', },
+                                    body: JSON.stringify({
+                                        email: document.querySelector('#email').value,
+                                        razorpay_order_id: response.razorpay_order_id,
+                                        razorpay_payment_id: response.razorpay_payment_id,
+                                    })
+                                })
                             },
                             notes: { address: "Razorpay Corporate Office" },
                             theme: { color: "#3399cc" }

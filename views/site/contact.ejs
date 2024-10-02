@@ -54,7 +54,6 @@
                                 <textarea placeholder="Message" id="message"></textarea>
                                 <button type="submit" class="site-btn" id="sendMessage">Send Message</button>
                             </form>
-                            <span id="fetchmessage" class="my-3 d-block"></span>
                         </div>
                     </div>
                 </div>
@@ -105,7 +104,7 @@
                         })
                             .then(response => response.json())
                             .then(data => {
-                                document.querySelector('#fetchmessage').innerHTML = data.message;
+                                toastr.success(data.message)
                             })
                         document.querySelector('#name').value = '',
                         document.querySelector('#email').value = '',

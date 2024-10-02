@@ -93,7 +93,11 @@
                                                                             <%= date.toLocaleDateString() %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= comment.status %>
+                                                                        <% if (comment.status == true) { %>
+                                                                         <p>Approve</p>
+                                                                        <% } else { %>
+                                                                            <p>UnApprove</p>
+                                                                        <% } %>
                                                                     </td>
                                                                     <td>
                                                                         <button class="toast-btn btn btn-block btn-success toastrDefaultError" onclick="( async()=>{

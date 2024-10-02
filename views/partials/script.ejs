@@ -53,14 +53,9 @@
     })
   })
   function AlertMessage(message, erroMessage, sucsessMessage) {
-    const ToastElement = document.querySelector('.toast-btn')
     if (erroMessage == message) {
-      ToastElement.classList.remove('toastrDefaultSuccess')
-      ToastElement.classList.add('toastrDefaultError')
       toastr.error(message)
     } else if (sucsessMessage == message) {
-      ToastElement.classList.remove('toastrDefaultError')
-      ToastElement.classList.add('toastrDefaultSuccess')
       toastr.success(message)
     }
   }

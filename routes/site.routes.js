@@ -12,6 +12,8 @@ router.route('/login').get(login, (req, res) => {
 })
     .post(login, user.handleUserLogin)
 
+router.get('/logout', userControllers.handleUserLogout)
+
 router.route('/register').get(login, (req, res) => {
     res.render('site/register')
 })
@@ -21,14 +23,17 @@ router.get('/contact', (req, res) => {
     res.render('site/contact', { route: req.path })
 })
 
-
 router.get('/blogs', checkUserlogin, (req, res) => {
     res.render('site/blogPage', { route: req.path })
 })
 
-router.get('/home', checkUserlogin, productControllers.getProductByCategory)
-router.get('/products/:name/:page?', checkUserlogin, productControllers.getProductByCategoryonShop)
-router.get('/shop/:page?', checkUserlogin, productControllers.showAllproducts)
+router.get('/account', checkUserlogin, (req, res) => {
+    res.render('site/UserAccount')
+})
+
+router.get('/home', productControllers.getProductByCategory)
+router.get('/products/:name/:page?', productControllers.getProductByCategoryonShop)
+router.get('/shop/:page?', productControllers.showAllproducts)
 router.get('/category/:parent_category/:sub_category/:page?', checkUserlogin, productControllers.getSub_categoryProduct)
 router.get('/api/singleproduct/:id', productControllers.singleproductonCart)
 router.get('/api/blogs/:loadPosts', blogControllers.getBlogs)
@@ -49,11 +54,13 @@ router.put('/Shoppping/cart/:id', checkUserlogin, productControllers.deleteShopp
 router.get('/checkout', checkUserlogin, productControllers.getcartdetails)
 router.post('/orders', checkUserlogin, productControllers.order)
 router.post('/order/validate', checkUserlogin, productControllers.validateOrder)
+router.post('/send/confirm/order',checkUserlogin,productControllers.sendConfirmedOrderEmail)
+router.get('/myorders/:page?', checkUserlogin, productControllers.getuserOrders)
 
-router.get('/api/cart/length',checkUserlogin,productControllers.getCartLength)
+router.get('/api/cart/length', checkUserlogin, productControllers.getCartLength)
 
 router.post('/filter', productControllers.getfilterProducts)
 router.post('/filter/price', productControllers.getpriceRangeProducts)
 
-router.post('/contact/details',userControllers.contactMessage)
+router.post('/contact/details', userControllers.contactMessage)
 module.exports = router

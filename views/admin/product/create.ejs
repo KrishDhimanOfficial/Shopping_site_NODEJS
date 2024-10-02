@@ -231,8 +231,10 @@
               img.className = 'img'
               imagePreview.appendChild(img)
 
-              document.querySelector('.img').addEventListener('dblclick', async (e) => {
+              document.querySelectorAll('.img').forEach(img =>{
+                img.addEventListener('dblclick', async (e) => {
                 e.target.remove()
+              })
               })
             }
             reader.readAsDataURL(file);

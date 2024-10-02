@@ -96,7 +96,7 @@
                                   <label for="new">Product is NEW</label>
                                   <select class="select2" name="product_new" id="new" data-placeholder="Select a Size"
                                     style="width: 100%;">
-                                    <option value="false" >No</option>
+                                    <option value="false">No</option>
                                     <option value="true">Yes</option>
                                   </select>
                                 </div>
@@ -251,8 +251,7 @@
               img.src = reader.result;
               img.alt = file.name;
               img.margin = '5px';
-              img.style.width = '130px';
-              img.style.height = '100px';
+              img.style.width = '150px';
               imagePreview.appendChild(img);
             }
             reader.readAsDataURL(file);
@@ -260,13 +259,15 @@
         })
 
         if (document.querySelector('.img')) {
-          document.querySelector('.img').addEventListener('dblclick', async (e) => {
-            const imgName = e.target.src.split('/')[4];
-            e.target.remove()
-            await fetch(`http://localhost:8000/admin/product/image/<%= product[0]._id %>`, {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ image: imgName })
+          document.querySelectorAll('.img').forEach(img => {
+            img.addEventListener('dblclick', async (e) => {
+              const imgName = e.target.src.split('/')[4];
+              e.target.remove()
+              await fetch(`http://localhost:8000/admin/product/image/<%= product[0]._id %>`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ image: imgName })
+              })
             })
           })
         }
@@ -275,7 +276,7 @@
           const files = inputField.files
           const formData = new FormData(e.target)
 
-          await fetch(`http://localhost:8000/admin/product/<%= product[0]._id %>`, {
+          await fetch(` <%= product[0]._id %>`, {
             method: 'PUT',
             body: formData
           })

@@ -90,7 +90,7 @@
                                     </h5>
                                     <a href="#" class="leave-btn">Leave a
                                         comment</a>
-                                    <p id="message"></p>
+                                    <!-- <p id="message"></p> -->
                                     <% if (locals.postComments) { %>
                                         <% postComments[0]?.comments.forEach(comment=> { %>
                                             <div class="blog__comment__item">
@@ -136,8 +136,7 @@
                                         <% Postcategories.forEach(category=> { %>
                                             <% count +=category.length %>
                                                 <li>
-                                                    <a
-                                                        href="/category/<%= category.category_name %>">
+                                                    <a href="/category/<%= category.category_name %>">
                                                         <%= category.category_name %>
                                                             <span>
                                                                 <%= category.length %>
@@ -233,11 +232,15 @@
                                 }
                             })
                     }
-                    if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
-                        document.querySelector('#like').classList.add('disabled')
-                    } 
+                    if (document.querySelector('#like')) {
+                        if (performance.navigation.type == performance.navigation.TYPE_RELOAD) {
+                            document.querySelector('#like').classList.add('disabled')
+                        }
+                    }
                     document.querySelector('.leave-btn').addEventListener('click', async (e) => {
                         e.preventDefault()
+                        console.log('sdg');
+
                         const id = window.location.href.split('/')[4];
                         const comment = document.querySelector('#floatingTextarea')
                         await fetch(`http://localhost:8000/api/comment/${id}`, {
@@ -252,7 +255,8 @@
                             .then(data => {
                                 if (data) {
                                     comment.value = ''
-                                    document.querySelector('#message').innerHTML = 'You Comment Has Been Sent For Approval!';
+                                    toastr.success('You Comment Has Been Sent For Approval!')
+                                    // document.querySelector('#message').innerHTML = 'You Comment Has Been Sent For Approval!';
                                 }
                             })
                     })

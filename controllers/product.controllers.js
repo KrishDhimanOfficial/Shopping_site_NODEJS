@@ -12,8 +12,10 @@ const queries = require('../Service/query')
 const { getUser } = require('../Service/auth')
 const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
+const transporter = require('../Service/mail');
 const Razorpay = require('razorpay')
 const crypto = require("crypto")
+const { promises } = require('dns')
 
 
 module.exports = {
@@ -101,13 +103,12 @@ module.exports = {
                 product_description, availableColor, availableSize,
                 shipping, brand_name, product_on_sales, product_new } = req.body;
 
-            product_image = req.files.map(file => file.filename)
-
-            date = new Date()
+            const product_image = req.files.map(file =>  file.filename)
+            const date = new Date()
             await product.create({
                 product_title, product_parent_category_id,
                 product_sub_category_id, date, product_price, product_discount,
-                product_image, product_stock, shipping, brand_name,
+                product_stock,product_image, shipping, brand_name,
                 product_description: product_description[1],
                 availableColor, availableSize, product_on_sales, product_new
             })
@@ -289,9 +290,7 @@ module.exports = {
                 { $addFields: { length: { $size: '$product' } } },
                 { $project: { product: 0 } }
             ])
-
             const products = await product.aggregate(queries.productQuery).limit(8)
-
             res.render('site/home', {
                 products, product_categories,
                 route: req.path
@@ -492,12 +491,19 @@ module.exports = {
         try {
             const user = getUser(req.cookies.token)
             const pid = new mongoose.Types.ObjectId(req.body.product_cart.product_details.pid)
+            const quantity = req.body.product_cart.product_details.quantity;
 
             const userShoppingCart = await product_Cart.findOne({ username: user.username })
             const existingpId = userShoppingCart.product_cart.filter(id => id.product_details.pid.equals(pid))
 
             if (existingpId == '') {
-                const Updatedcart = [...userShoppingCart.product_cart, { product_details: { pid: pid } }]
+                const Updatedcart = [...userShoppingCart.product_cart, {
+                    product_details: {
+                        pid: pid,
+                        quantity: quantity
+                    }
+                }]
+
                 await product_Cart.updateOne(
                     { username: user.username },
                     { product_cart: Updatedcart })
@@ -513,12 +519,10 @@ module.exports = {
             const { price, quantity, total } = req.body.product_details;
             const { grandTotal } = req.body;
 
-
-            await product_Cart.findOneAndUpdate(
-                {
-                    username: user.username,
-                    "product_cart.product_details.pid": productid
-                },
+            await product_Cart.findOneAndUpdate({
+                username: user.username,
+                "product_cart.product_details.pid": productid
+            },
                 {
                     $set: {
                         "product_cart.$.product_details": {
@@ -527,9 +531,7 @@ module.exports = {
                         grandTotal
                     },
                 },
-                { new: true }
-            )
-
+                { new: true })
         } catch (error) {
             console.log('updatecart : ' + error.message);
         }
@@ -645,6 +647,21 @@ module.exports = {
             console.log('validateOrder :' + error.message)
         }
     },
+    sendConfirmedOrderEmail: async (req, res) => {
+        try {
+            const { razorpay_order_id, razorpay_payment_id } = req.body;
+
+            const mailOptions = {
+                from: process.env.USER,
+                to: 'dhimany149@gmail.com',
+                subject: 'Confirmed Order',
+                text: `${razorpay_order_id},${razorpay_payment_id}`
+            }
+            await transporter.sendMail(mailOptions)
+        } catch (error) {
+            console.log('sendConfirmedOrderEmail : ' + error.message)
+        }
+    },
     getOrders: async (req, res) => {
         try {
             const data = await order.aggregate([
@@ -687,6 +704,42 @@ module.exports = {
             res.render('admin/product/singleOrderDetails', { orderDetails: data })
         } catch (error) {
             console.log('getorderDetais : ' + error.message)
+        }
+    },
+    getuserOrders: async (req, res) => {
+        try {
+            const userToken = getUser(req.cookies.token)
+            const user = await userModel.findOne({ username: userToken.username })
+            const projection = [
+                {
+                    $match: { userId: user._id }
+                },
+                {
+                    $lookup: {
+                        from: 'products',
+                        localField: 'items.pid',
+                        foreignField: '_id',
+                        as: 'products'
+                    }
+                },
+                {
+                    $project: {
+                        'products.product_new': 0,
+                        'products.product_on_sales': 0,
+                        'products.product_description': 0,
+                        'products.availableColor': 0,
+                        'products.availableSize': 0,
+                        'products.product_sub_category_id': 0,
+                        'products.product_parent_category_id': 0,
+                        'products.product_stock': 0,
+                        'products.brand_name': 0
+                    }
+                }
+            ]
+            const userOrder = await handleAggregatePagination(order, projection, req.params)
+            res.render('site/UserAccount', { userorderDetails: userOrder })
+        } catch (error) {
+            console.log('getuserOrders : ' + error.message)
         }
     },
     getpriceRangeProducts: async (req, res) => {

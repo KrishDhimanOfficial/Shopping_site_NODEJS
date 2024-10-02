@@ -8,11 +8,12 @@
 <script src="/js/jquery.slicknav.js" defer></script>
 <script src="/js/owl.carousel.min.js" defer></script>
 <script src="/js/jquery.nicescroll.min.js" defer></script>
+<script src="/plugins/toastr/toastr.min.js" defer></script>
 <script src="/js/main.js" defer></script>
 <script>
-    window.onload = async () => {
-        await fetch('http://localhost:8000/api/cart/length')
+        setInterval(async() => {
+            await fetch('http://localhost:8000/api/cart/length')
             .then(response => response.json())
             .then(data => { document.querySelector('#cart').innerHTML = data })
-    }
+        }, 100);
 </script>

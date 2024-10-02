@@ -8,9 +8,10 @@ const createStorage = (dir) => multer.diskStorage({
     cb(null, `${uploadDir}/${dir}`)
   },
   filename: (req, file, cb) => {
-    const newFileName = `${Date.now()}${path.extname(file.originalname)}`;
+    const randomNo = Math.round(Math.random() * 10)
+    const newFileName = `${Date.now()}${randomNo}${path.extname(file.originalname)}`;
     cb(null, newFileName)
-  },
+  }
 })
 
 const blogImageupload = multer({ storage: createStorage('blogImages') })

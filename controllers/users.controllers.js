@@ -3,34 +3,9 @@ const bcrypt = require('bcryptjs')
 const product_Cart = require('../Models/product_model/addToCart.model')
 const contact = require('../Models/contact.model')
 const { setUser } = require('../Service/auth')
+const transporter = require('../Service/mail')
 const { default: mongoose } = require('mongoose')
-const nodemailer = require("nodemailer");
-
-const transporter = nodemailer.createTransport({
-    host: process.env.HOST,
-    service: process.env.SERVICE,
-    port: 587,
-    secure: true,
-    auth: {
-        user: process.env.USER,
-        pass: process.env.PASS,
-    },
-})
-// const sendEmail = async (email, subject, text) => {
-//     try {
-
-//         await transporter.sendMail({
-//             from: process.env.USER,
-//             to: dhimany149@gmail.com,
-//             subject: subject,
-//             text: text
-//         });
-
-//         console.log("email sent sucessfully");
-//     } catch (error) {
-//         console.log(error, "email not sent");
-//     }
-// };
+'use strict'
 
 module.exports = {
     handleUserRegister: async (req, res) => {
@@ -77,6 +52,17 @@ module.exports = {
             console.log('handleUserLogin : ' + error.message);
         }
     },
+    handleUserLogout: async (req, res) => {
+        try {
+            const token = req.cookies?.token;
+            if (token) {
+                res.clearCookie('token')
+                res.redirect('/login')
+            }
+        } catch (error) {
+            console.log('handleUserLogout :' + error.message);
+        }
+    },
     contactMessage: async (req, res) => {
         try {
             const data = await contact.create(req.body)
@@ -90,7 +76,6 @@ module.exports = {
     getAllMessages: async (req, res) => {
         try {
             const data = await contact.find({})
-            console.log(data);
             res.render('admin/contactMessage', { contactsMessages: data })
         } catch (error) {
             console.log('getAllMessages : ' + error.message);
@@ -103,6 +88,21 @@ module.exports = {
             res.render('admin/sendResponseMessage', { singleMessage: data })
         } catch (error) {
             console.log('sendResponse : ' + error.message);
+        }
+    },
+    sendEmailResponse: async (req, res) => {
+        try {
+            const mailOptions = {
+                from: process.env.USER,
+                to: 'dhimany149@gmail.com',
+                subject: req.body.EmailSubject,
+                html: req.body.message
+            }
+            const email = await transporter.sendMail(mailOptions)
+            if (!email) res.json({ message: 'unsuccessfully!' })
+            res.json({ message: 'successfully Sent!' })
+        } catch (error) {
+            console.log('sendReponse : ' + error.message);
         }
     }
 }
