@@ -103,12 +103,12 @@ module.exports = {
                 product_description, availableColor, availableSize,
                 shipping, brand_name, product_on_sales, product_new } = req.body;
 
-            const product_image = req.files.map(file =>  file.filename)
+            const product_image = req.files.map(file => file.filename)
             const date = new Date()
             await product.create({
                 product_title, product_parent_category_id,
                 product_sub_category_id, date, product_price, product_discount,
-                product_stock,product_image, shipping, brand_name,
+                product_stock, product_image, shipping, brand_name,
                 product_description: product_description[1],
                 availableColor, availableSize, product_on_sales, product_new
             })
@@ -159,7 +159,6 @@ module.exports = {
                 { _id: req.params.id },
                 { ...req.body, product_image: updatedIMages },
                 { new: true })
-
             throw new Error('Update Successfully!')
         } catch (error) {
             console.log('updateProduct :' + error.message);
@@ -296,8 +295,7 @@ module.exports = {
                 route: req.path
             })
         } catch (error) {
-            console.log('getProductByCategory : ' + error.message);
-
+            console.log('getProductByCategory : ' + error.message)
         }
     },
     getProductByCategoryonShop: async (req, res) => {
@@ -737,6 +735,8 @@ module.exports = {
                 }
             ]
             const userOrder = await handleAggregatePagination(order, projection, req.params)
+            // console.log(userOrder.collectionData[0].products);
+
             res.render('site/UserAccount', { userorderDetails: userOrder })
         } catch (error) {
             console.log('getuserOrders : ' + error.message)

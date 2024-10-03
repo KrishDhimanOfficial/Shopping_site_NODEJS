@@ -5,6 +5,7 @@ const user = require('../controllers/users.controllers')
 const blogControllers = require('../controllers/blog.controller')
 const productControllers = require('../controllers/product.controllers')
 const userControllers = require('../controllers/users.controllers')
+const checkCartDetails = require('../Middleware/checkUserCart.middleware');
 
 
 router.route('/login').get(login, (req, res) => {
@@ -51,7 +52,7 @@ router.put('/addtocart', checkUserlogin, productControllers.productcart)
 router.put('/updatecart/:id', checkUserlogin, productControllers.updatecart)
 router.get('/Shoppping/cart', checkUserlogin, productControllers.getProductonAddtoCart)
 router.put('/Shoppping/cart/:id', checkUserlogin, productControllers.deleteShoppingcartOptions)
-router.get('/checkout', checkUserlogin, productControllers.getcartdetails)
+router.get('/checkout', checkUserlogin,checkCartDetails, productControllers.getcartdetails)
 router.post('/orders', checkUserlogin, productControllers.order)
 router.post('/order/validate', checkUserlogin, productControllers.validateOrder)
 router.post('/send/confirm/order',checkUserlogin,productControllers.sendConfirmedOrderEmail)

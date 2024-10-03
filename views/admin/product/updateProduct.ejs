@@ -127,11 +127,19 @@
                                   </select>
                                 </div>
                                 <div class="form-group">
-                                  <div class="form-check">
-                                    <input type="checkbox" name="product_stock" class="form-check-input"
-                                      value="<%= product[0].product_stock %> " id="exampleCheck1">
-                                    <label class="form-check-label" for="exampleCheck1">In Stock</label>
-                                  </div>
+                                  <label for="stock">In Stock</label>
+                                  <select class="select2" name="product_stock" id="stock" data-placeholder="Stock"
+                                    style="width: 100%;">
+                                    <% if (product[0].product_stock == true) { %>
+                                      <option value="false">No</option>
+                                      <option value="true">Yes</option>
+                                    <% } else { %>
+                                      <option value="false">No</option>
+                                      <option value="true">Yes</option>
+                                      <% } %>
+                                    <option value="<%= product[0].product_stock %>">
+                                      </option> 
+                                  </select>
                                 </div>
                                 <!-- /.form-group -->
                               </div>

@@ -23,7 +23,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <a href="/myorders">Orders</a>
+                    <a href="/myorders" class="text-black-50">Orders</a>
+                    <a href="Wishlist" class="ml-3 text-black text-black-50">Wishlist</a>
                 </div>
                 <div class="col-md-6">
                     <a href="/logout" class="float-right">Log Out</a>
@@ -72,38 +73,40 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <% for( let i=0; i < order.items.length; i++ ) { %>
-                                                    <% let product=order.products %>
-                                                        <tr>
-                                                            <td class="cart__product__item">
-                                                                <img src="http://localhost:8000/uploads/<%= product[i].product_image[0] %>"
-                                                                    alt="" class="img-fluid"
-                                                                    style="width: 80px; height: 100px;">
-                                                                <div class="cart__product__item__title">
-                                                                    <h6>
-                                                                        <%= product[i].product_title %>
-                                                                    </h6>
-                                                                    <div class="rating">
-                                                                        <i class="fa fa-star"></i>
-                                                                        <i class="fa fa-star"></i>
-                                                                        <i class="fa fa-star"></i>
-                                                                        <i class="fa fa-star"></i>
-                                                                        <i class="fa fa-star"></i>
+                                                <% if (order?.items) { %>
+                                                    <% for( let i=0; i < order.items.length; i++ ) { %>
+                                                        <% let product = order.products %>
+                                                            <tr>
+                                                                <td class="cart__product__item">
+                                                                    <img src="http://localhost:8000/uploads/<%= product[i].product_image[0] %>"
+                                                                        alt="" class="img-fluid"
+                                                                        style="width: 80px; height: 100px;">
+                                                                    <div class="cart__product__item__title">
+                                                                        <h6>
+                                                                            <%= product[i].product_title %>
+                                                                        </h6>
+                                                                        <div class="rating">
+                                                                            <i class="fa fa-star"></i>
+                                                                            <i class="fa fa-star"></i>
+                                                                            <i class="fa fa-star"></i>
+                                                                            <i class="fa fa-star"></i>
+                                                                            <i class="fa fa-star"></i>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </td>
-                                                            <td class="cart__price">
-                                                                $ <%= product[i].product_discount %>
-                                                            </td>
-                                                            <td class="cart__price">
-                                                                <%= order.items[i].quantity %>
-                                                            </td>
-                                                            <td class="cart__price">
-                                                                $<%= order.items[i].quantity *
-                                                                    product[i].product_discount %>
-                                                            </td>
-                                                        </tr>
-                                                        <% } %>
+                                                                </td>
+                                                                <td class="cart__price">
+                                                                    $ <%= product[i].product_discount %>
+                                                                </td>
+                                                                <td class="cart__price">
+                                                                    <%= order.items[i].quantity %>
+                                                                </td>
+                                                                <td class="cart__price">
+                                                                    $<%= order.items[i].quantity *
+                                                                        product[i].product_discount %>
+                                                                </td>
+                                                            </tr>
+                                                            <% } %>
+                                                <% } %>
                                             </tbody>
                                         </table>
                                     </div>
