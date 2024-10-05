@@ -132,52 +132,60 @@
                                                         <div class="form-group">
                                                             <label for=""> order Id</label>
                                                             <div class="d-flex">
-                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].razorpay_order_id %>">
+                                                                <input type="text" class="form-control w-75 mr-2"
+                                                                    value="<%= orderDetails[0].razorpay_order_id %>">
                                                                 <button class="btn btn-sm btn-primary"
-                                                                onclick="copyToClipboard('<%= orderDetails[0].razorpay_order_id %>')">Copy to Clipboard</button>
+                                                                    onclick="copyToClipboard('<%= orderDetails[0].razorpay_order_id %>')">Copy
+                                                                    to Clipboard</button>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for=""> Payment Id</label>
                                                             <div class="d-flex">
-                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].razorpay_payment_id %>">
+                                                                <input type="text" class="form-control w-75 mr-2"
+                                                                    value="<%= orderDetails[0].razorpay_payment_id %>">
                                                                 <button class="btn btn-sm btn-primary"
-                                                                onclick="copyToClipboard('<%= orderDetails[0].razorpay_payment_id %>')">Copy to Clipboard</button>
+                                                                    onclick="copyToClipboard('<%= orderDetails[0].razorpay_payment_id %>')">Copy
+                                                                    to Clipboard</button>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
-                                                          <label>Address</label>
-                                                          <div class="border border-1 p-2">
-                                                            <%= orderDetails[0].shippingAddress.main_address %> <br>
-                                                            <% if (locals.orderDetails[0].shippingAddress.optional_address) { %>
-                                                                <%= orderDetails[0].shippingAddress.optional_address %> <br>
-                                                            <% } %>
-                                                            <%= orderDetails[0].shippingAddress.city %><br>
-                                                            <%= orderDetails[0].shippingAddress.state %>,
-                                                            <%= orderDetails[0].shippingAddress.country %> <br>
-                                                            <%= orderDetails[0].shippingAddress.pincode %>
-                                                          </div>
+                                                            <label>Address</label>
+                                                            <div class="border border-1 p-2">
+                                                                <%= orderDetails[0].shippingAddress.main_address %> <br>
+                                                                    <% if (locals.orderDetails[0].shippingAddress.optional_address) { %>
+                                                                        <%= orderDetails[0].shippingAddress.optional_address %> <br>
+                                                                            <% } %>
+                                                                             <%= orderDetails[0].shippingAddress.city %><br>
+                                                                                    <%= orderDetails[0].shippingAddress.state%>,
+                                                                                        <%= orderDetails[0].shippingAddress.country %> <br>
+                                                                                            <%= orderDetails[0].shippingAddress.pincode%>
+                                                            </div>
                                                         </div>
-                                                      </div>
+                                                    </div>
                                                 </div>
                                                 <div class="row mt-4">
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="">Phone No.</label>
                                                             <div class="d-flex">
-                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].contact.phone_no %>">
+                                                                <input type="text" class="form-control w-75 mr-2"
+                                                                    value="<%= orderDetails[0].contact.phone_no %>">
                                                                 <button class="btn btn-sm btn-primary"
-                                                                onclick="copyToClipboard('<%= orderDetails[0].contact.phone_no %>')">Copy to Clipboard</button>
+                                                                    onclick="copyToClipboard('<%= orderDetails[0].contact.phone_no %>')">Copy
+                                                                    to Clipboard</button>
                                                             </div>
                                                         </div>
                                                         <div class="form-group">
                                                             <label for="">Email</label>
                                                             <div class="d-flex">
-                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].contact.email %>">
+                                                                <input type="text" class="form-control w-75 mr-2"
+                                                                    value="<%= orderDetails[0].contact.email %>">
                                                                 <button class="btn btn-sm btn-primary"
-                                                                onclick="copyToClipboard('<%= orderDetails[0].contact.email %>')">Copy to Clipboard</button>
+                                                                    onclick="copyToClipboard('<%= orderDetails[0].contact.email %>')">Copy
+                                                                    to Clipboard</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -185,9 +193,32 @@
                                                         <div class="form-group">
                                                             <label for="">Name</label>
                                                             <div class="d-flex">
-                                                                <input type="text" class="form-control w-75 mr-2" value="<%= orderDetails[0].contact.first_name %> <%= orderDetails[0].contact.last_name %>">
+                                                                <input type="text" class="form-control w-75 mr-2"
+                                                                    value="<%= orderDetails[0].contact.first_name %> <%= orderDetails[0].contact.last_name %>">
                                                                 <button class="btn btn-sm btn-primary"
-                                                                onclick="copyToClipboard('<%= orderDetails[0].contact.first_name %> <%= orderDetails[0].contact.last_name %>')">Copy to Clipboard</button>
+                                                                    onclick="copyToClipboard('<%= orderDetails[0].contact.first_name %> <%= orderDetails[0].contact.last_name %>')">Copy
+                                                                    to Clipboard</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="">Order Status</label>
+                                                            <div class="d-flex">
+                                                                <select class="select2" id="status" name="status"
+                                                                 data-placeholder="Select a Color"
+                                                                style="width: 75%;">
+                                                                <% if (orderDetails[0].status) { %>
+                                                                 <option value="<%= orderDetails[0].status %>">
+                                                                    <%= orderDetails[0].status %> 
+                                                                </option>
+                                                                <% } %>
+                                                                <option value="processing">Processing</option>
+                                                                <option value="shipped">Shipped</option>
+                                                                <option value="delivered">Delivered</option>
+                                                                <option value="canceled">Canceled</option>
+                                                                <option value="Completed">Completed</option>
+                                                                </select>
+                                                                <button class="btn btn-primary ml-2"
+                                                                    onclick="updateOrder('<%= orderDetails[0]._id %>')">update Status</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -199,7 +230,7 @@
                                                             <div class="border border-1 p-3">
                                                                 <%= orderDetails[0].order_note %>
                                                             </div>
-                                                          </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -220,6 +251,25 @@
         </div>
         <!-- ./wrapper -->
         <%- include('../../partials/script') %>
+        <script defer>
+           async function updateOrder(id){ 
+            const status = document.querySelector('#status').value     
+
+            await fetch(`http://localhost:8000/admin/order/${id}`,{
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({status})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.message == 'updated!') {
+                    toastr.success(data.message)
+                } else{
+                    toastr.error(data.message)
+                }
+            })
+           }
+        </script>
             <!-- AdminLTE App -->
     </body>
 

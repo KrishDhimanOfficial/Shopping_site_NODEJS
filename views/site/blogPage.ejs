@@ -46,14 +46,15 @@
 
             <%- include('../Site_partials/script') %>
 
-                <script async>
+                <script defer>
                     let limit = 6;
-                    (() => { getBlog(limit) })()// IIFE
+                    getBlog(limit)
 
+                    const loadPostsbtn = document.querySelector('#loadmore')
                     const preloader = document.querySelector('#preloder')
                     const loader = document.querySelector('.loader')
-                    document.querySelector('#loadmore').addEventListener('click', async (e) => {
 
+                    loadPostsbtn.addEventListener('click', async (e) => {
                         preloader.style.display = 'block'
                         loader.style.display = 'block'
                         const parent = document.querySelector('#blog_wrapper')
@@ -61,7 +62,6 @@
                         for (let i = 0; i < children.length - 1; i++) { children[i].remove() }
                         limit += 3
                         getBlog(limit)
-
                         setTimeout(() => {
                             preloader.style.display = 'none'
                             loader.style.display = 'none'
@@ -72,6 +72,7 @@
                         await fetch(`http://localhost:8000/api/blogs/${setlimit}`)
                             .then(response => response.json())
                             .then(data => {
+                                if (limit > data.length) loadPostsbtn.remove()
                                 const blog = data.map(blog => {
                                     return `<div class="col-lg-4 col-md-4 col-sm-6 col-one">
                                          <div class="blog__item">

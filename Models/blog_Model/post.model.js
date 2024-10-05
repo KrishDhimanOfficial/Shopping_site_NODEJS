@@ -3,30 +3,36 @@ const aggregatePaginate = require("mongoose-aggregate-paginate-v2")
 
 const postSchema = mongoose.Schema({
     blog_title: {
-        type: String,
+        type: mongoose.Schema.Types.String,
         required: true,
         trim: true,
         maxlength: 30
     },
     blog_description: {
-        type: String,
+        type: mongoose.Schema.Types.String,
         required: true,
         trim: true,
     },
     blog_image: {
-        type: String,
+        type: mongoose.Schema.Types.String,
         required: true,
     },
-    date:{
-        type: Date
+    blog_slug: {
+        type: mongoose.Schema.Types.String,
+        unique: true
     },
-    author:{
-        type: String
+    status:{
+        type: mongoose.Schema.Types.Boolean,
     },
-    category_id:{
+    date: {
+        type: mongoose.Schema.Types.Date
+    },
+    author: {
+        type: mongoose.Schema.Types.String
+    },
+    category_id: {
         type: mongoose.Schema.Types.ObjectId
     }
-
 })
 
 postSchema.plugin(aggregatePaginate)

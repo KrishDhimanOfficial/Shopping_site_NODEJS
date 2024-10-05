@@ -10,10 +10,10 @@
 <script src="/js/jquery.nicescroll.min.js" defer></script>
 <script src="/plugins/toastr/toastr.min.js" defer></script>
 <script src="/js/main.js" defer></script>
-<script>
-        setInterval(async() => {
-            await fetch('http://localhost:8000/api/cart/length')
-            .then(response => response.json())
-            .then(data => { document.querySelector('#cart').innerHTML = data })
-        }, 100);
+<script defer>
+    window.onload = async () => {
+        await fetch('http://localhost:8000/api/cart/length')
+        .then(response => response.json())
+        .then(data => { document.querySelector('#cart').innerHTML = data }) 
+    }
 </script>

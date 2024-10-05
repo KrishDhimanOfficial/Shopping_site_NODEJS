@@ -5,27 +5,28 @@ const deleteImage = require('../Service/deleteUploadImage')
 const mongoose = require('mongoose')
 const { getUser } = require('../Service/auth')
 const query = require('../Service/query')
+const tagsModel = require('../Models/blog_Model/tags.model')
 
 module.exports = {
     createCategory: async (req, res) => {
         try {
             const existingCategory = await category.findOne({
-                category: { $regex: req.body.category, $options: "i" }
+                category: { $regex: req.body.info, $options: "i" }
             })
-
             if (existingCategory) {
-                res.json({ message: 'Category already exists!' });
+                res.json({ message: 'Category already exists!' })
             } else {
-                await category.create(req.body);
-                res.json({ message: 'Category created successfully' });
+                await category.create({ category: req.body.info });
+                res.json({ message: 'Successfull!' });
             }
         } catch (error) {
             console.log(error.message);
             res.json({ message: 'Please Enter Category' })
         }
     },
-    allPostsByCategory: async (req, res) => {
+    allPostsAttributes: async (req, res) => {
         try {
+            const tags = await tagsModel.find({})
             const data = await category.aggregate([
                 {
                     $lookup: {
@@ -37,9 +38,27 @@ module.exports = {
                     $addFields: { length: { $size: '$Posts' } }
                 },
             ])
-            res.render('admin/blog/blogCategory', { allPostsByCategory: data })
+            res.render('admin/blog/blogCategory', { allPostsByCategory: data, tags })
         } catch (error) {
             console.log('allPostsByCategory :' + error.message);
+        }
+    },
+    deletePostCategory: async (req, res) => {
+        try {
+            const data = await category.findByIdAndDelete({ _id: req.params.id })
+            if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
+            res.status(200).json({ message: 'Successfull!' })
+        } catch (error) {
+            console.log('deletePostCategory : ' + error.message);
+        }
+    },
+    updatePostCategory: async (req, res) => {
+        try {
+            const data = await category.findByIdAndUpdate({ _id: req.params.id }, { category: req.body.info })
+            if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
+            res.status(200).json({ message: 'Successfull!' })
+        } catch (error) {
+            console.log('updatePostCategory : ' + error.message)
         }
     },
     allCategories: async (req, res) => {
@@ -48,6 +67,35 @@ module.exports = {
             res.render('admin/blog/createBlog', { categories: data })
         } catch (error) {
             console.log(error.message);
+        }
+    },
+    createTag: async (req, res) => {
+        try {
+            const existingTag = await tagsModel.findOne({ tag_name: req.body.info })
+            if (existingTag) res.json({ message: 'Category already exists!' })
+            const data = await tagsModel.create({ tag_name: req.body.info })
+            if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
+            res.status(200).json({ message: 'Successfull!' })
+        } catch (error) {
+            console.log('createTag : ' + error.message)
+        }
+    },
+    updateTag: async (req, res) => {
+        try {
+            const data = await tagsModel.findByIdAndUpdate({ _id: req.params.id }, { tag_name: req.body.info })
+            if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
+            res.status(200).json({ message: 'Successfull!' })
+        } catch (error) {
+            console.log('updateTag :' + error.message)
+        }
+    },
+    deleteTag: async (req, res) => {
+        try {
+            const data = await tagsModel.findByIdAndDelete({ _id: req.params.id })
+            if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
+            res.status(200).json({ message: 'Successfull!' })
+        } catch (error) {
+            console.log('deleteTag : ' + error.message)
         }
     },
     createPost: async (req, res) => {
@@ -90,7 +138,7 @@ module.exports = {
     deleteBlog: async (req, res) => {
         try {
             const image = await post.findOne({ _id: req.params.id })
-            deleteImage(image.blog_image)
+            deleteImage(`/blogsImages/${image.blog_image}`)
             await post.findByIdAndDelete({ _id: req.params.id })
             throw new Error('Successfully Deleted!')
         } catch (error) {
@@ -125,15 +173,15 @@ module.exports = {
     updateBlog: async (req, res) => {
         try {
             const { blog_title, blog_description, category_id } = req.body
-            blog_image = req.file?.filename;
-            if (blog_image) { deleteImage(req.query.id) }
+            const blog_image = req.file?.filename;
+            console.log(req.query.id);
 
             const data = await post.findByIdAndUpdate({ _id: req.query.id },
                 {
                     blog_title, blog_image, category_id,
                     blog_description: blog_description[0]
                 })
-
+            if (blog_image) deleteImage(`/blogsImages/${data.blog_image}`)
             if (!data) res.json({ message: 'Update Unsuccessfull!' })
             res.json({ message: 'Update Successfully!' })
         } catch (error) {

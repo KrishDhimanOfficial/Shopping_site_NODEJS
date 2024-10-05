@@ -202,8 +202,8 @@
             </div>
             <!-- Search End -->
             <%- include('../site_partials/script') %>
-                <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                <script>
+                <script src="https://checkout.razorpay.com/v1/checkout.js" defer></script>
+                <script defer>
                     document.querySelector('#rzp-button1').onclick = async (e) => {
                         e.preventDefault()
                         const q_input = document.querySelectorAll('.p_quantity')

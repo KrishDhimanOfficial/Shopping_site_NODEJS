@@ -14,7 +14,7 @@ const createStorage = (dir) => multer.diskStorage({
   }
 })
 
-const blogImageupload = multer({ storage: createStorage('blogImages') })
+const blogImageupload = multer({ storage: createStorage('blogsImages') })
 const productImageupload = multer({ storage: createStorage('') })
 const categoryImageupload = multer({ storage: createStorage('categoryImages') })
 module.exports = { blogImageupload, productImageupload, categoryImageupload }

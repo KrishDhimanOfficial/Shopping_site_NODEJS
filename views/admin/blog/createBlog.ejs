@@ -52,19 +52,15 @@
                                   placeholder="Enter Title">
                               </div>
                               <div class="form-group">
-                                <div class="row mb-4">
-                                  <div class="col-12 mb-3">
-                                    <label>Thumbnail Image</label>
+                                <label for="imageInput">File input</label>
+                                <div class="input-group">
+                                  <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="imageInput" name="blog_image">
+                                    <label class="custom-file-label" for="imageInput">Choose file</label>
                                   </div>
-                                  <div class="col-md-8">
-                                    <input type="file" id="imageInput" class="custom-file-input" name="blog_image">
-                                    <label class="custom-file-label">Choose file</label>
-                                  </div>
-                                  <div class="col-md-4">
-                                    <div style="width: 180px;height: auto;">
-                                      <img id="imageTag" src="/images/Skeleton.png" alt="" class="img-fluid">
-                                    </div>
-                                  </div>
+                                </div>
+                                <div style="width: 180px; height: auto; margin-top: 10px;">
+                                  <img id="imageTag" src="/images/Skeleton.png" alt="" class="img-fluid">
                                 </div>
                               </div>
                               <!-- /.form-group -->
@@ -85,6 +81,25 @@
                                       <% }) %>
                                         <% } %>
                                 </select>
+                              </div>
+                              <!-- /.form-group -->
+                              <!-- /.form-group -->
+                              <div class="form-group">
+                                <label for="categoryBox">Select Tags</label>
+                                <div class="d-flex flex-wrap">
+                                  <div class="form-check mr-2">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">fashion</label>
+                                  </div>
+                                  <div class="form-check mr-2">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">current fashion</label>
+                                  </div>
+                                  <div class="form-check mr-2">
+                                    <input class="form-check-input" type="checkbox">
+                                    <label class="form-check-label">pretty dress</label>
+                                  </div>
+                                </div>
                               </div>
                               <!-- /.form-group -->
                             </div>

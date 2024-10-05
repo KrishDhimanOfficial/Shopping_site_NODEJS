@@ -73,34 +73,34 @@
                           <tbody>
                             <% if (locals.categories) { %>
                               <% categories.forEach((category,i)=> { %>
-                                  <tr>
-                                    <td>
-                                      <%= i + 1 %>
-                                    </td>
-                                    <td>
-                                      <%= category.category_name %>
-                                    </td>
-                                    <td style="width: 150px; height: 150px;">
-                                      <img src="http://localhost:8000/uploads/categoryImages/<%= category.image %>"
-                                        alt="" class="img-fluid d-block">
-                                    </td>
-                                    <td>
-                                      <% category.sub_categories.forEach(category=> { %>
-                                        <p class="m-0 float-left mx-1">
-                                          <%= category.category_name %>
-                                        </p>
-                                        <% }) %>
-                                    </td>
-                                    <td>
-                                      <button type="button" class="btn btn-sm btn-primary"
-                                        onclick="(()=>{ window.location.href = 'category/update/<%= category._id %>'})()">Edit</button>
-                                      <button type="button" class="btn btn-sm btn-danger"
-                                        onclick="(()=>{ window.location.href = 'category/delete/<%= category._id %>'})()">
-                                        Delete</button>
-                                    </td>
-                                  </tr>
-                                  <% }) %>
-                                    <% } %>
+                                <tr>
+                                  <td>
+                                    <%= i + 1 %>
+                                  </td>
+                                  <td>
+                                    <%= category.category_name %>
+                                  </td>
+                                  <td style="width: 150px; height: 150px;">
+                                    <img src="http://localhost:8000/uploads/categoryImages/<%= category.image %>" alt=""
+                                      class="img-fluid d-block">
+                                  </td>
+                                  <td>
+                                    <% category.sub_categories.forEach(category=> { %>
+                                      <p class="m-0 float-left mx-1">
+                                        <%= category.category_name %>
+                                      </p>
+                                      <% }) %>
+                                  </td>
+                                  <td>
+                                    <button type="button" class="btn btn-sm btn-primary"
+                                      onclick="(()=>{ window.location.href = 'category/update/<%= category._id %>'})()">Edit</button>
+                                    <button type="button" class="btn btn-sm btn-danger deletePcategory"
+                                      data-id="<%= category._id %>" data-toggle="modal" data-target="#modal-danger">
+                                      Delete</button>
+                                  </td>
+                                </tr>
+                                <% }) %>
+                                  <% } %>
                           </tbody>
                           <tfoot>
                             <tr>
@@ -378,6 +378,28 @@
           <%- include('../../partials/main_footer') %>
 
     </div>
+    <div class="modal fade" id="modal-danger">
+      <div class="modal-dialog">
+        <div class="modal-content bg-danger">
+          <div class="modal-header">
+            <h4 class="modal-title">Alert</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Are You want to Delete</p>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-outline-light" id="deleteCategoty">Save changes</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
     <div class="modal fade" id="modal-default">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -614,6 +636,28 @@
           brand.value = ''
         })
 
+        document.querySelectorAll('.deletePcategory').forEach(btn => {
+          btn.onclick = (e) => {
+            const id = btn.dataset.id
+            deleteCategory(id, e.target)
+          }
+        })
+        function deleteCategory(id, targetElement) {
+          document.querySelector('#deleteCategoty').onclick = async () => {
+            await fetch(`http://localhost:8000/admin/product/category/delete/${id}`, {
+              method: 'DELETE'
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.message == 'Successfully Deleted!') {
+                  toastr.success(data.message)
+                  targetElement.parentNode.parentNode.remove()
+                } else {
+                  toastr.error(data.message)
+                }
+              })
+          }
+        }
       </script>
   </body>
 

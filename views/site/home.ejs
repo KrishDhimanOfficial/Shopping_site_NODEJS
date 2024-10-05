@@ -13,15 +13,15 @@
                         <% product_categories.forEach(category => { %>
                             <% if (category.category_name == 'women' ) { %>
                                 <div class="categories__item categories__large__item set-bg"
-                                    data-setbg="http://localhost:8000/uploads/categoryImages/<%= category.image %>">
+                                    data-setbg="http://localhost:8000/uploads/categoryImages/<%= category?.image %>">
                                     <div class="categories__text">
                                         <h1>
-                                            <%= category.category_name %>'s fashion
+                                            <%= category?.category_name %>'s fashion
                                         </h1>
                                         <p>
-                                            <%= category.category_desc %>
+                                            <%= category?.category_desc %>
                                         </p>
-                                        <a href="products/<%= category.category_name %>">Shop now</a>
+                                        <a href="products/<%= category?.category_name %>">Shop now</a>
                                     </div>
                                 </div>
                             <% } %>
@@ -31,19 +31,19 @@
                 <div class="col-lg-6">
                     <div class="row">
                         <% if (locals.product_categories) { %>
-                            <% for( let i = 0; i < 5; i++ ) { %>
-                                <% if (product_categories[i].category_name != 'women' ) { %>
+                            <% for( let i = 0; i < 5; ++i ) { %>
+                                <% if (product_categories[i] != product_categories[1]) { %>
                                     <div class="col-lg-6 col-md-6 col-sm-6 p-0">
                                         <div class="categories__item set-bg"
-                                            data-setbg="/uploads/categoryImages/<%= product_categories[i].image %>">
+                                            data-setbg="/uploads/categoryImages/<%= product_categories[i]?.image %>">
                                             <div class="categories__text">
                                                 <h4>
-                                                    <%= product_categories[i].category_name %>
+                                                    <%= product_categories[i]?.category_name %>
                                                 </h4>
                                                 <p>
-                                                    <%= product_categories[i].length %> items
+                                                    <%= product_categories[i]?.length %> items
                                                 </p>
-                                                <a href="products/<%= product_categories[i].category_name %>">Shop now</a>
+                                                <a href="products/<%= product_categories[i]?.category_name %>">Shop now</a>
                                             </div>
                                         </div>
                                     </div>

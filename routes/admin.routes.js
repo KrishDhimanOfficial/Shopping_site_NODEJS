@@ -20,9 +20,22 @@ router
 
 router.get('/logout', Admin.handleAdminLogout)
 
-// Post Routes
-router.post('/api/createCategory', checkLogin, blogControllers.createCategory)
-router.get('/blog/category', checkLogin, blogControllers.allPostsByCategory)
+
+// To Get Blog Category AND Perform Update Delete Operation
+router.route('/blog/category/:id?')
+    .all(checkLogin)
+    .post(blogControllers.createCategory)
+    .get(blogControllers.allPostsAttributes)
+    .delete(blogControllers.deletePostCategory)
+    .put(blogControllers.updatePostCategory)
+
+// To Get Blog Tag AND Perform Update Delete Operation
+router.route('/blog/tag/:id?')
+    .all(checkLogin)
+    .post(blogControllers.createTag)
+    .put(blogControllers.updateTag)
+    .delete(blogControllers.deleteTag)
+
 router.route('/blog/create')
     .all(checkLogin)
     .get(blogControllers.allCategories)
@@ -47,7 +60,7 @@ router.route('/product/create')
     .all(checkLogin)
     .get(productControllers.showProductAttributes)
     .post(productImageupload.array('product_image', 5), productControllers.createProduct)
-    
+
 router.get('/products', checkLogin, productControllers.getProductsOnAdmin)
 router.route('/product/:id')
     .all(checkLogin)
@@ -63,7 +76,7 @@ router.route('/api/parent_category')
     .get(productControllers.parenCategory)
 router.get('/productcategory', checkLogin, productControllers.showAllCategories)
 
-router.get('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
+router.delete('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
 
 router.post('/api/attributes/color', checkLogin, productControllers.createColor)
 router.delete('/api/attributes/color/:id', checkLogin, productControllers.deleteColor)
@@ -76,10 +89,13 @@ router.delete('/api/attributes/brand/:id', checkLogin, productControllers.delete
 
 // Product orders Routes
 router.get('/products/orders', checkLogin, productControllers.getOrders)
-router.get('/order/:id', checkLogin, productControllers.getorderDetais)
 
+router.route('/order/:id')
+    .all(checkLogin)
+    .get(productControllers.getorderDetails)
+    .put(productControllers.updateOrderStatus)
 // Contact Form Routes
-router.get('/contact/messages',checkLogin, usersControllers.getAllMessages)
-router.get('/message/:id',checkLogin, usersControllers.getSingleContactMessage)
-router.post('/send/response',checkLogin, usersControllers.sendEmailResponse)
+router.get('/contact/messages', checkLogin, usersControllers.getAllMessages)
+router.get('/message/:id', checkLogin, usersControllers.getSingleContactMessage)
+router.post('/send/response', checkLogin, usersControllers.sendEmailResponse)
 module.exports = router;

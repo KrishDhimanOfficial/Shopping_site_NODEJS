@@ -27,7 +27,7 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <ol class="breadcrumb float-sm-right">
-                                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                            <li class="breadcrumb-item"><a href="/admin/dashboard">Home</a></li>
                                             <li class="breadcrumb-item active">Blog Category</li>
                                         </ol>
                                     </div>
@@ -64,20 +64,38 @@
                                                                 rowspan="1" colspan="1" aria-label="
                 Blog Image: activate to sort column ascending">
                                                                 No of Posts</th>
+                                                            <th class="sorting" tabindex="0" aria-controls="example1"
+                                                                rowspan="1" colspan="1" aria-label="
+                Blog Image: activate to sort column ascending">
+                                                                Actions</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody id="blogTable">
                                                         <% if (locals.allPostsByCategory) { %>
-                                                            <% allPostsByCategory.forEach((element,i)=> { %>
+                                                            <% allPostsByCategory.forEach((category,i)=> { %>
                                                                 <tr>
                                                                     <td class="dtr-control sorting_1" tabindex="0">
                                                                         <%= i+1 %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= element.category %>
+                                                                        <%= category.category %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= element.length %>
+                                                                        <%= category.length %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button class="btn btn-success updatecategory"
+                                                                            data-toggle="modal"
+                                                                            data-target="#modal-update-category"
+                                                                            data-id="<%= category._id %>"
+                                                                            data-category="<%= category.category %>">Edit</button>
+                                                                        <% if (category.length==0) {%>
+                                                                            <button type="button"
+                                                                                class="btn btn-danger deletecategorybtn"
+                                                                                data-id="<%= category._id %>">
+                                                                                Delete
+                                                                            </button>
+                                                                            <% } %>
                                                                     </td>
                                                                 </tr>
                                                                 <% }) %>
@@ -88,6 +106,7 @@
                                                             <th rowspan="1" colspan="1">S.NO</th>
                                                             <th rowspan="1" colspan="1">Category Name </th>
                                                             <th rowspan="1" colspan="1">No of Posts </th>
+                                                            <th rowspan="1" colspan="1">Actions </th>
                                                         </tr>
                                                     </tfoot>
                                                 </table>
@@ -103,83 +122,320 @@
                             <!-- /.container-fluid -->
                         </section>
                         <!-- /.content -->
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <section class="content-header">
+                                    <div class="container-fluid">
+                                        <div class="row mb-2">
+                                            <div class="col-sm-6 d-flex">
+                                                <h1>Tags</h1>
+                                                <button type="button" class="btn btn-default mx-2 bg-primary"
+                                                    data-toggle="modal" data-target="#modal-tags">
+                                                    Add Tags
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div><!-- /.container-fluid -->
+                                </section>
+
+                                <!-- Main content -->
+                                <section class="content">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h3 class="card-title">All Tags</h3>
+                                                    </div>
+                                                    <!-- /.card-header -->
+                                                    <div class="card-body">
+                                                        <table id="example2"
+                                                            class="table table-bordered table-striped dataTable dtr-inline"
+                                                            aria-describedby="example1_info">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="sorting sorting_asc" tabindex="0"
+                                                                        aria-controls="example1" rowspan="1" colspan="1"
+                                                                        aria-label="S.No: activate to sort column descending"
+                                                                        aria-sort="ascending">
+                                                                        S.No</th>
+                                                                    <th class="sorting" tabindex="0"
+                                                                        aria-controls="example1" rowspan="1" colspan="1"
+                                                                        aria-label="Blog Title: activate to sort column ascending">
+                                                                        Tag</th>
+                                                                    <th class="sorting" tabindex="0"
+                                                                        aria-controls="example1" rowspan="1" colspan="1"
+                                                                        aria-label="Blog Image: activate to sort column ascending">
+                                                                        Actions</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <% if (locals.tags) { %>
+                                                                    <% tags.forEach((tag,i)=> { %>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <%= i+1 %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <%= tag.tag_name %>
+                                                                            </td>
+                                                                            <td>
+                                                                                <button
+                                                                                    class="btn btn-success updatetag"
+                                                                                    data-toggle="modal"
+                                                                                    data-target="#modal-tags"
+                                                                                    data-id="<%= tag.id %>"
+                                                                                    data-tagName="<%= tag.tag_name %>">Edit</button>
+                                                                                <% if (tag.status==false) { %>
+                                                                                    <button type="button"
+                                                                                        class="btn btn-danger deletetagbtn"
+                                                                                        data-id="<%= tag.id %>">
+                                                                                        Delete
+                                                                                    </button>
+                                                                                    <% } %>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <% }) %>
+                                                                            <% } %>
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th rowspan="1" colspan="1">S.NO</th>
+                                                                    <th rowspan="1" colspan="1">Tag</th>
+                                                                    <th rowspan="1" colspan="1">Actions</th>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                    <!-- /.card-body -->
+                                                </div>
+                                                <!-- /.card -->
+                                            </div>
+                                            <!-- /.col -->
+                                        </div>
+                                        <!-- /.row -->
+                                    </div>
+                                    <!-- /.container-fluid -->
+                                </section>
+                                <!-- /.content -->
+                            </div>
+                        </div>
                     </div>
                     <!-- /.content-wrapper -->
-                    <%- include('../../partials/main_footer') %>
-
-                        <div class="modal fade" id="modal-default">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Add Category</h4>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <form method="post">
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <label for="createcategory">Category</label>
-                                                        <input type="text" name="category" id="createcategory"
-                                                            class="form-control" placeholder="Enter Category">
-                                                        <div class="error bg-danger p-2 rounded mt-2"
-                                                            style="display: none;"></div>
-                                                    </div>
+                    <!-- Create Blog Category Modal -->
+                    <div class="modal fade" id="modal-default">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Add Category</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="post">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="createcategory">Category</label>
+                                                    <input type="text" name="category" id="createcategory"
+                                                        class="form-control" placeholder="Enter Category">
+                                                    <div class="error bg-danger p-2 rounded mt-2"
+                                                        style="display: none;"></div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="modal-footer justify-content-between">
-                                            <button type="button" class="btn btn-default"
-                                                data-dismiss="modal">Close</button>
-                                            <!-- <button type="submit" id="addCategory" class="btn btn-primary">Save changes</button> -->
-                                            <button type="submit" id="addCategory"
-                                                class="toast-btn btn btn-primary toastrDefaultError">
-                                                Save changes
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <!-- /.modal-content -->
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="button" id="addCategory" class="btn btn-primary">Save
+                                            changes</button>
+                                    </div>
+                                </form>
                             </div>
-                            <!-- /.modal-dialog -->
+                            <!-- /.modal-content -->
                         </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                    <!-- Create Blog Category Modal -->
+                    <!-- Update Blog Category Modal -->
+                    <div class="modal fade" id="modal-update-category">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Update Category</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="post">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="category">Category</label>
+                                                    <input type="text" id="category" class="form-control"
+                                                        placeholder="Enter Category">
+                                                    <div class="error bg-danger p-2 rounded mt-2"
+                                                        style="display: none;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="button" id="updatecategorybtn" class="toast-btn btn btn-primary">
+                                            Save changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                    <!-- Update Blog Category Modal -->
+                    <!-- Create Tag Category Modal -->
+                    <div class="modal fade" id="modal-tags">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Add Tag</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form method="post">
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="TagInputField">Tag</label>
+                                                    <input type="text" name="category" id="TagInputField"
+                                                        class="form-control" placeholder="Enter Tag Name">
+                                                    <div class="error bg-danger p-2 rounded mt-2"
+                                                        style="display: none;"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer justify-content-between">
+                                        <button type="button" class="btn btn-default"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="button" id="Tagbtn" class="toast-btn btn btn-primary">
+                                            Save changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+                    <!-- Create Tag Modal -->
+                    <%- include('../../partials/main_footer') %>
         </div>
         <!-- ./wrapper -->
         <%- include('../../partials/script') %>
             <!-- AdminLTE App -->
-            <script>
-                const SuccesToast = document.querySelector('#toast-container .toast-success');
-                const ErrorToast = document.querySelector('#toast-container .toast-error');
+            <script defer>
+                document.querySelector('#addCategory').onclick =  () => {
+                    const category = document.querySelector('#createcategory').value.trim()
+                    const api = 'http://localhost:8000/admin/blog/category';
+                    handlePostPutOperation(api, 'POST', category)
+                    if (!category.value) return;
+                }
 
-                document.querySelector('#addCategory').addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    let category = document.querySelector('#createcategory');
-                    console.log(category.value);
+                // TO Delete Blog Category
+                document.querySelectorAll('.deletecategorybtn').forEach(btn => {
+                    btn.onclick = async () => {
+                        const id = btn.dataset.id
+                        const api = `http://localhost:8000/admin/blog/category/${id}`;
+                        handleDeleteOperation(api, btn)
+                        console.log(api);
 
-                    if (!category.value) return
-                    await fetch('http://localhost:8000/admin/api/createCategory', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', },
-                        body: JSON.stringify({ category: category.value.trim() })
+                    }
+                })
+
+                // TO Get Blog Category Data
+                document.querySelectorAll('.updatecategory').forEach(btn => {
+                    btn.onclick = () => {
+                        const { id, category } = btn.dataset;
+                        document.querySelector('#category').value = category;
+                        updatecategory(id, category)
+                    }
+                })
+
+                // TO Update Blog Category
+                function updatecategory(id) {
+                    document.querySelector('#updatecategorybtn').onclick = async () => {
+                        const category = document.querySelector('#category').value.trim()
+                        const api = `http://localhost:8000/admin/blog/category/${id}`;
+                        handlePostPutOperation(api, 'PUT', category)
+                    }
+                }
+
+                // Create Tag
+                document.querySelector('#Tagbtn').onclick = async () => {
+                    const tag_name = document.querySelector('#TagInputField').value.trim()
+                    const api = 'http://localhost:8000/admin/blog/tag';
+                    handlePostPutOperation(api, 'POST', tag_name)
+                }
+
+                // Update Tag
+                const updateTags = document.querySelectorAll('.updatetag')
+                updateTags.forEach((btn) => {
+                    btn.onclick = async () => {
+                        const { id, tagname } = btn.dataset;
+                        document.querySelector('#TagInputField').value = tagname;
+                        updateTag(id)
+                    }
+                })
+                function updateTag(id) {
+                    document.querySelector('#Tagbtn').onclick = () => {
+                        const api = `http://localhost:8000/admin/blog/tag/${id}`;
+                        const tag_name = document.querySelector('#TagInputField').value.trim()
+                        handlePostPutOperation(api, 'PUT', tag_name)
+                    }
+                }
+
+                // To Delete Tags
+                document.querySelectorAll('.deletetagbtn').forEach(btn => {
+                    btn.onclick = async () => {
+                        const id = btn.dataset.id;
+                        const api = `http://localhost:8000/admin/blog/tag/${id}`;
+                        handleDeleteOperation(api, btn)
+                    }
+                })
+
+                // Function TO Handle POST PUT OPERATION ON API
+                async function handlePostPutOperation(api, method, info) {
+                    await fetch(api, {
+                        method: `${method}`,
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ info })
                     })
                         .then(response => response.json())
                         .then(data => {
-                            category.value = ''
-
-                            const ToastElement = document.querySelector('.toast-btn')
-                            if (data.message == 'Category created successfully') {
-                                ToastElement.classList.remove('toastrDefaultError')
-                                ToastElement.classList.add('toastrDefaultSuccess')
-                                toastr.success(data.message)
-                            } else if (data.message == 'Category already exists!') {
-                                ToastElement.classList.remove('toastrDefaultSuccess')
-                                ToastElement.classList.add('toastrDefaultError')
-                                toastr.error(data.message)
-                            }
+                            AlertMessage(data.message, 'Category already exists!', 'Successfull!')
+                            if (data.message == 'Successfull!') window.location.reload()
                         })
-                })
+                }
+
+                // Function TO Handle DELETE OPERATION ON API
+                async function handleDeleteOperation(api, btn) {
+                    await fetch(api, { method: 'DELETE' })
+                        .then(response => response.json())
+                        .then(data => {
+                            // Remove That Table Row
+                            if (data.message == 'Successfull!') btn.parentNode.parentNode.remove()
+                            AlertMessage(data.message, 'Unsuccessfull!', 'Successfull!')
+                        })
+                }
+
             </script>
     </body>
 

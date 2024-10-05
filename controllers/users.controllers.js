@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs')
 const product_Cart = require('../Models/product_model/addToCart.model')
 const contact = require('../Models/contact.model')
 const { setUser } = require('../Service/auth')
-const transporter = require('../Service/mail')
+const transporter = require('../Service/mailTransporter')
 const { default: mongoose } = require('mongoose')
 'use strict'
 

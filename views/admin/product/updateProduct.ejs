@@ -202,11 +202,10 @@
                                         multiple>
                                       <label class="custom-file-label" for="image-upload">Choose file</label>
                                     </div>
-                                    <div id="imagePreview" class="d-flex">
+                                    <div id="imagePreview" class="d-flex flex-wrap">
                                       <% product[0].product_image.forEach(image=> { %>
                                         <img src="http://localhost:8000/uploads/<%= image %> " alt=""
                                           class="img-fluid m-1 img" style="width: 150px; height: auto;">
-
                                         <% }) %>
                                     </div>
                                   </div>

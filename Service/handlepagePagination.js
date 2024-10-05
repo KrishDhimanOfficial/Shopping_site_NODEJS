@@ -1,13 +1,13 @@
 const handleAggregatePagination = async (collectionName, aggregation, query) => {
     try {
 
-        const { page = 1, limit = 10 } = query;
+        const { page = 1, limit = 2 } = query;
         const options = {
             page: parseInt(page, 10),
             limit: parseInt(limit, 10),
         }
         const data = await collectionName.aggregatePaginate(aggregation, options)
-
+        
         return {
             totalDocs: data.totalDocs,
             totalPages: data.totalPages,

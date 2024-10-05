@@ -30,7 +30,7 @@
                             <div class="product__details__pic__left product__thumb nice-scroll">
                                 <% singleProduct[0].product_image?.forEach((image,i)=> { %>
                                     <a class="pt" href="#product-<%= i +1 %>">
-                                        <img src="/uploads/<%= image %>" alt="">
+                                        <img src="/uploads/<%= image %>" alt="" loading="lazy">
                                     </a>
                                     <% }) %>
                             </div>
@@ -38,7 +38,7 @@
                                 <div class="product__details__pic__slider owl-carousel">
                                     <% singleProduct[0].product_image?.forEach((image,i)=> { %>
                                         <img src="/uploads/<%= image %>" data-hash="product-<%= i %>" alt=""
-                                            class="product__big__img">
+                                            class="product__big__img" loading="lazy">
                                         <% }) %>
                                 </div>
                             </div>

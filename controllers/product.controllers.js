@@ -12,10 +12,9 @@ const queries = require('../Service/query')
 const { getUser } = require('../Service/auth')
 const handleAggregatePagination = require('../Service/handlepagePagination')
 const deleteImage = require('../Service/deleteUploadImage')
-const transporter = require('../Service/mail');
+const transporter = require('../Service/mailTransporter')
 const Razorpay = require('razorpay')
 const crypto = require("crypto")
-const { promises } = require('dns')
 
 
 module.exports = {
@@ -89,7 +88,10 @@ module.exports = {
     },
     deleteParentCategory: async (req, res) => {
         try {
-            const data = req.body;
+            const data = await parent_Category.findByIdAndDelete({ _id: req.params.id })
+            if (!data) res.json({ message: 'Unsuccessfully' })
+            deleteImage(`/categoryImages/${data.image}`)
+            res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
             console.log('83' + error.message);
         }
@@ -121,6 +123,8 @@ module.exports = {
     getProductsOnAdmin: async (req, res) => {
         try {
             const data = await product.aggregate(queries.productQuery)
+            console.log(data.length);
+            
             res.render('admin/product/index', { products: data })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
@@ -313,9 +317,14 @@ module.exports = {
                 },
                 { $project: { category_name: 1, sub: 1 } }
             ])
-
             const projection = [
-                { $match: { category_name: { $regex: req.params.name, $options: 'i' } } },
+                {
+                    $match: {
+                        category_name: {
+                            $regex: req.params.parent_name, $options: 'i'
+                        }
+                    }
+                },
                 {
                     $lookup: {
                         from: 'products',
@@ -326,7 +335,7 @@ module.exports = {
                 },
                 {
                     $project: {
-                        image: 0, category_desc: 0
+                        image: 0, category_desc: 0, _id: 0,
                     }
                 }
             ]
@@ -378,7 +387,6 @@ module.exports = {
                 },
                 { $project: { category_name: 1, sub: 1 } }
             ])
-
             const projection = [
                 {
                     $lookup: {
@@ -420,8 +428,9 @@ module.exports = {
                     }
                 }
             ]
+
             const sub_category_products = await handleAggregatePagination(product, projection, req.params)
-            res.render('site/shop', { sub_category_products, colors, sizes, categories })
+            res.render('site/shop', { sub_category_products, colors, sizes, categories, route: req.path })
         } catch (error) {
             console.log('getSub_categoryProduct :' + error.message);
         }
@@ -694,7 +703,7 @@ module.exports = {
             console.log('getOrders : ' + error.message);
         }
     },
-    getorderDetais: async (req, res) => {
+    getorderDetails: async (req, res) => {
         try {
             queries.getOrderData.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
             const data = await order.aggregate(queries.getOrderData)
@@ -702,6 +711,15 @@ module.exports = {
             res.render('admin/product/singleOrderDetails', { orderDetails: data })
         } catch (error) {
             console.log('getorderDetais : ' + error.message)
+        }
+    },
+    updateOrderStatus: async (req, res) => {
+        try {
+            const data = await order.findByIdAndUpdate({ _id: req.params.id }, { status: req.body.status })
+            if (!data) res.json({ message: 'Unsuccessful!' })
+            res.json({ message: 'updated!' })
+        } catch (error) {
+            console.log('updateOrderStatus :' + error.message);
         }
     },
     getuserOrders: async (req, res) => {
@@ -735,8 +753,6 @@ module.exports = {
                 }
             ]
             const userOrder = await handleAggregatePagination(order, projection, req.params)
-            // console.log(userOrder.collectionData[0].products);
-
             res.render('site/UserAccount', { userorderDetails: userOrder })
         } catch (error) {
             console.log('getuserOrders : ' + error.message)

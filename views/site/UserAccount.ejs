@@ -61,6 +61,15 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="">Order Status</label>
+                                                <input type="text" class="form-control"
+                                                    value="<%= order.status %> ">
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="shop__cart__table mt-3">
                                         <table>
                                             <thead>
@@ -76,14 +85,14 @@
                                                 <% if (order?.items) { %>
                                                     <% for( let i=0; i < order.items.length; i++ ) { %>
                                                         <% let product = order.products %>
-                                                            <tr>
+                                                            <tr id="<%= product[i]?._id %>">
                                                                 <td class="cart__product__item">
-                                                                    <img src="http://localhost:8000/uploads/<%= product[i].product_image[0] %>"
+                                                                    <img src="http://localhost:8000/uploads/<%= product[i]?.product_image[0] %>"
                                                                         alt="" class="img-fluid"
                                                                         style="width: 80px; height: 100px;">
                                                                     <div class="cart__product__item__title">
                                                                         <h6>
-                                                                            <%= product[i].product_title %>
+                                                                            <%= product[i]?.product_title %>
                                                                         </h6>
                                                                         <div class="rating">
                                                                             <i class="fa fa-star"></i>
@@ -95,14 +104,14 @@
                                                                     </div>
                                                                 </td>
                                                                 <td class="cart__price">
-                                                                    $ <%= product[i].product_discount %>
+                                                                    $ <%= product[i]?.product_discount %>
                                                                 </td>
                                                                 <td class="cart__price">
-                                                                    <%= order.items[i].quantity %>
+                                                                    <%= order.items[i]?.quantity %>
                                                                 </td>
                                                                 <td class="cart__price">
-                                                                    $<%= order.items[i].quantity *
-                                                                        product[i].product_discount %>
+                                                                    $<%= order.items[i]?.quantity *
+                                                                        product[i]?.product_discount %>
                                                                 </td>
                                                             </tr>
                                                             <% } %>

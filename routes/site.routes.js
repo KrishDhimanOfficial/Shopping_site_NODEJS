@@ -33,7 +33,7 @@ router.get('/account', checkUserlogin, (req, res) => {
 })
 
 router.get('/home', productControllers.getProductByCategory)
-router.get('/products/:name/:page?', productControllers.getProductByCategoryonShop)
+router.get('/products/:parent_name/:page?', productControllers.getProductByCategoryonShop)
 router.get('/shop/:page?', productControllers.showAllproducts)
 router.get('/category/:parent_category/:sub_category/:page?', checkUserlogin, productControllers.getSub_categoryProduct)
 router.get('/api/singleproduct/:id', productControllers.singleproductonCart)
@@ -61,7 +61,7 @@ router.get('/myorders/:page?', checkUserlogin, productControllers.getuserOrders)
 router.get('/api/cart/length', checkUserlogin, productControllers.getCartLength)
 
 router.post('/filter', productControllers.getfilterProducts)
-router.post('/filter/price', productControllers.getpriceRangeProducts)
+router.post('/filter/price',checkUserlogin, productControllers.getpriceRangeProducts)
 
 router.post('/contact/details', userControllers.contactMessage)
 module.exports = router
