@@ -21,8 +21,12 @@ const postSchema = mongoose.Schema({
         type: mongoose.Schema.Types.String,
         unique: true
     },
+    tags:{
+        type: mongoose.Schema.Types.Array,
+    },
     status:{
         type: mongoose.Schema.Types.Boolean,
+        default: true
     },
     date: {
         type: mongoose.Schema.Types.Date

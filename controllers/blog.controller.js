@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const { getUser } = require('../Service/auth')
 const query = require('../Service/query')
 const tagsModel = require('../Models/blog_Model/tags.model')
+const { stat } = require('fs/promises')
 
 module.exports = {
     createCategory: async (req, res) => {
@@ -27,6 +28,8 @@ module.exports = {
     allPostsAttributes: async (req, res) => {
         try {
             const tags = await tagsModel.find({})
+            const posts = await post.find({})
+            const usingTags = posts.map(post => post.tags)
             const data = await category.aggregate([
                 {
                     $lookup: {
@@ -38,7 +41,7 @@ module.exports = {
                     $addFields: { length: { $size: '$Posts' } }
                 },
             ])
-            res.render('admin/blog/blogCategory', { allPostsByCategory: data, tags })
+            res.render('admin/blog/blogCategory', { allPostsByCategory: data, tags, usingTags })
         } catch (error) {
             console.log('allPostsByCategory :' + error.message);
         }
@@ -61,10 +64,11 @@ module.exports = {
             console.log('updatePostCategory : ' + error.message)
         }
     },
-    allCategories: async (req, res) => {
+    getAttributes: async (req, res) => {
         try {
-            const data = await category.find()
-            res.render('admin/blog/createBlog', { categories: data })
+            const categories = await category.find({})
+            const tags = await tagsModel.find({})
+            res.render('admin/blog/createBlog', { categories, tags })
         } catch (error) {
             console.log(error.message);
         }
@@ -72,7 +76,7 @@ module.exports = {
     createTag: async (req, res) => {
         try {
             const existingTag = await tagsModel.findOne({ tag_name: req.body.info })
-            if (existingTag) res.json({ message: 'Category already exists!' })
+            if (existingTag) res.json({ message: 'TagName already exists!' })
             const data = await tagsModel.create({ tag_name: req.body.info })
             if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
             res.status(200).json({ message: 'Successfull!' })
@@ -100,13 +104,15 @@ module.exports = {
     },
     createPost: async (req, res) => {
         try {
-            const { blog_title, blog_description, category_id } = req.body;
-            date = new Date()
-            author = 'Admin'
-            blog_image = req.file.filename
-
-            const data = await post.create({ blog_title, author, blog_description: blog_description[1], date, blog_image, category_id })
-            if (data) res.json({ message: 'Post Created sucessfull!' })
+            const { blog_title, blog_description, category_id, blog_slug, status } = req.body;
+            const tags = req.body.tags.map(id => new mongoose.Types.ObjectId(id))
+            const date = new Date()
+            const author = 'Admin';
+            const blog_image = req.file.filename
+            const data = await post.create({ blog_title, author, tags, status, blog_slug: blog_slug[1], blog_description: blog_description[1], date, blog_image, category_id })
+            if (data) {
+                res.json({ message: 'Post Created sucessfull!' })
+            }
         } catch (error) {
             console.log(error.message);
             res.json({ message: 'Post Created Unsucessfull!' })
@@ -123,7 +129,7 @@ module.exports = {
                 }, { $unwind: '$postCategory' },
                 {
                     $project: {
-                        blog_title: 1, blog_image: 1, postCategory: 1,
+                        blog_title: 1, blog_image: 1, postCategory: 1, status: 1,
                         formattedDate: {
                             $dateToString: { format: "%d-%m-%Y", date: "$date" }
                         }
@@ -149,6 +155,7 @@ module.exports = {
     updateBlogPage: async (req, res) => {
         try {
             const categorydata = await category.find({})
+            const tags = await tagsModel.find({})
             const data = await post.aggregate([
                 { $match: { _id: new mongoose.Types.ObjectId(req.query.id) } },
                 {
@@ -160,10 +167,18 @@ module.exports = {
                     }
                 },
                 {
+                    $lookup: {
+                        from: 'posttags',
+                        localField: 'tags',
+                        foreignField: '_id',
+                        as: 'tags'
+                    }
+                },
+                {
                     $unwind: '$category_name'
                 }
             ])
-            res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata })
+            res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata, tags })
             if (!data) res.redirect('/admin/blogs')
         } catch (error) {
             console.log('updateBlogPage :' + error.message)
@@ -172,14 +187,13 @@ module.exports = {
     },
     updateBlog: async (req, res) => {
         try {
-            const { blog_title, blog_description, category_id } = req.body
+            const { blog_title, blog_description, category_id, blog_slug, tags, status } = req.body
             const blog_image = req.file?.filename;
-            console.log(req.query.id);
-
             const data = await post.findByIdAndUpdate({ _id: req.query.id },
                 {
                     blog_title, blog_image, category_id,
-                    blog_description: blog_description[0]
+                    blog_description: blog_description[0],
+                    blog_slug, tags, status
                 })
             if (blog_image) deleteImage(`/blogsImages/${data.blog_image}`)
             if (!data) res.json({ message: 'Update Unsuccessfull!' })
@@ -191,15 +205,20 @@ module.exports = {
     },
     getBlogs: async (req, res) => {
         try {
-            const data = await post.aggregate([{
-                $project: {
-                    blog_title: 1, blog_description: 1, author: 1, blog_image: 1,
-                    formattedDate: {
-                        $dateToString: { format: '%d-%m-%Y', date: '$date' }
+            const data = await post.aggregate([
+                {
+                    $match: {
+                        status: { $eq: true }
                     }
-                }
-            }]).limit(parseInt(req.params.loadPosts))
-
+                },
+                {
+                    $project: {
+                        blog_title: 1, blog_description: 1, author: 1, blog_image: 1,
+                        formattedDate: {
+                            $dateToString: { format: '%d-%m-%Y', date: '$date' }
+                        }
+                    }
+                }]).limit(parseInt(req.params.loadPosts))
             res.status(200).json(data)
         } catch (error) {
             console.log("getBlogs :" + error.message);

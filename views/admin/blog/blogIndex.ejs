@@ -61,6 +61,9 @@
                               <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                 aria-label="Platform(s): activate to sort column ascending">
                                 Category</th>
+                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                                aria-label="Platform(s): activate to sort column ascending">
+                                Status</th>
                               <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                 aria-label="Engine version: activate to sort column ascending">
                                 Blog Date</th>
@@ -72,7 +75,6 @@
                           <tbody id="blogTable">
                             <% if (locals.posts) { %>
                               <% posts.forEach((post ,i)=> { %>
-                                %>
                                 <tr id="row-<%= post._id  %>">
                                   <td>
                                     <%= i + 1 %>
@@ -86,6 +88,13 @@
                                   </td>
                                   <td>
                                     <%= post.postCategory.category %>
+                                  </td>
+                                  <td>
+                                    <% if (post.status === true) { %>
+                                     Published
+                                    <% } else {%>
+                                      Draft
+                                      <% } %> 
                                   </td>
                                   <td>
                                     <%= post.formattedDate %>
@@ -119,6 +128,7 @@
                               <th rowspan="1" colspan="1">Blog Title</th>
                               <th rowspan="1" colspan="1">Image</th>
                               <th rowspan="1" colspan="1">Category</th>
+                              <th rowspan="1" colspan="1">Status</th>
                               <th rowspan="1" colspan="1">Blog Date</th>
                               <th rowspan="1" colspan="1">Actions</th>
                             </tr>

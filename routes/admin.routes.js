@@ -38,7 +38,7 @@ router.route('/blog/tag/:id?')
 
 router.route('/blog/create')
     .all(checkLogin)
-    .get(blogControllers.allCategories)
+    .get(blogControllers.getAttributes)
     .post(blogImageupload.single('blog_image'), blogControllers.createPost)
 
 router.route('/update/blog')

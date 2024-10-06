@@ -85,33 +85,45 @@
                               <!-- /.form-group -->
                               <!-- /.form-group -->
                               <div class="form-group">
+                                <label for="categoryBox">Slug</label>
+                                <input type="text" class="form-control" name="blog_slug" id="blog_slug">
+                              </div>
+                              <!-- /.form-group -->
+                              <!-- /.form-group -->
+                              <div class="form-group">
                                 <label for="categoryBox">Select Tags</label>
                                 <div class="d-flex flex-wrap">
-                                  <div class="form-check mr-2">
-                                    <input class="form-check-input" type="checkbox">
-                                    <label class="form-check-label">fashion</label>
-                                  </div>
-                                  <div class="form-check mr-2">
-                                    <input class="form-check-input" type="checkbox">
-                                    <label class="form-check-label">current fashion</label>
-                                  </div>
-                                  <div class="form-check mr-2">
-                                    <input class="form-check-input" type="checkbox">
-                                    <label class="form-check-label">pretty dress</label>
-                                  </div>
+                                  <% if (locals.tags) { %>
+                                    <% tags.forEach((tag,i)=> { %>
+                                      <div class="form-check mr-2">
+                                        <input class="form-check-input tags" id="<%= i+1 %> " type="checkbox"
+                                          value="<%= tag._id %>" name="tags">
+                                        <label class="form-check-label" for="<%= i+1 %> ">
+                                          <%= tag.tag_name %>
+                                        </label>
+                                      </div>
+                                      <% }) %>
+                                        <% } %>
                                 </div>
+                              </div>
+                              <!-- /.form-group -->
+                                 <!-- /.form-group -->
+                              <div class="form-group">
+                                <label for="status">Status</label>
+                                <select id="status" name="status" class="form-control">
+                                  <option value="true" selected>Published</option>
+                                  <option value="false">Draft</option>
+                                </select>
                               </div>
                               <!-- /.form-group -->
                             </div>
                             <!-- /.col -->
                             <div class="col-md-12">
-                              <textarea id="summernote" name="blog_description">
-                                  </textarea>
+                              <textarea id="summernote" name="blog_description"></textarea>
                             </div>
                             <!-- /.col-->
                           </div>
-                          <button type="submit"
-                            class="border-0 rounded p-2 toast-btn btn btn-primary toastrDefaultError">
+                          <button type="submit" class="border-0 rounded p-2 px-4 btn btn-primary float-right">
                             Submit
                           </button>
                         </form>
@@ -135,48 +147,41 @@
 
     <!-- jQuery -->
     <%- include('../../partials/script') %>
-      <script>
+      <script defer>
 
-        const inputField = document.getElementById('imageInput');
-        const imageTag = document.getElementById('imageTag');
+        const inputField = document.getElementById('imageInput')
+        const imageTag = document.getElementById('imageTag')
 
         inputField.addEventListener('change', (e) => {
           const file = e.target.files[0]
           const reader = new FileReader()
-          reader.onload = () => {
-            imageTag.src = reader.result;
-          };
+          reader.onload = () => imageTag.src = reader.result;
           reader.readAsDataURL(file)
         })
 
-        document.querySelector('#submitPost').addEventListener('submit', async (e) => {
-          e.preventDefault()
-          const blog_description = $('#summernote').summernote('code').trim()
-          const formData = new FormData(e.target)
-          formData.append('blog_description', blog_description)
-
-          await fetch('http://localhost:8000/admin/blog/create', {
-            method: 'POST',
-            body: formData
-          })
-            .then(response => response.json())
-            .then((data) => {
-              AlertMessage(data.message, 'Post Created Unsucessfull!', 'Post Created sucessfull!')
-            })
-        })
-
-        function AlertMessage(message, erroMessage, sucsessMessage) {
-          const ToastElement = document.querySelector('.toast-btn')
-          if (erroMessage == message) {
-            ToastElement.classList.remove('toastrDefaultSuccess')
-            ToastElement.classList.add('toastrDefaultError')
-            toastr.error(message)
-          } else if (sucsessMessage == message) {
-            ToastElement.classList.remove('toastrDefaultError')
-            ToastElement.classList.add('toastrDefaultSuccess')
-            toastr.success(message)
-          }
+        function createSlug(str) {
+          return str.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .replace(/--+/g, '-')
         }
+
+          document.querySelector('#submitPost').onsubmit = async (e) => {
+            e.preventDefault()
+            const blog_description = $('#summernote').summernote('code').trim()
+            const formData = new FormData(e.target)
+            formData.append('blog_description', blog_description)
+            formData.append('blog_slug', createSlug(document.querySelector('#blog_slug').value))
+            await fetch('http://localhost:8000/admin/blog/create', {
+              method: 'POST',
+              body: formData
+            })
+              .then(response => response.json())
+              .then((data) => {
+                AlertMessage(data.message, 'Post Created Unsucessfull!', 'Post Created sucessfull!')
+              })
+          }
+
       </script>
   </body>
 

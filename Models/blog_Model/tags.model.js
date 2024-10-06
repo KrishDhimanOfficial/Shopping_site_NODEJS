@@ -7,10 +7,6 @@ const postTagSchema = mongoose.Schema({
         unique: true,
         trim: true
     },
-    status:{
-        type : mongoose.SchemaTypes.Boolean,
-        default:false
-    }
 })
 
 module.exports = mongoose.model('postTag', postTagSchema)

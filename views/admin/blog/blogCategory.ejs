@@ -185,15 +185,18 @@
                                                                                     class="btn btn-success updatetag"
                                                                                     data-toggle="modal"
                                                                                     data-target="#modal-tags"
-                                                                                    data-id="<%= tag.id %>"
+                                                                                    data-id="<%= tag._id %>"
                                                                                     data-tagName="<%= tag.tag_name %>">Edit</button>
-                                                                                <% if (tag.status==false) { %>
-                                                                                    <button type="button"
-                                                                                        class="btn btn-danger deletetagbtn"
-                                                                                        data-id="<%= tag.id %>">
-                                                                                        Delete
-                                                                                    </button>
-                                                                                    <% } %>
+                                                                                <% if (locals.usingTags) { %>
+                                                                                    <% const hasNoMatchingID=usingTags.some(id=> id.includes(tag._id)) %>
+                                                                                        <% if (!hasNoMatchingID) { %>
+                                                                                            <button type="button"
+                                                                                                class="btn btn-danger deletetagbtn"
+                                                                                                data-id="<%= tag.id %>">
+                                                                                                Delete
+                                                                                            </button>
+                                                                                            <% } %>
+                                                                                                <% } %>
                                                                             </td>
                                                                         </tr>
                                                                         <% }) %>
@@ -342,10 +345,11 @@
         <%- include('../../partials/script') %>
             <!-- AdminLTE App -->
             <script defer>
-                document.querySelector('#addCategory').onclick =  () => {
+                // Create Post Category
+                document.querySelector('#addCategory').onclick = () => {
                     const category = document.querySelector('#createcategory').value.trim()
                     const api = 'http://localhost:8000/admin/blog/category';
-                    handlePostPutOperation(api, 'POST', category)
+                    handlePostPutOperation(api, 'POST', category, 'Category already exists!')
                     if (!category.value) return;
                 }
 
@@ -382,7 +386,7 @@
                 document.querySelector('#Tagbtn').onclick = async () => {
                     const tag_name = document.querySelector('#TagInputField').value.trim()
                     const api = 'http://localhost:8000/admin/blog/tag';
-                    handlePostPutOperation(api, 'POST', tag_name)
+                    handlePostPutOperation(api, 'POST', tag_name, 'TagName already exists!')
                 }
 
                 // Update Tag
@@ -412,7 +416,7 @@
                 })
 
                 // Function TO Handle POST PUT OPERATION ON API
-                async function handlePostPutOperation(api, method, info) {
+                async function handlePostPutOperation(api, method, info,existsError) {
                     await fetch(api, {
                         method: `${method}`,
                         headers: { 'Content-Type': 'application/json' },
@@ -420,7 +424,7 @@
                     })
                         .then(response => response.json())
                         .then(data => {
-                            AlertMessage(data.message, 'Category already exists!', 'Successfull!')
+                            AlertMessage(data.message, existsError, 'Successfull!')
                             if (data.message == 'Successfull!') window.location.reload()
                         })
                 }
