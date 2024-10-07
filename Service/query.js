@@ -143,6 +143,7 @@ module.exports = {
         {
             $project: {
                 blog_title: 1, blog_image: 1,
+                blog_slug:1,
                 formattedDate: {
                     $dateToString: { format: '%d-%m-%Y', date: '$date' }
                 }

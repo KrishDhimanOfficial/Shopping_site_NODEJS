@@ -61,7 +61,7 @@
                               <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                 aria-label="Platform(s): activate to sort column ascending">
                                 Category</th>
-                                <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
+                              <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
                                 aria-label="Platform(s): activate to sort column ascending">
                                 Status</th>
                               <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
@@ -75,7 +75,7 @@
                           <tbody id="blogTable">
                             <% if (locals.posts) { %>
                               <% posts.forEach((post ,i)=> { %>
-                                <tr id="row-<%= post._id  %>">
+                                <tr>
                                   <td>
                                     <%= i + 1 %>
                                   </td>
@@ -90,33 +90,26 @@
                                     <%= post.postCategory.category %>
                                   </td>
                                   <td>
-                                    <% if (post.status === true) { %>
-                                     Published
-                                    <% } else {%>
-                                      Draft
-                                      <% } %> 
+                                    <% if (post.status===true) { %>
+                                      Published
+                                      <% } else {%>
+                                        Draft
+                                        <% } %>
                                   </td>
                                   <td>
                                     <%= post.formattedDate %>
                                   </td>
                                   <td>
-                                    <button type="button"
-                                      onclick="(()=>{window.location.href='update/blog?id=<%= post._id %>' })()" class="btn btn-block
-                                            btn-success">Edit</button>
+                                    <a href="update/blog?id=<%= post._id %>"
+                                      class="btn btn-block btn-success">
+                                      Edit</a>
 
-                                    <button type="button"
-                                      onclick="(async (e)=> { 
-                                        const row = document.querySelector('#row-'+'<%= post._id  %>');
-                                            await fetch('http://localhost:8000/admin/delete/blog/' + '<%= post._id  %>', {
-                                              method: 'DELETE',
-                                             })
-                                            .then(response => response.json())
-                                            .then(data => { 
-                                              row.remove()
-                                              AlertMessage(data.message,'Successfully Deleted!')
-                                            })
-                                          })()"
-                                      class="toast-btn btn btn-block btn-danger toastrDefaultError">Delete</button>
+                                    <% if (post.commentsLength==0) { %>
+                                      <button type="button" class="btn btn-block btn-danger postDeleteBtn"
+                                        data-id="<%= post._id %>">
+                                        Delete
+                                      </button>
+                                      <% } %>
                                   </td>
                                 </tr>
                                 <% }) %>
@@ -153,6 +146,21 @@
     <!-- ./wrapper -->
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
+      <script defer>
+        document.querySelectorAll('.postDeleteBtn').forEach(btn => {
+          btn.onclick = async () => {
+            const id = btn.dataset.id;
+            await fetch(`http://localhost:8000/admin/delete/blog/${id}`, {
+              method: 'DELETE',
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.message == 'Successfully Deleted!') row.remove()
+                AlertMessage(data.message, 'Successfully Deleted!')
+              })
+          }
+        })
+      </script>
   </body>
 
 </html>

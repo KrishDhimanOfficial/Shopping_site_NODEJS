@@ -102,36 +102,24 @@
                                                                 <!-- /.form-group -->
                                                                 <!-- /.form-group -->
                                                                 <div class="form-group">
-                                                                    <label for="categoryBox">Select Tags</label>
+                                                                    <label>Select Tags</label>
                                                                     <div class="d-flex flex-wrap">
-                                                                        <% post.tags.forEach((tag,i)=> { %>
-                                                                            <div class="form-check mr-2">
-                                                                                <input class="form-check-input tags"
-                                                                                    id="<%= i+1 %> " type="checkbox"
-                                                                                    value="<%= tag._id %>" checked
-                                                                                    name="tags">
-                                                                                <label class="form-check-label"
-                                                                                    for="<%= i+1 %> ">
-                                                                                    <%= tag.tag_name %>
-                                                                                </label>
-                                                                            </div>
+                                                                        <% tags.forEach(tag => { %>
+                                                                            <% const isSelected = post.tags.some(posttag => posttag.tag_name == tag.tag_name) %> 
+                                                                                    <div class="form-check mr-2">
+                                                                                        <input
+                                                                                            class="form-check-input tags"
+                                                                                            id="<%= tag._id %>"
+                                                                                            type="checkbox" 
+                                                                                            <%= isSelected ? 'checked' : '' %>
+                                                                                            value="<%= tag._id %>"
+                                                                                            name="tags">
+                                                                                        <label class="form-check-label"
+                                                                                            for="<%= tag._id %>">
+                                                                                            <%= tag.tag_name %>
+                                                                                        </label>
+                                                                                    </div>
                                                                             <% }) %>
-                                                                        <% if (locals.tags) { %>
-                                                                         <% for( let i = 0; i < tags.length; ++i ) { %>
-                                                                          <% if (post.tags[i]?.tag_name != tags[i].tag_name) { %>
-                                                                            <div class="form-check mr-2">
-                                                                                <input class="form-check-input tags"
-                                                                                    id="<%= i+1 %> " type="checkbox"
-                                                                                    value="<%= tags[i]._id %>" 
-                                                                                    name="tags">
-                                                                                <label class="form-check-label"
-                                                                                    for="<%= i+1 %> ">
-                                                                                    <%= tags[i].tag_name %>
-                                                                                </label>
-                                                                            </div>
-                                                                          <% } %>
-                                                                         <% } %>
-                                                                        <% } %>
                                                                     </div>
                                                                 </div>
                                                                 <!-- /.form-group -->
@@ -145,9 +133,10 @@
                                                                             </option>
                                                                             <option value="false">Draft</option>
                                                                             <% } else { %>
-                                                                                <option value="true" >Published
+                                                                                <option value="true">Published
                                                                                 </option>
-                                                                                <option value="false" selected>Draft</option>
+                                                                                <option value="false" selected>Draft
+                                                                                </option>
                                                                                 <% } %>
                                                                     </select>
                                                                 </div>
@@ -163,13 +152,8 @@
                                                             <!-- /.col-->
                                                         </div>
                                                         <button type="submit"
-                                                            class="border-0 rounded p-2 bg-primary">Submit
+                                                            class="border-0 rounded p-2 bg-primary float-right">Submit
                                                         </button>
-                                                        <div id="toast-container" class="toast-top-right">
-                                                            <div class="toast toast-success" aria-live="polite"
-                                                                style="opacity: 0;">
-                                                            </div>
-                                                        </div>
                                                     </form>
                                                     <% } %>
                                             </div>
@@ -204,6 +188,13 @@
                     };
                     reader.readAsDataURL(file)
                 })
+
+                function createSlug(str) {
+                    return str.toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '')
+                        .replace(/--+/g, '-')
+                }
                 document.querySelector('#updatePost').addEventListener('submit', async (e) => {
                     e.preventDefault();
                     const queryString = window.location.search;
@@ -214,6 +205,7 @@
                     const formData = new FormData(e.target)
                     formData.append('blog_description', blog_description)
                     formData.append('blog_image', inputField.value)
+                    formData.append('blog_slug', createSlug(document.querySelector('#blog_slug').value))
 
                     await fetch(`http://localhost:8000/admin/update/blog?id=${id}`, {
                         method: 'PUT',
@@ -221,6 +213,7 @@
                     })
                         .then(response => response.json())
                         .then(data => {
+                            if(data.message === 'Update Successfully!') window.location.reload()
                             AlertMessage(data.message, 'Update Unsuccessfull!', 'Update Successfully!')
                         })
                 })

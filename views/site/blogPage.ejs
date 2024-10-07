@@ -79,9 +79,9 @@
                                             <div class="blog__item__pic set-bg" data-setbg="http://localhost:8000/uploads/blogsImages/${blog.blog_image}"
                                                 style="background-image: url('http://localhost:8000/uploads/blogsImages/${blog.blog_image}');"></div>
                                             <div class="blog__item__text">
-                                                <h6><a href="singleblog/${blog._id}">${blog.blog_title}</a></h6>
+                                                <h6><a href="singleblog/${blog.blog_slug}">${blog.blog_title}</a></h6>
                                                 <ul>
-                                                <li>by <span>${blog.author}</span></li>
+                                                <li>by <a href='/blogs'>${blog.author}</a></li>
                                                 <li>${blog.formattedDate}</li>
                                                 </ul>
                                             </div>

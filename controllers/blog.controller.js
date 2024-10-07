@@ -6,7 +6,6 @@ const mongoose = require('mongoose')
 const { getUser } = require('../Service/auth')
 const query = require('../Service/query')
 const tagsModel = require('../Models/blog_Model/tags.model')
-const { stat } = require('fs/promises')
 
 module.exports = {
     createCategory: async (req, res) => {
@@ -105,22 +104,35 @@ module.exports = {
     createPost: async (req, res) => {
         try {
             const { blog_title, blog_description, category_id, blog_slug, status } = req.body;
-            const tags = req.body.tags.map(id => new mongoose.Types.ObjectId(id))
             const date = new Date()
             const author = 'Admin';
-            const blog_image = req.file.filename
-            const data = await post.create({ blog_title, author, tags, status, blog_slug: blog_slug[1], blog_description: blog_description[1], date, blog_image, category_id })
-            if (data) {
-                res.json({ message: 'Post Created sucessfull!' })
+            const blog_image = req.file.filename;
+            let updatedtags = []
+            if (typeof req.body.tags == 'object') {
+                updatedtags = req.body.tags.map(id => new mongoose.Types.ObjectId(id))
+            } else if (typeof req.body.tags == 'string') {
+                updatedtags = new mongoose.Types.ObjectId(req.body.tags)
             }
+            const data = await post.create({
+                blog_title,
+                author,
+                status, tags: updatedtags,
+                blog_slug: blog_slug[1],
+                blog_description: blog_description[1], date, blog_image,
+                category_id
+            })
+            if (!data) deleteImage(`blogsImages/${blog_image}`)
+            res.json({ message: 'Post Created sucessfull!' })
         } catch (error) {
-            console.log(error.message);
+            const blog_image = req.file.filename;
+            if (error.message) deleteImage(`blogsImages/${blog_image}`)
             res.json({ message: 'Post Created Unsucessfull!' })
+            console.log(error.message)
         }
     },
     allPosts: async (req, res) => {
         try {
-            const project = ([
+            const data = await post.aggregate([
                 {
                     $lookup: {
                         from: 'categories', localField: 'category_id',
@@ -128,14 +140,25 @@ module.exports = {
                     }
                 }, { $unwind: '$postCategory' },
                 {
+                    $lookup: {
+                        from: 'blogcomments', localField: '_id',
+                        foreignField: 'post_id', as: 'comments'
+                    }
+                },
+                {
+                    $addFields: {
+                        commentsLength: { $size: '$comments' }
+                    }
+                },
+                {
                     $project: {
                         blog_title: 1, blog_image: 1, postCategory: 1, status: 1,
+                        commentsLength:1,
                         formattedDate: {
                             $dateToString: { format: "%d-%m-%Y", date: "$date" }
                         }
                     }
                 }])
-            const data = await post.aggregate(project)
             res.render('admin/blog/blogIndex', { posts: data });
         } catch (error) {
             console.log(error.message);
@@ -178,8 +201,8 @@ module.exports = {
                     $unwind: '$category_name'
                 }
             ])
-            res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata, tags })
             if (!data) res.redirect('/admin/blogs')
+            res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata, tags })
         } catch (error) {
             console.log('updateBlogPage :' + error.message)
             res.redirect('/admin/blogs')
@@ -187,13 +210,20 @@ module.exports = {
     },
     updateBlog: async (req, res) => {
         try {
-            const { blog_title, blog_description, category_id, blog_slug, tags, status } = req.body
+            const { blog_title, blog_description, category_id, blog_slug, status } = req.body
             const blog_image = req.file?.filename;
+            let updatedtags = []
+            if (typeof req.body.tags == 'object') {
+                updatedtags = req.body.tags.map(id => new mongoose.Types.ObjectId(id))
+            } else if (typeof req.body.tags == 'string') {
+                updatedtags = new mongoose.Types.ObjectId(req.body.tags)
+            }
+
             const data = await post.findByIdAndUpdate({ _id: req.query.id },
                 {
                     blog_title, blog_image, category_id,
                     blog_description: blog_description[0],
-                    blog_slug, tags, status
+                    blog_slug: blog_slug[1], tags: updatedtags, status
                 })
             if (blog_image) deleteImage(`/blogsImages/${data.blog_image}`)
             if (!data) res.json({ message: 'Update Unsuccessfull!' })
@@ -214,6 +244,7 @@ module.exports = {
                 {
                     $project: {
                         blog_title: 1, blog_description: 1, author: 1, blog_image: 1,
+                        blog_slug: 1,
                         formattedDate: {
                             $dateToString: { format: '%d-%m-%Y', date: '$date' }
                         }
@@ -228,8 +259,10 @@ module.exports = {
         try {
             const featuredPosts = await post.aggregate(query.featuredPosts).limit(3)
             const Postcategories = await category.aggregate(query.getCategoryPostLength)
+            const postTags = await tagsModel.find({})
+            const findPost = await post.findOne({ blog_slug: req.params.slug })
             const comments = await post.aggregate([
-                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                { $match: { _id: findPost._id } },
                 {
                     $lookup: {
                         from: 'blogcomments',
@@ -257,8 +290,10 @@ module.exports = {
                     }
                 },
             ])
+            console.log(comments);
+
             const data = await post.aggregate([
-                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                { $match: { blog_slug: req.params.slug } },
                 {
                     $lookup: {
                         from: 'categories',
@@ -271,6 +306,7 @@ module.exports = {
                 {
                     $project: {
                         blog_title: 1, blog_description: 1, author: 1, blog_image: 1, category: 1,
+                        blog_slug: 1,
                         formattedDate: {
                             $dateToString: { format: '%d-%m-%Y', date: '$date' }
                         },
@@ -278,9 +314,30 @@ module.exports = {
                 }
             ])
             if (!data) res.render('site/singleBlog', { message: 'NOT FOUND' })
-            res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories, postComments: comments })
+            res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories, postComments: comments, postTags })
         } catch (error) {
-            console.log('getSingleBlog' + error.message);
+            console.log('getSingleBlog : ' + error.message);
+        }
+    },
+    getblogsByTagName: async (req, res) => {
+        try {
+            const PostBytags = await tagsModel.aggregate([
+                {
+                    $lookup: {
+                        from: 'posts',
+                        localField: '_id',
+                        foreignField: 'tags',
+                        as: 'blogs'
+                    }
+                },
+                {
+                    $match: { tag_name: req.params.tag_name }
+                }
+            ])
+            // Note : set the limit 
+            res.render('site/tagsposts', { PostBytags })
+        } catch (error) {
+            console.log('blogControllers : ' + error.message);
         }
     },
     getCategoryBlogs: async (req, res) => {
@@ -314,15 +371,14 @@ module.exports = {
         try {
             const token = req.cookies.token;
             const user = getUser(token)
-
             const data = await comment.create({
                 comment: req.body.comment,
-                post_id: new mongoose.Types.ObjectId(req.params.postId),
+                post_id: new mongoose.Types.ObjectId(req.params.id),
                 user_name: user.username,
                 date: new Date(),
                 user_image: 'user.webp'
             })
-            res.json(data)
+            res.status(200).json(data)
         } catch (error) {
             console.log('getPostComment : ' + error.message);
         }

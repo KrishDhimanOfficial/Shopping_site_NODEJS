@@ -1,3 +1,4 @@
+const mongooseAggregatePaginate = require('mongoose-aggregate-paginate-v2')
 const mongoose = require('../../Connections/monodb.connection')
 
 const postTagSchema = mongoose.Schema({
@@ -9,5 +10,6 @@ const postTagSchema = mongoose.Schema({
     },
 })
 
+postTagSchema.plugin(mongooseAggregatePaginate)
 module.exports = mongoose.model('postTag', postTagSchema)
 

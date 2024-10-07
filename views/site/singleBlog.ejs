@@ -14,6 +14,7 @@
                         <a href="/blogs">Blog</a>
                         <span>
                             <% if (locals.blog) { %>
+                                <input type="text" hidden value="<%= blog[0]._id %>" id="blogID">
                                 <%= blog[0].blog_title %>
                                     <% } %>
                         </span>
@@ -40,9 +41,9 @@
                                         <%= blog[0].blog_title %>
                                     </h4>
                                     <ul>
-                                        <li>by <span>
+                                        <li>by <a href="/blogs" class="text-dark">
                                                 <%= blog[0].author %>
-                                            </span></li>
+                                            </a></li>
                                         <li>
                                             <%= blog[0].formattedDate %>
                                         </li>
@@ -90,36 +91,36 @@
                                     </h5>
                                     <a href="#" class="leave-btn">Leave a
                                         comment</a>
-                                    <!-- <p id="message"></p> -->
-                                    <% if (locals.postComments) { %>
-                                        <% postComments[0]?.comments.forEach(comment=> { %>
-                                            <div class="blog__comment__item">
-                                                <div class="blog__comment__item__pic" style="width: 85px;">
-                                                    <img src="http://localhost:8000/images/<%= comment.user_image %>"
-                                                        alt="" class="img-fluid">
+                                        <% if (locals.postComments) { %>
+                                            <% postComments[0]?.comments.forEach(comment=> { %>
+                                                <div class="blog__comment__item">
+                                                    <div class="blog__comment__item__pic" style="width: 85px;">
+                                                        <img src="http://localhost:8000/images/<%= comment.user_image %>"
+                                                            alt="" class="img-fluid">
+                                                    </div>
+                                                    <div class="blog__comment__item__text">
+                                                        <h6>
+                                                            <%= comment.user_name %>
+                                                        </h6>
+                                                        <p>
+                                                            <%= comment.comment %>
+                                                        </p>
+                                                        <ul>
+                                                            <li><i class="fa fa-clock-o"></i>
+                                                                <% const date=comment.date %>
+                                                                    <%= date.toLocaleDateString() %>
+                                                            </li>
+                                                            <li style="cursor: pointer;" id="like"
+                                                                onclick="increaseLike('<%= comment._id %>','<%= comment.likes %>')">
+                                                                <i id="heart" class="fa fa-heart-o mr-2"></i>
+                                                                <%= comment.likes %>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
-                                                <div class="blog__comment__item__text">
-                                                    <h6>
-                                                        <%= comment.user_name %>
-                                                    </h6>
-                                                    <p>
-                                                        <%= comment.comment %>
-                                                    </p>
-                                                    <ul>
-                                                        <li><i class="fa fa-clock-o"></i>
-                                                            <% const date=comment.date %>
-                                                                <%= date.toLocaleDateString() %>
-                                                        </li>
-                                                        <li style="cursor: pointer;" id="like"
-                                                            onclick="increaseLike('<%= comment._id %>','<%= comment.likes %>')">
-                                                            <i id="heart" class="fa fa-heart-o mr-2"></i>
-                                                            <%= comment.likes %>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                            <% }) %>
-                                                <% } %>
+                                                <% }) %>
+                                                    <% } %>
+    
                                 </div>
                         </div>
                 </div>
@@ -156,7 +157,7 @@
                             </div>
                             <% if (locals.featuredPosts) { %>
                                 <% featuredPosts.forEach(post=> { %>
-                                    <a href="/singleblog/<%= post._id %> " class="blog__feature__item">
+                                    <a href="/singleblog/<%= post.blog_slug %> " class="blog__feature__item">
                                         <div class="blog__feature__item__pic" style="width:150px; height: 100px;">
                                             <img src="http://localhost:8000/uploads/blogsImages/<%= post.blog_image %>"
                                                 alt="" class="img-fluid">
@@ -178,10 +179,10 @@
                                 <h4>Tags cloud</h4>
                             </div>
                             <div class="blog__sidebar__tags">
-                                <% if (locals.Postcategories) { %>
-                                    <% Postcategories.forEach(category=> { %>
-                                        <a href="/category/<%= category.category_name %>">
-                                            <%= category.category_name %>
+                                <% if (locals.postTags) { %>
+                                    <% postTags.forEach(tag=> { %>
+                                        <a href="/blog/<%= tag.tag_name %>">
+                                            <%= tag.tag_name %>
                                         </a>
                                         <% }) %>
                                             <% } %>
@@ -239,16 +240,14 @@
                     }
                     document.querySelector('.leave-btn').addEventListener('click', async (e) => {
                         e.preventDefault()
-                        console.log('sdg');
-
-                        const id = window.location.href.split('/')[4];
+                        const id = document.querySelector('#blogID').value.trim();
                         const comment = document.querySelector('#floatingTextarea')
                         await fetch(`http://localhost:8000/api/comment/${id}`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json', },
                             body: JSON.stringify({
                                 comment: comment.value.trim(),
-                                post_id: id
+                                postId: id
                             })
                         })
                             .then(response => response.json())
@@ -256,7 +255,6 @@
                                 if (data) {
                                     comment.value = ''
                                     toastr.success('You Comment Has Been Sent For Approval!')
-                                    // document.querySelector('#message').innerHTML = 'You Comment Has Been Sent For Approval!';
                                 }
                             })
                     })

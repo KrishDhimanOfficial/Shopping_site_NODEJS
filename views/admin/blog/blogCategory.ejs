@@ -188,8 +188,8 @@
                                                                                     data-id="<%= tag._id %>"
                                                                                     data-tagName="<%= tag.tag_name %>">Edit</button>
                                                                                 <% if (locals.usingTags) { %>
-                                                                                    <% const hasNoMatchingID=usingTags.some(id=> id.includes(tag._id)) %>
-                                                                                        <% if (!hasNoMatchingID) { %>
+                                                                                    <% const hasMatchingID=usingTags.some(id=> id.includes(tag._id)) %>
+                                                                                        <% if (!hasMatchingID) { %>
                                                                                             <button type="button"
                                                                                                 class="btn btn-danger deletetagbtn"
                                                                                                 data-id="<%= tag.id %>">
@@ -355,12 +355,10 @@
 
                 // TO Delete Blog Category
                 document.querySelectorAll('.deletecategorybtn').forEach(btn => {
-                    btn.onclick = async () => {
+                    btn.onclick = () => {
                         const id = btn.dataset.id
                         const api = `http://localhost:8000/admin/blog/category/${id}`;
                         handleDeleteOperation(api, btn)
-                        console.log(api);
-
                     }
                 })
 
@@ -381,18 +379,22 @@
                         handlePostPutOperation(api, 'PUT', category)
                     }
                 }
-
+                function createtag(str) {
+                    return str.toLowerCase()
+                        .replace(/[^a-z0-9]+/g, '-')
+                        .replace(/^-+|-+$/g, '')
+                        .replace(/--+/g, '-')
+                }
                 // Create Tag
-                document.querySelector('#Tagbtn').onclick = async () => {
-                    const tag_name = document.querySelector('#TagInputField').value.trim()
+                document.querySelector('#Tagbtn').onclick = () => {
+                    const tag_name = createtag(document.querySelector('#TagInputField').value.trim())
                     const api = 'http://localhost:8000/admin/blog/tag';
                     handlePostPutOperation(api, 'POST', tag_name, 'TagName already exists!')
                 }
 
                 // Update Tag
-                const updateTags = document.querySelectorAll('.updatetag')
-                updateTags.forEach((btn) => {
-                    btn.onclick = async () => {
+                document.querySelectorAll('.updatetag').forEach((btn) => {
+                    btn.onclick = () => {
                         const { id, tagname } = btn.dataset;
                         document.querySelector('#TagInputField').value = tagname;
                         updateTag(id)
@@ -408,7 +410,7 @@
 
                 // To Delete Tags
                 document.querySelectorAll('.deletetagbtn').forEach(btn => {
-                    btn.onclick = async () => {
+                    btn.onclick = () => {
                         const id = btn.dataset.id;
                         const api = `http://localhost:8000/admin/blog/tag/${id}`;
                         handleDeleteOperation(api, btn)
@@ -416,7 +418,7 @@
                 })
 
                 // Function TO Handle POST PUT OPERATION ON API
-                async function handlePostPutOperation(api, method, info,existsError) {
+                async function handlePostPutOperation(api, method, info, existsError) {
                     await fetch(api, {
                         method: `${method}`,
                         headers: { 'Content-Type': 'application/json' },
