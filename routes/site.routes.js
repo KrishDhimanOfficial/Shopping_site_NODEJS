@@ -23,11 +23,6 @@ router.route('/register').get(login, (req, res) => {
 router.get('/contact', (req, res) => {
     res.render('site/contact', { route: req.path })
 })
-
-router.get('/blogs', checkUserlogin, (req, res) => {
-    res.render('site/blogPage', { route: req.path })
-})
-
 router.get('/account', checkUserlogin, (req, res) => {
     res.render('site/UserAccount')
 })
@@ -37,12 +32,16 @@ router.get('/products/:parent_name/:page?', productControllers.getProductByCateg
 router.get('/shop/:page?', productControllers.showAllproducts)
 router.get('/category/:parent_category/:sub_category/:page?', checkUserlogin, productControllers.getSub_categoryProduct)
 router.get('/api/singleproduct/:id', productControllers.singleproductonCart)
-router.get('/api/blogs/:loadPosts', blogControllers.getBlogs)
+router.get('/blogs/:limit?', blogControllers.getBlogs)
 router.get('/singleblog/:slug', checkUserlogin, blogControllers.getSingleBlog)
-router.get('/category/:category_name', checkUserlogin, blogControllers.getCategoryBlogs)
-router.get('/blog/:tag_name', checkUserlogin, blogControllers.getblogsByTagName)
-router.post('/api/comment/:id', blogControllers.createPostComment)
-router.put('/api/comment/:id', blogControllers.updateBlogComments)
+router.get('/blog/category/:blog_category/:limit?', checkUserlogin, blogControllers.getCategoryBlogs)
+router.get('/blog/tag/:tag_name?/:limit?', checkUserlogin, blogControllers.getblogsByTagName)
+
+
+router.route('/api/comment/:id')
+    .all(checkUserlogin)
+    .post(blogControllers.createPostComment)
+    .put(blogControllers.updateBlogComments)
 
 router.route('/product/:id')
     .all(checkUserlogin)

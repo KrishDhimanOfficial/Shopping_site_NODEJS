@@ -84,8 +84,10 @@ router.delete('/api/attributes/color/:id', checkLogin, productControllers.delete
 router.post('/api/attributes/size', checkLogin, productControllers.createSize)
 router.delete('/api/attributes/size/:id', checkLogin, productControllers.deleteSize)
 
-router.post('/api/attributes/brand', checkLogin, productControllers.createBrand)
-router.delete('/api/attributes/brand/:id', checkLogin, productControllers.deleteBrand)
+router.route('/api/attributes/brand/:id?')
+    .all(checkLogin)
+    .post(productControllers.createBrand)
+    .delete(productControllers.deleteBrand)
 
 // Product orders Routes
 router.get('/products/orders', checkLogin, productControllers.getOrders)

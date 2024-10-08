@@ -326,7 +326,7 @@
 
                             <% if (locals.brands) { %>
                               <% brands.forEach((brand,i)=> { %>
-                                <tr id="row-<%= brand._id %>">
+                                <tr>
                                   <td>
                                     <%= i+1 %>
                                   </td>
@@ -334,6 +334,7 @@
                                     <%= brand.brand_name %>
                                   </td>
                                   <td>
+                                    <button type="button" class="btn btn-success" id="editBrand">Edit</button>
                                     <button type="button" class="btn btn-danger" onclick="(async (e)=> { 
                                       const row = document.querySelector('#row-'+'<%= brand._id %>');
                                           await fetch('http://localhost:8000/admin/api/attributes/brand/' + '<%= brand._id %>', {
@@ -479,6 +480,7 @@
         <!-- /.modal-dialog -->
       </div>
     </div>
+    <!-- Add Size -->
     <div class="modal fade" id="modal-3">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -501,7 +503,7 @@
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Save changes</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
           </form>
           <!-- /.modal-content -->
@@ -509,6 +511,7 @@
         <!-- /.modal-dialog -->
       </div>
     </div>
+    <!-- Add Brand -->
     <div class="modal fade" id="modal-4">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -523,15 +526,28 @@
               <div class="row">
                 <div class="col-12">
                   <div class="form-group">
-                    <label for="category">Brand Name</label>
+                    <label for="brand">Brand Name</label>
                     <input type="text" id="brand" name="brand_name" class="form-control">
+                  </div>
+                  <div class="form-group d-flex flex-wrap">
+                    <% if (locals.categories) { %>
+                      <% categories.forEach(category=> { %>
+                        <div class="form-check mr-2">
+                          <input class="form-check-input parent_id" id="<%= category._id %>" type="checkbox"
+                            value="<%=category._id  %>" name="parent_id">
+                          <label class="form-check-label" for="<%= category._id %>">
+                            <%= category.category_name %>
+                          </label>
+                        </div>
+                        <% }) %>
+                          <% } %>
                   </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Save changes</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
           </form>
           <!-- /.modal-content -->
@@ -542,7 +558,7 @@
     <!-- ./wrapper -->
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
-      <script async>
+      <script defer>
         (async () => {
           const selectBox = document.querySelector('#maincategory')
           await fetch('http://localhost:8000/admin/api/parent_category')
@@ -570,13 +586,13 @@
             await fetch(api, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ category_name: category_name.value, parent_id: selectBox.value })
+              body: JSON.stringify({ category_name: category_name.value.trim(), parent_id: selectBox.value.trim() })
             }).then(response => response.json())
               .then(data => {
                 AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!')
               })
 
-          } else {
+          } else if (category_name.value) {
             const api = 'http://localhost:8000/admin/api/parent_category';
             await fetch(api, {
               method: 'POST',
@@ -590,7 +606,7 @@
           }
         })
 
-        document.querySelector('#submitColor').addEventListener('submit', async (e) => {
+        document.querySelector('#submitColor').onsubmit = async (e) => {
           e.preventDefault();
           const color = document.querySelector('#color')
           if (color.value) {
@@ -605,9 +621,8 @@
               })
           }
           color.value = ''
-        })
-
-        document.querySelector('#submitSize').addEventListener('submit', async (e) => {
+        }
+        document.querySelector('#submitSize').onsubmit = async (e) => {
           e.preventDefault();
           const size = document.querySelector('#Size')
           if (size.value) {
@@ -620,20 +635,27 @@
               .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
           }
           size.value = ''
-        })
+        }
+
+
         document.querySelector('#submitBrand').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const brand = document.querySelector('#brand')
-          if (brand.value) {
+          e.preventDefault()
+          const checkboxes = document.querySelectorAll('.parent_id');
+          const checkedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+          const brand_name = document.querySelector('#brand').value.trim()
+
+          if (brand_name || checkedValues) {
             await fetch('http://localhost:8000/admin/api/attributes/brand', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ brand_name: brand.value.trim() })
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ brand_name, parent_id: checkedValues })
+          })
+            .then(response => response.json())
+            .then(data => {
+              if(data.message == 'Successfully Created!') window.location.reload()
+              AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!')
             })
-              .then(response => response.json())
-              .then(data => AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!'))
           }
-          brand.value = ''
         })
 
         document.querySelectorAll('.deletePcategory').forEach(btn => {

@@ -25,7 +25,12 @@ const productSchema = mongoose.Schema({
         require: true
     },
     shipping: {
+        type: mongoose.Schema.Types.Boolean,
+        default: false
+    },
+    featured_image: {
         type: mongoose.Schema.Types.String,
+        required: true
     },
     product_image: {
         type: mongoose.Schema.Types.Array,

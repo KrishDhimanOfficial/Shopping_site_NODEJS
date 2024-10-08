@@ -1,4 +1,16 @@
 module.exports = {
+    showTags: [
+        {
+            $lookup: {
+                from: 'posts',
+                localField: '_id',
+                foreignField: 'tags',
+                as: 'post'
+            }
+        },
+        { $addFields: { postLength: { $size: "$post" } } },
+        { $project: { post: 0 } }
+    ],
     getOrderData: [
         {
             $lookup: {
@@ -143,7 +155,7 @@ module.exports = {
         {
             $project: {
                 blog_title: 1, blog_image: 1,
-                blog_slug:1,
+                blog_slug: 1,
                 formattedDate: {
                     $dateToString: { format: '%d-%m-%Y', date: '$date' }
                 }

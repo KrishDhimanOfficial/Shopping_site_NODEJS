@@ -6,6 +6,7 @@ const mongoose = require('mongoose')
 const { getUser } = require('../Service/auth')
 const query = require('../Service/query')
 const tagsModel = require('../Models/blog_Model/tags.model')
+const transporter = require('../Service/mailTransporter')
 
 module.exports = {
     createCategory: async (req, res) => {
@@ -153,7 +154,7 @@ module.exports = {
                 {
                     $project: {
                         blog_title: 1, blog_image: 1, postCategory: 1, status: 1,
-                        commentsLength:1,
+                        commentsLength: 1,
                         formattedDate: {
                             $dateToString: { format: "%d-%m-%Y", date: "$date" }
                         }
@@ -235,6 +236,7 @@ module.exports = {
     },
     getBlogs: async (req, res) => {
         try {
+            const limit = parseInt(req.params.limit) || 3;
             const data = await post.aggregate([
                 {
                     $match: {
@@ -249,8 +251,8 @@ module.exports = {
                             $dateToString: { format: '%d-%m-%Y', date: '$date' }
                         }
                     }
-                }]).limit(parseInt(req.params.loadPosts))
-            res.status(200).json(data)
+                }]).limit(limit)
+            res.render('site/blogPage', { blogs: data, blogLength: data.length, limit, route: req.url })
         } catch (error) {
             console.log("getBlogs :" + error.message);
         }
@@ -259,7 +261,7 @@ module.exports = {
         try {
             const featuredPosts = await post.aggregate(query.featuredPosts).limit(3)
             const Postcategories = await category.aggregate(query.getCategoryPostLength)
-            const postTags = await tagsModel.find({})
+            const postTags = await tagsModel.aggregate(query.showTags)
             const findPost = await post.findOne({ blog_slug: req.params.slug })
             const comments = await post.aggregate([
                 { $match: { _id: findPost._id } },
@@ -275,8 +277,7 @@ module.exports = {
                     $addFields: {
                         comments: {
                             $filter: {
-                                input: '$comments',
-                                as: 'comment',
+                                input: '$comments', as: 'comment',
                                 cond: { $eq: ['$$comment.status', true] }
                             }
                         }
@@ -290,8 +291,6 @@ module.exports = {
                     }
                 },
             ])
-            console.log(comments);
-
             const data = await post.aggregate([
                 { $match: { blog_slug: req.params.slug } },
                 {
@@ -321,6 +320,7 @@ module.exports = {
     },
     getblogsByTagName: async (req, res) => {
         try {
+            const limit = parseInt(req.params.limit) || 3;
             const PostBytags = await tagsModel.aggregate([
                 {
                     $lookup: {
@@ -331,19 +331,33 @@ module.exports = {
                     }
                 },
                 {
-                    $match: { tag_name: req.params.tag_name }
+                    $match: { tag_name: req.params.tag_name, }
+                },
+                {
+                    $addFields: {
+                        blogs: {
+                            $filter: {
+                                input: '$blogs', as: 'blogs', cond: { $eq: ["$$blogs.status", true] }
+                            }
+                        }
+                    }
+                },
+                {
+                    $addFields: {
+                        blogs: { $slice: ['$blogs', 0, limit] }
+                    }
                 }
             ])
-            // Note : set the limit 
-            res.render('site/tagsposts', { PostBytags })
+            res.render('site/tagsposts', { PostBytags, blogLength: PostBytags[0].blogs.length, limit })
         } catch (error) {
             console.log('blogControllers : ' + error.message);
         }
     },
     getCategoryBlogs: async (req, res) => {
         try {
+            const limit = parseInt(req.params.limit) || 3;
             const data = await category.aggregate([
-                { $match: { category: { $regex: req.params.category_name, $options: 'i' } } },
+                { $match: { category: { $regex: req.params.blog_category, $options: 'i' } } },
                 {
                     $lookup: {
                         from: 'posts',
@@ -360,8 +374,13 @@ module.exports = {
                         posts: { $addToSet: '$posts' },
                     }
                 },
+                {
+                    $addFields: {
+                        posts: { $slice: ['$posts', 0, limit] }
+                    }
+                }
             ])
-            res.render('site/categoriesBlogs', { Postcategories: data })
+            res.render('site/categoriesBlogs', { Postcategories: data, category: req.params.blog_category, blogLength: data[0].posts.length, limit })
         } catch (error) {
             console.log('getCategoryBlogs :' + error.message);
         }
@@ -385,7 +404,17 @@ module.exports = {
     },
     getBlogComments: async (req, res) => {
         try {
-            const data = await comment.find({})
+            const data = await comment.aggregate([
+                {
+                    $lookup: {
+                        from: 'posts',
+                        localField: 'post_id',
+                        foreignField: '_id',
+                        as: 'post'
+                    }
+                }
+            ])
+            // const data = await comment.find({})
             res.render('admin/blog/blogComments', { comments: data })
         } catch (error) {
             console.log('getBlogComments :' + error.message);
@@ -393,12 +422,17 @@ module.exports = {
     },
     updateBlogComments: async (req, res) => {
         try {
-
-            const data = await comment.findByIdAndUpdate({ _id: req.params.id },
-                req.body,
-                { new: true }
-            )
-            res.status(200).json(data)
+            const data = await comment.findByIdAndUpdate({ _id: req.params.id }, req.body, { new: true })
+            const emailOptions = {
+                from: process.env.USER,
+                to: 'dhimany149@gmail.com',
+                subject: 'Blog Comment Updated',
+                text: 'Your Comment Approve For Blog. Check it Out!'
+            }
+            if (!data) res.status(200).json({ message: 'Updated Unsuccessfull!' })
+            if (req.body.status == false) emailOptions.text = 'Your Comment has UnApprove by Admin For Blog. Check it Out!';
+            res.status(200).json({ message: 'Updated Successfully!' })
+            await transporter.sendMail(emailOptions)
         } catch (error) {
             console.log('updateBlogComments :' + error.message);
         }
@@ -406,7 +440,14 @@ module.exports = {
     deleteBlogComment: async (req, res) => {
         try {
             await comment.findByIdAndDelete({ _id: req.params.id })
+            const emailOptions = {
+                from: process.env.USER,
+                to: 'dhimany149@gmail.com',
+                subject: 'Blog Comment Deleted',
+                text: 'Your Comment DELETED That From Blog. Check it Out!'
+            }
             res.json({ message: 'Successfully Deleted!' })
+            await transporter.sendMail(emailOptions)
         } catch (error) {
             console.log('deleteBlogComment :' + error.message);
         }

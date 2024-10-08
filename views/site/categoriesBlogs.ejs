@@ -29,7 +29,7 @@
                                     </div>
                                     <div class="blog__item__text">
                                         <h6>
-                                            <a href="/singleblog/<%= post._id%>">
+                                            <a href="/singleblog/<%= post.blog_slug %>">
                                                 <%= post.blog_title %>
                                             </a>
                                         </h6>
@@ -47,11 +47,19 @@
                                 </div>
                             </div>
                             <% }) %>
-                                <% } %>
+                            <% if (blogLength < limit) { %>
+                                <div class="col-lg-12 text-center">
+                                    <button type="button" id="loadmore" class="primary-btn load-btn"
+                                        style="display: none;">
+                                        Load more posts</button>
+                                </div>
+                                <% } else {%>
                                     <div class="col-lg-12 text-center">
-                                        <button type="button" id="loadmore" class="primary-btn load-btn">Load more
-                                            posts</button>
+                                        <button type="button" id="loadmore" class="primary-btn load-btn">
+                                            Load more posts</button>
                                     </div>
+                                    <% } %>
+                                <% } %>
             </div>
         </div>
     </section>
@@ -75,6 +83,13 @@
             <!-- Search End -->
 
             <%- include('../Site_partials/script') %>
+            <script defer>
+                let limit = 3;
+                    document.querySelector('#loadmore').onclick = () => {
+                        limit += 3
+                        window.location.href = `http://localhost:8000/blog/category/<%= category %>/${limit}`
+                    }
+            </script>
                 </body>
 
 </html>

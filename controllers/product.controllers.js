@@ -107,16 +107,18 @@ module.exports = {
 
             const product_image = req.files.map(file => file.filename)
             const date = new Date()
-            await product.create({
+            const data = await product.create({
                 product_title, product_parent_category_id,
                 product_sub_category_id, date, product_price, product_discount,
                 product_stock, product_image, shipping, brand_name,
                 product_description: product_description[1],
                 availableColor, availableSize, product_on_sales, product_new
             })
+            if (!data) req.files.map(file => deleteImage(`productImages/${file.filename}`))
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             res.json({ message: 'Unsuccessfull!' })
+            if (error.message) req.files.map(file => deleteImage(`productImages/${file.filename}`))
             console.log('createProduct :' + error.message);
         }
     },
@@ -124,7 +126,7 @@ module.exports = {
         try {
             const data = await product.aggregate(queries.productQuery)
             console.log(data.length);
-            
+
             res.render('admin/product/index', { products: data })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
@@ -246,7 +248,7 @@ module.exports = {
             await productSize.findByIdAndDelete({ _id: req.params.id })
             res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
-            console.log('237' + error.message);
+            console.log('deleteSize' + error.message);
         }
     },
     deleteColor: async (req, res) => {
@@ -254,17 +256,18 @@ module.exports = {
             await productColor.findByIdAndDelete({ _id: req.params.id })
             res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
-            console.log('245' + error.message);
+            console.log('deleteColor' + error.message);
         }
     },
     createBrand: async (req, res) => {
         try {
+            const { brand_name } = req.body;
+            const parent_id = req.body.parent_id.map(id => new mongoose.Types.ObjectId(id))
             const existingBrand = await productBrand.findOne({
                 brand_name: { $regex: req.body.brand_name, $options: "i" }
             })
             if (existingBrand) throw new Error('Already exists!')
-
-            await productBrand.create(req.body)
+            await productBrand.create({ brand_name, parent_id })
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log('258' + error.message);
@@ -581,7 +584,7 @@ module.exports = {
         try {
             const user = getUser(req.cookies.token)
             const cart = await product_Cart.findOne({ username: user.username })
-            res.status(200).json(cart.product_cart.length)
+            res.status(200).json(cart?.product_cart.length)
         } catch (error) {
             console.log('getCartLength :' + error.message);
         }

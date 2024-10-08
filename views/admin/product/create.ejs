@@ -80,16 +80,14 @@
                               </div>
                               <div class="form-group">
                                 <label for="new">Product is NEW</label>
-                                <select class="select2" name="product_new" id="new" data-placeholder="Select a Size"
-                                  style="width: 100%;">
+                                <select class="form-control" name="product_new" id="new" style="width: 100%;">
                                   <option value="false">No</option>
                                   <option value="true" selected>Yes</option>
                                 </select>
                               </div>
                               <div class="form-group">
                                 <label for="sales">Product ON sales</label>
-                                <select class="select2" name="product_on_sale" id="sales"
-                                  data-placeholder="Select a Size" style="width: 100%;">
+                                <select class="form-control" name="product_on_sale" id="sales" style="width: 100%;">
                                   <option value="false" selected>No</option>
                                   <option value="true">Yes</option>
                                 </select>
@@ -109,11 +107,22 @@
                               </div>
                               <div class="form-group">
                                 <label for="stock">In Stock</label>
-                                <select class="select2" name="product_stock" id="stock" data-placeholder="Stock"
-                                  style="width: 100%;">
-                                    <option value="false">No</option>
-                                    <option value="true">Yes</option>
+                                <select class="form-control" name="product_stock" id="stock" style="width: 100%;">
+                                  <option value="false">No</option>
+                                  <option value="true" selected>Yes</option>
                                 </select>
+                              </div>
+                              <div class="form-group">
+                                <label for="image-upload">Select Featured Image</label>
+                                <div class="input-group d-flex flex-column">
+                                  <div class="custom-file w-100 mb-2">
+                                    <input type="file" name="featured_image" class="custom-file-input"
+                                      id="featured_image">
+                                    <label class="custom-file-label" for="featured_image">Choose file</label>
+                                  </div>
+                                  <div id="Preview_featured_image">
+                                  </div>
+                                </div>
                               </div>
                               <!-- /.form-group -->
                             </div>
@@ -121,16 +130,19 @@
                             <!-- /.col -->
                             <div class="col-md-6">
                               <!-- /.form-group -->
+                              <!-- product price -->
                               <div class="form-group">
-                                <label for="price">Product Actual price</label>
+                                <label for="price">Product price</label>
                                 <input type="text" id="price" name="product_price" class="form-control"
                                   placeholder="Enter Title">
                               </div>
+                              <!-- product discount -->
                               <div class="form-group">
                                 <label for="discount">Discount Price</label>
                                 <input type="number" min="0" max="100" name="product_discount" id="discount"
                                   class="form-control" placeholder="Enter Price">
                               </div>
+                              <!-- Select Color -->
                               <div class="form-group">
                                 <label>Color</label>
                                 <select class="select2" name="availableColor" multiple="multiple"
@@ -144,6 +156,7 @@
                                         <% } %>
                                 </select>
                               </div>
+                              <!-- select Brand -->
                               <div class="form-group">
                                 <label>Brand</label>
                                 <select class="form-control" name="brand_name" data-placeholder="Select a Brand"
@@ -158,13 +171,16 @@
                                         <% } %>
                                 </select>
                               </div>
+                              <!-- Shipping -->
                               <div class="form-group">
-                                <label>Brand</label>
+                                <label>Free Shipping</label>
                                 <select class="form-control" name="shipping" data-placeholder="Select Shipping"
                                   style="width: 100%;">
-                                  <option value="Free Shipping">Free Shipping</option>
+                                  <option value="true">Yes</option>
+                                  <option value="false" selected>No</option>
                                 </select>
                               </div>
+                              <!-- Product Images -->
                               <div class="form-group">
                                 <label for="image-upload">File input</label>
                                 <div class="input-group d-flex flex-column">
@@ -207,10 +223,22 @@
 
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
-      <script>
+      <script defer>
 
-        const inputField = document.getElementById('imageInput');
-        const imagePreview = document.getElementById('imagePreview');
+        const inputField = document.getElementById('imageInput')
+        const imagePreview = document.getElementById('imagePreview')
+
+        document.querySelector('#featured_image').onchange = (e) => {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = () => {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            img.style.width = '150px';
+            document.querySelector('#Preview_featured_image').appendChild(img)
+          }
+          reader.readAsDataURL(file);
+        }
 
         inputField.addEventListener('change', (e) => {
           const files = e.target.files
@@ -226,23 +254,22 @@
             reader.onload = () => {
               const img = document.createElement('img')
               img.src = reader.result;
-              img.alt = file.name;
               img.style.margin = '10px';
               img.style.width = '150px';
-              img.className = 'img'
+              img.style.cursor = 'pointer';
+              img.className = 'img';
               imagePreview.appendChild(img)
-
-              document.querySelectorAll('.img').forEach(img =>{
-                img.addEventListener('dblclick', async (e) => {
-                e.target.remove()
-              })
+              document.querySelectorAll('.img').forEach(img => {
+                img.ondblclick = (e) => {
+                  e.target.remove()
+                }
               })
             }
             reader.readAsDataURL(file);
           })
         })
 
-        document.querySelector('#submitProduct').addEventListener('submit', async (e) => {
+        document.querySelector('#submitProduct').onsubmit = async (e) => {
           e.preventDefault()
           const product_description = $('#summernote').summernote('code').trim()
           const formData = new FormData(e.target)
@@ -258,7 +285,7 @@
               e.target.reset()
               $('#summernote').summernote('code', '')
             })
-        })
+        }
       </script>
   </body>
 

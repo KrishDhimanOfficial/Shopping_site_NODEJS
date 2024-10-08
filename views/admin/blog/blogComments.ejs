@@ -57,6 +57,10 @@
                                                                 aria-sort="ascending"
                                                                 aria-label="Rendering engine: activate to sort column descending">
                                                                 Comment</th>
+                                                                <th class="sorting" tabindex="0" aria-controls="example1"
+                                                                rowspan="1" colspan="1"
+                                                                aria-label="Platform(s): activate to sort column ascending">
+                                                                post</th>
                                                             <th class="sorting" tabindex="0" aria-controls="example1"
                                                                 rowspan="1" colspan="1"
                                                                 aria-label="Platform(s): activate to sort column ascending">
@@ -86,6 +90,11 @@
                                                                         <%= comment.comment %>
                                                                     </td>
                                                                     <td>
+                                                                        <% comment.post.forEach(post => { %>
+                                                                         <%= post.blog_title %> 
+                                                                        <% }) %>
+                                                                    </td>
+                                                                    <td>
                                                                         <%= comment.user_name %>
                                                                     </td>
                                                                     <td>
@@ -93,33 +102,22 @@
                                                                             <%= date.toLocaleDateString() %>
                                                                     </td>
                                                                     <td>
-                                                                        <% if (comment.status == true) { %>
-                                                                         <p>Approve</p>
-                                                                        <% } else { %>
-                                                                            <p>UnApprove</p>
-                                                                        <% } %>
+                                                                        <% if (comment.status==true) { %>
+                                                                            <p>Approve</p>
+                                                                            <% } else { %>
+                                                                                <p>Disabled</p>
+                                                                                <% } %>
                                                                     </td>
                                                                     <td>
-                                                                        <button class="toast-btn btn btn-block btn-success toastrDefaultError" onclick="( async()=>{
-                                                                            await fetch('http://localhost:8000/admin/blog/comment/<%=  comment._id %>', {
-                                                                                method:'PUT',
-                                                                                headers: { 'Content-Type': 'application/json' },
-                                                                                body:JSON.stringify({status:true})
-                                                                            })
-                                                                            .then(response => response.json())
-                                                                            .then(data => window.location.reload())
-                                                                        })()">Approve</button>
-                                                                        <button class="toast-btn btn btn-block btn-danger toastrDefaultError" onclick="(async (e)=> { 
-                                                                            const row = document.querySelector('#row-'+'<%= comment._id  %>');
-                                                                                await fetch('http://localhost:8000/admin/blog/comment/' + '<%= comment._id  %>', {
-                                                                                  method: 'DELETE',
-                                                                                 })
-                                                                                .then(response => response.json())
-                                                                                .then(data => { 
-                                                                                  row.remove()
-                                                                                  AlertMessage(data.message,'','Successfully Deleted!')
-                                                                                })
-                                                                              })()">Delete</button>
+                                                                        <button
+                                                                            class="btn btn-block btn-success updateComment"
+                                                                            data-id="<%=  comment._id %>">Approve</button>
+                                                                        <button
+                                                                            class="btn btn-block btn-secondary disabledComment"
+                                                                            data-id="<%=  comment._id %>">Disabled</button>
+                                                                        <button
+                                                                            class="btn btn-block btn-danger deleteComment"
+                                                                            data-id="<%=  comment._id %>">Delete</button>
                                                                     </td>
                                                                 </tr>
                                                                 <% }) %>
@@ -129,6 +127,7 @@
                                                         <tr>
                                                             <th rowspan="1" colspan="1">S.NO</th>
                                                             <th rowspan="1" colspan="1">Comment</th>
+                                                            <th rowspan="1" colspan="1">post</th>
                                                             <th rowspan="1" colspan="1">User</th>
                                                             <th rowspan="1" colspan="1">Date</th>
                                                             <th rowspan="1" colspan="1">Status</th>
@@ -154,7 +153,54 @@
         </div>
         <!-- ./wrapper -->
         <%- include('../../partials/script') %>
-            <script>
+            <script defer>
+                // TO Perform Delete Operation ON Comments
+                document.querySelectorAll('.deleteComment').forEach(btn => {
+                    btn.onclick = async (e) => {
+                        const id = btn.dataset.id;
+                        await fetch(`http://localhost:8000/admin/blog/comment/${id}`, {
+                            method: 'DELETE',
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.message == 'Successfully Deleted!') e.target.parentNode.parentNode.remove()
+                                AlertMessage(data.message, '', 'Successfully Deleted!')
+                            })
+                    }
+                })
+
+                // TO Approve Comments 
+                document.querySelectorAll('.updateComment').forEach(btn => {
+                    btn.onclick = async () => {
+                        const id = btn.dataset.id;
+                        const api =`http://localhost:8000/admin/blog/comment/${id}`;
+                        const status = true;
+                        handleUpdateComment(api ,status)
+                    }
+                })
+
+                // TO Disabled That Comment
+                document.querySelectorAll('.disabledComment').forEach(btn => {
+                    btn.onclick = async () => {
+                        const id = btn.dataset.id;
+                        const api =`http://localhost:8000/admin/blog/comment/${id}`;
+                        const status = false;
+                        handleUpdateComment(api ,status)
+                    }
+                })
+
+                async function handleUpdateComment(api, status) {
+                    await fetch(api, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.message == 'Updated Successfully!') window.location.reload()
+                            AlertMessage(data.message, 'Updated Unsuccessfull!', '')
+                        })
+                }
             </script>
             <!-- AdminLTE App -->
     </body>
