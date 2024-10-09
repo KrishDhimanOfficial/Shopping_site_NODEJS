@@ -1,12 +1,12 @@
 const express = require('express');
-const router = express.Router();
+const router = express.Router()
+const app = express()
 const { checkUserlogin, login } = require('../Middleware/checkUserlogin')
 const user = require('../controllers/users.controllers')
 const blogControllers = require('../controllers/blog.controller')
 const productControllers = require('../controllers/product.controllers')
 const userControllers = require('../controllers/users.controllers')
 const checkCartDetails = require('../Middleware/checkUserCart.middleware')
-
 
 router.route('/login').get(login, (req, res) => {
     res.render('site/login')
@@ -36,7 +36,6 @@ router.get('/blogs/:limit?', blogControllers.getBlogs)
 router.get('/singleblog/:slug', checkUserlogin, blogControllers.getSingleBlog)
 router.get('/blog/category/:blog_category/:limit?', checkUserlogin, blogControllers.getCategoryBlogs)
 router.get('/blog/tag/:tag_name?/:limit?', checkUserlogin, blogControllers.getblogsByTagName)
-
 
 router.route('/api/comment/:id')
     .all(checkUserlogin)

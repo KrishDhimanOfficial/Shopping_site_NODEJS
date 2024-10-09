@@ -8,7 +8,18 @@ module.exports = {
                 as: 'post'
             }
         },
-        { $addFields: { postLength: { $size: "$post" } } },
+        {
+            $addFields: {
+                postLength: {
+                    $filter: {
+                        input: '$post', as: 'post',
+                        cond: {
+                            $eq: ['$$post.status', true]
+                        }
+                    }
+                }
+            }
+        },
         { $project: { post: 0 } }
     ],
     getOrderData: [

@@ -106,7 +106,8 @@
                                                             <%= comment.comment %>
                                                         </p>
                                                         <ul>
-                                                            <li><i class="fa fa-clock-o"></i>
+                                                            <li>
+                                                                <i class="fa fa-clock-o"></i>
                                                                 <% const date=comment.date %>
                                                                     <%= date.toLocaleDateString() %>
                                                             </li>
@@ -145,9 +146,13 @@
                                                     </a>
                                                 </li>
                                                 <% }) %>
-                                                    <li><a href="/blogs">All <span>
+                                                    <li>
+                                                        <a href="/blogs">All 
+                                                            <span>
                                                                 <%= count %>
-                                                            </span></a></li>
+                                                            </span>
+                                                        </a>
+                                                    </li>
                                                     <% } %>
                             </ul>
                         </div>

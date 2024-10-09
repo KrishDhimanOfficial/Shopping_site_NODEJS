@@ -86,11 +86,14 @@
 
             <%- include('../Site_partials/script') %>
                 <script>
-                    let limit = 3;
+                    let limit = parseInt(sessionStorage.getItem('limit')) || 3;
                     document.querySelector('#loadmore').onclick = () => {
-                        limit = limit + 3
+                        limit += 3
                         window.location.href = `http://localhost:8000/blog/tag/<%= PostBytags[0].tag_name %>/${limit}`
+                        sessionStorage.setItem('limit', limit)
                     }
+                    window.onload = () => { sessionStorage.setItem('limit', 3) }
+                    document.querySelector('.blogLink').onclick = (e) => { sessionStorage.setItem('limit', 3) }
                 </script>
                 </body>
 </html>

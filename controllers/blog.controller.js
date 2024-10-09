@@ -315,6 +315,7 @@ module.exports = {
             if (!data) res.render('site/singleBlog', { message: 'NOT FOUND' })
             res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories, postComments: comments, postTags })
         } catch (error) {
+            if(error.message) res.status(404).render('Site_partials/404')
             console.log('getSingleBlog : ' + error.message);
         }
     },
@@ -350,6 +351,7 @@ module.exports = {
             ])
             res.render('site/tagsposts', { PostBytags, blogLength: PostBytags[0].blogs.length, limit })
         } catch (error) {
+            if(error.message) res.status(404).render('Site_partials/404')
             console.log('blogControllers : ' + error.message);
         }
     },
@@ -382,6 +384,7 @@ module.exports = {
             ])
             res.render('site/categoriesBlogs', { Postcategories: data, category: req.params.blog_category, blogLength: data[0].posts.length, limit })
         } catch (error) {
+            if(error.message) res.status(404).render('Site_partials/404')
             console.log('getCategoryBlogs :' + error.message);
         }
     },

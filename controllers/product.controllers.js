@@ -41,7 +41,7 @@ module.exports = {
             const data = await parent_Category.find({})
             res.json(data)
         } catch (error) {
-            console.log('32' + error.message);
+            console.log('parenCategory : ' + error.message);
         }
     },
     createScategory: async (req, res) => {
@@ -67,7 +67,9 @@ module.exports = {
         try {
             const color = await productColor.find({})
             const size = await productSize.find({})
+            const findEditBrandId = await productBrand.findOne({ _id: req.params.id })
             const brand = await productBrand.find({})
+            const products = await product.aggregate([{ $project: { brand_name: 1, _id: 0 } }])
             const data = await parent_Category.aggregate([
                 {
                     $lookup: {
@@ -81,6 +83,8 @@ module.exports = {
                 sizes: size,
                 brands: brand,
                 colors: color,
+                products,
+                findEditBrandId
             })
         } catch (error) {
             console.log('showAllCategories :' + error.message);
@@ -93,7 +97,7 @@ module.exports = {
             deleteImage(`/categoryImages/${data.image}`)
             res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
-            console.log('83' + error.message);
+            console.log('deleteParentCategory : ' + error.message);
         }
     },
     // Product Category Controllers
@@ -125,8 +129,7 @@ module.exports = {
     getProductsOnAdmin: async (req, res) => {
         try {
             const data = await product.aggregate(queries.productQuery)
-            console.log(data.length);
-
+            if (data.length == 0 || !data) res.render('admin/product/index', { message: 'NOT FOUND' })
             res.render('admin/product/index', { products: data })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
@@ -196,6 +199,14 @@ module.exports = {
             console.log('handlePreviewImage :' + error.message);
         }
     },
+    showsubcategory: async (req, res) => {
+        try {
+            const sub_category = await sub_Category.find({})
+            res.status(200).json(sub_category)
+        } catch (error) {
+            console.log('showsubcategory :' + error.message)
+        }
+    },
     showProductAttributes: async (req, res) => {
         try {
             const color = await productColor.find({})
@@ -211,7 +222,7 @@ module.exports = {
                 sub_categories: sub_category
             })
         } catch (error) {
-            console.log('200' + error.message);
+            console.log('showProductAttributes : ' + error.message);
         }
     },
     createColor: async (req, res) => {
@@ -225,7 +236,7 @@ module.exports = {
             res.json({ message: 'Successfully Created!' })
 
         } catch (error) {
-            console.log('214' + error.message);
+            console.log('createColor : ' + error.message);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
@@ -239,7 +250,7 @@ module.exports = {
             await productSize.create(req.body)
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log('228' + error.message);
+            console.log('createSize : ' + error.message);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
@@ -270,8 +281,18 @@ module.exports = {
             await productBrand.create({ brand_name, parent_id })
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
-            console.log('258' + error.message);
+            console.log('createBrand : ' + error.message);
             res.json({ message: error.message ?? 'Unsuccessfull!' })
+        }
+    },
+    updatebrand: async (req, res) => {
+        try {
+            const { brand_name } = req.body.info;
+            const parent_id = req.body.info.parent_id.map(id => new mongoose.Types.ObjectId(id))
+            await productBrand.findByIdAndUpdate({ _id: req.params.id }, { brand_name, parent_id })
+            res.status(200).json({ message: 'Successfull!' })
+        } catch (error) {
+            console.log('updatebrand : ' + error.message)
         }
     },
     deleteBrand: async (req, res) => {
@@ -279,7 +300,7 @@ module.exports = {
             await productBrand.findByIdAndDelete({ _id: req.params.id })
             res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
-            console.log('267' + error.message);
+            console.log('deleteBrand : ' + error.message);
         }
     },
     getProductByCategory: async (req, res) => {

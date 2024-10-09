@@ -40,6 +40,10 @@ const productSchema = mongoose.Schema({
         type: mongoose.Schema.Types.Boolean,
         default: true
     },
+    product_slug: {
+        type: mongoose.Schema.Types.String,
+        require: true
+    },
     product_on_sales: {
         type: mongoose.Schema.Types.Boolean,
         default: false

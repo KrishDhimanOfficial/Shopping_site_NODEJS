@@ -66,16 +66,16 @@
                                 </select>
                               </div>
                               <div class="form-group">
-                                <label for="category">Sub_Category</label>
-                                <select name="product_sub_category_id" id="category" class="form-control">
+                                <label for="subcategory">Sub_Category</label>
+                                <select name="product_sub_category_id" id="subcategory" class="form-control">
                                   <option selected disabled value="">Select Category</option>
-                                  <% if (locals.sub_categories) { %>
-                                    <% sub_categories.forEach(category=> { %>
-                                      <option value="<%= category._id %>">
-                                        <%= category.category_name %>
-                                      </option>
-                                      <% }) %>
-                                        <% } %>
+                                  <%# if (locals.sub_categories) { %>
+                                    <%# sub_categories.forEach(category=> { %>
+                                      <!-- <option value="<%# category._id %>"> -->
+                                      <%# category.category_name %>
+                                        <!-- </option> -->
+                                        <%# }) %>
+                                          <%# } %>
                                 </select>
                               </div>
                               <div class="form-group">
@@ -141,6 +141,12 @@
                                 <label for="discount">Discount Price</label>
                                 <input type="number" min="0" max="100" name="product_discount" id="discount"
                                   class="form-control" placeholder="Enter Price">
+                              </div>
+                              <!-- product slug  -->
+                              <div class="form-group">
+                                <label for="product_slug">Product Slug</label>
+                                <input type="text" name="product_slug" id="product_slug" class="form-control"
+                                  placeholder="Enter Slug">
                               </div>
                               <!-- Select Color -->
                               <div class="form-group">
@@ -224,7 +230,19 @@
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
       <script defer>
-
+        document.querySelector('#category').onchange = async () => {
+          const parentID = document.querySelector('#category').value.trim()
+          const api = await fetch('http://localhost:8000/admin/api/subCategory')
+          const response = api.json()
+          response.then(sub_category => {
+            let optionTag = ''
+            sub_category.forEach(category => {
+              const checkParentId = category.parent_id.some(id => id == parentID)
+              if (checkParentId) optionTag += `<option value="${category._id}">${category.category_name}</option>`;
+            })
+            document.querySelector('#subcategory').innerHTML = optionTag;
+          })
+        }
         const inputField = document.getElementById('imageInput')
         const imagePreview = document.getElementById('imagePreview')
 

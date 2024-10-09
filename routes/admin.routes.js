@@ -61,6 +61,7 @@ router.route('/product/create')
     .get(productControllers.showProductAttributes)
     .post(productImageupload.array('product_image', 5), productControllers.createProduct)
 
+router.get('/api/subCategory',productControllers.showsubcategory)
 router.get('/products', checkLogin, productControllers.getProductsOnAdmin)
 router.route('/product/:id')
     .all(checkLogin)
@@ -74,7 +75,7 @@ router.post('/api/sub_category', productControllers.createScategory)
 router.route('/api/parent_category')
     .post(categoryImageupload.single('image'), productControllers.createPcategory)
     .get(productControllers.parenCategory)
-router.get('/productcategory', checkLogin, productControllers.showAllCategories)
+router.get('/productcategory/:id?', checkLogin, productControllers.showAllCategories)
 
 router.delete('/product/category/delete/:id', checkLogin, productControllers.deleteParentCategory)
 
@@ -87,6 +88,7 @@ router.delete('/api/attributes/size/:id', checkLogin, productControllers.deleteS
 router.route('/api/attributes/brand/:id?')
     .all(checkLogin)
     .post(productControllers.createBrand)
+    .put(productControllers.updatebrand)
     .delete(productControllers.deleteBrand)
 
 // Product orders Routes

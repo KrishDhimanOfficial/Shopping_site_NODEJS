@@ -92,11 +92,13 @@
                                       <% }) %>
                                   </td>
                                   <td>
-                                    <button type="button" class="btn btn-sm btn-primary"
+                                    <button type="button" class="btn btn-primary"
                                       onclick="(()=>{ window.location.href = 'category/update/<%= category._id %>'})()">Edit</button>
-                                    <button type="button" class="btn btn-sm btn-danger deletePcategory"
-                                      data-id="<%= category._id %>" data-toggle="modal" data-target="#modal-danger">
-                                      Delete</button>
+                                    <% if (category.sub_categories.length==0) { %>
+                                      <button type="button" class="btn btn-danger deletePcategory"
+                                        data-id="<%= category._id %>" data-toggle="modal" data-target="#modal-danger">
+                                        Delete</button>
+                                      <% } %>
                                   </td>
                                 </tr>
                                 <% }) %>
@@ -334,20 +336,17 @@
                                     <%= brand.brand_name %>
                                   </td>
                                   <td>
-                                    <button type="button" class="btn btn-success" id="editBrand">Edit</button>
-                                    <button type="button" class="btn btn-danger" onclick="(async (e)=> { 
-                                      const row = document.querySelector('#row-'+'<%= brand._id %>');
-                                          await fetch('http://localhost:8000/admin/api/attributes/brand/' + '<%= brand._id %>', {
-                                            method: 'DELETE',
-                                           })
-                                          .then(response => response.json())
-                                          .then(data => { 
-                                            row.remove()
-                                            AlertMessage(data.message,'Successfully Deleted!')
-                                          })
-                                        })()">
-                                      Delete
-                                    </button>
+                                    <button type="button" class="btn btn-success editBrand" data-toggle="modal"
+                                      data-target="#modal-5" data-id="<%= brand._id %>"
+                                      data-brand="<%= brand.brand_name %>">Edit</button>
+                                    <% const idNotFound=products.every(brandId=> !brandId.brand_name.equals(brand._id))
+                                      %>
+                                      <% if (idNotFound) { %>
+                                        <button type="button" class="btn btn-danger deleteBrand"
+                                          data-id="<%= brand._id %>">
+                                          Delete
+                                        </button>
+                                        <% } %>
                                   </td>
                                 </tr>
                                 <% }) %>
@@ -555,6 +554,54 @@
         <!-- /.modal-dialog -->
       </div>
     </div>
+    <!-- Update modal For Brand -->
+    <div class="modal fade" id="modal-5">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Update Brand</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form id="editsubmit">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="brand">Brand Name</label>
+                    <input type="text" id="brand_name" name="brand_name" class="form-control">
+                  </div>
+                  <div class="form-group d-flex flex-wrap">
+                    <% if (locals.categories) { %>
+                      <% categories.forEach(category=> { %>
+                        <% const findCheckValue=findEditBrandId?.parent_id.some(id=> id.equals(category._id)) %>
+                          <% console.log(findCheckValue) %>
+                            <div class="form-check mr-2">
+                              <input class="form-check-input parent_id" type="checkbox" id="<%= category._id %>"
+                              
+                                <%= findCheckValue ? 'checked' : '' %> 
+                              value="<%= category._id %>" name="parent_id">
+                                <label class="form-check-label" for="<%= category._id %>">
+                                  <%= category.category_name %>
+                                </label>
+                            </div>
+                            <% }) %>
+                              <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+          </form>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+    </div>
     <!-- ./wrapper -->
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
@@ -571,8 +618,17 @@
               selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
             })
         })() // IIFE
-
-        document.querySelector('#submitCategory').addEventListener('submit', async (e) => {
+        const checkboxes = document.querySelectorAll('.parent_id')
+        // To Delete Parent Category
+        document.querySelectorAll('.deletePcategory').forEach(btn => {
+          btn.onclick = (e) => {
+            const id = btn.dataset.id
+            const api = `http://localhost:8000/admin/product/category/delete/${id}`;
+            openModal(api, e.target)
+          }
+        })
+        // To Create Parent With Sub Category
+        document.querySelector('#submitCategory').onsubmit = async (e) => {
           e.preventDefault();
 
           const selectBox = document.querySelector('#maincategory')
@@ -604,8 +660,8 @@
               })
             formData.reset()
           }
-        })
-
+        }
+        // To Create Color
         document.querySelector('#submitColor').onsubmit = async (e) => {
           e.preventDefault();
           const color = document.querySelector('#color')
@@ -622,6 +678,7 @@
           }
           color.value = ''
         }
+        // To Create Size
         document.querySelector('#submitSize').onsubmit = async (e) => {
           e.preventDefault();
           const size = document.querySelector('#Size')
@@ -636,49 +693,87 @@
           }
           size.value = ''
         }
-
-
-        document.querySelector('#submitBrand').addEventListener('submit', async (e) => {
+        // To create Brand
+        document.querySelector('#submitBrand').onsubmit = async (e) => {
           e.preventDefault()
-          const checkboxes = document.querySelectorAll('.parent_id');
-          const checkedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value);
+          const checkedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value)
           const brand_name = document.querySelector('#brand').value.trim()
 
           if (brand_name || checkedValues) {
             await fetch('http://localhost:8000/admin/api/attributes/brand', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ brand_name, parent_id: checkedValues })
-          })
-            .then(response => response.json())
-            .then(data => {
-              if(data.message == 'Successfully Created!') window.location.reload()
-              AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!')
-            })
-          }
-        })
-
-        document.querySelectorAll('.deletePcategory').forEach(btn => {
-          btn.onclick = (e) => {
-            const id = btn.dataset.id
-            deleteCategory(id, e.target)
-          }
-        })
-        function deleteCategory(id, targetElement) {
-          document.querySelector('#deleteCategoty').onclick = async () => {
-            await fetch(`http://localhost:8000/admin/product/category/delete/${id}`, {
-              method: 'DELETE'
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ brand_name, parent_id: checkedValues })
             })
               .then(response => response.json())
               .then(data => {
-                if (data.message == 'Successfully Deleted!') {
-                  toastr.success(data.message)
-                  targetElement.parentNode.parentNode.remove()
-                } else {
-                  toastr.error(data.message)
-                }
+                if (data.message == 'Successfully Created!') window.location.reload()
+                AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!')
               })
           }
+        }
+
+        // To Delete Brand Name
+        document.querySelectorAll('.deleteBrand').forEach(btn => {
+          btn.onclick = async (e) => {
+            const id = btn.dataset.id;
+            const api = `http://localhost:8000/admin/api/attributes/brand/${id}`;
+            opendeleteModal(api, btn)
+          }
+        })
+        // To update Brand Name
+        document.querySelectorAll('.editBrand').forEach(btn => {
+          btn.onclick = async (e) => {
+            const id = btn.dataset.id;
+            const brand_name = btn.dataset.brand;
+            await fetch(`http://localhost:8000/admin/productcategory/${id}`)
+            document.querySelector('#brand_name').value = brand_name;
+            openupdateModal(id)
+          }
+        })
+
+        // To Update Brand 
+        function openupdateModal(id) {
+          document.querySelector('#editsubmit').onsubmit = (e) => {
+            e.preventDefault()
+            const api = `http://localhost:8000/admin/api/attributes/brand/${id}`
+            const checkedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value)
+            const info = {
+              brand_name: document.querySelector('#brand_name').value.trim(),
+              parent_id: checkedValues
+            }
+            handlePostPutOperation(api, 'PUT', info)
+          }
+        }
+
+        async function handlePostPutOperation(api, method, info) {
+          await fetch(api, {
+            method: `${method}`,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ info })
+          })
+            .then(response => response.json())
+            .then(data => {
+              AlertMessage(data.message, '', 'Successfull!')
+              if (data.message == 'Successfull!') window.location.reload()
+            })
+        }
+
+        function opendeleteModal(api, targetElement) {
+          document.querySelector('#deleteCategoty').onclick = async () => {
+            handledelete(api, targetElement)
+          }
+        }
+
+        async function handledelete(api, targetElement) {
+          await fetch(api, {
+            method: 'DELETE'
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.message == 'Successfully Deleted!') targetElement.parentNode.parentNode.remove()
+              AlertMessage(data.message, '', 'Successfully Deleted!')
+            })
         }
       </script>
   </body>

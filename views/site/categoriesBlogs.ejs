@@ -21,32 +21,32 @@
             <div class="row">
                 <% if (locals.Postcategories) { %>
                     <% Postcategories[0].posts.forEach(post=> { %>
-                            <div class="col-lg-4 col-md-4 col-sm-6 col-one">
-                                <div class="blog__item">
-                                    <div class="blog__item__pic set-bg"
-                                        data-setbg='http://localhost:8000/uploads/blogsImages/<%= post.blog_image%>'
-                                        style="background-image: url('http://localhost:8000/uploads/blogsImages/<%= post.blog_image%>');">
-                                    </div>
-                                    <div class="blog__item__text">
-                                        <h6>
-                                            <a href="/singleblog/<%= post.blog_slug %>">
-                                                <%= post.blog_title %>
-                                            </a>
-                                        </h6>
-                                        <ul>
-                                            <li>by <span>
-                                                    <%= post.author %>
-                                                </span>
-                                            </li>
-                                            <li>
-                                                <% const date=new Date(post.date) %>
-                                                        <%= date.toLocaleDateString() %>
-                                            </li>
-                                        </ul>
-                                    </div>
+                        <div class="col-lg-4 col-md-4 col-sm-6 col-one">
+                            <div class="blog__item">
+                                <div class="blog__item__pic set-bg"
+                                    data-setbg='http://localhost:8000/uploads/blogsImages/<%= post.blog_image%>'
+                                    style="background-image: url('http://localhost:8000/uploads/blogsImages/<%= post.blog_image%>');">
+                                </div>
+                                <div class="blog__item__text">
+                                    <h6>
+                                        <a href="/singleblog/<%= post.blog_slug %>">
+                                            <%= post.blog_title %>
+                                        </a>
+                                    </h6>
+                                    <ul>
+                                        <li>by <span>
+                                                <%= post.author %>
+                                            </span>
+                                        </li>
+                                        <li>
+                                            <% const date=new Date(post.date) %>
+                                                <%= date.toLocaleDateString() %>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                            <% }) %>
+                        </div>
+                        <% }) %>
                             <% if (blogLength < limit) { %>
                                 <div class="col-lg-12 text-center">
                                     <button type="button" id="loadmore" class="primary-btn load-btn"
@@ -59,7 +59,7 @@
                                             Load more posts</button>
                                     </div>
                                     <% } %>
-                                <% } %>
+                                        <% } %>
             </div>
         </div>
     </section>
@@ -83,13 +83,16 @@
             <!-- Search End -->
 
             <%- include('../Site_partials/script') %>
-            <script defer>
-                let limit = 3;
+                <script defer>
+                    let limit = parseInt(sessionStorage.getItem('limit')) || 3;
                     document.querySelector('#loadmore').onclick = () => {
                         limit += 3
                         window.location.href = `http://localhost:8000/blog/category/<%= category %>/${limit}`
+                        sessionStorage.setItem('limit', limit)
                     }
-            </script>
+                    window.onload = () => { sessionStorage.setItem('limit', 3) }
+                    document.querySelector('.blogLink').onclick = (e) => { sessionStorage.setItem('limit', 3) }
+                </script>
                 </body>
 
 </html>
