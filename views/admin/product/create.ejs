@@ -69,13 +69,6 @@
                                 <label for="subcategory">Sub_Category</label>
                                 <select name="product_sub_category_id" id="subcategory" class="form-control">
                                   <option selected disabled value="">Select Category</option>
-                                  <%# if (locals.sub_categories) { %>
-                                    <%# sub_categories.forEach(category=> { %>
-                                      <!-- <option value="<%# category._id %>"> -->
-                                      <%# category.category_name %>
-                                        <!-- </option> -->
-                                        <%# }) %>
-                                          <%# } %>
                                 </select>
                               </div>
                               <div class="form-group">
@@ -138,14 +131,20 @@
                               </div>
                               <!-- product discount -->
                               <div class="form-group">
-                                <label for="discount">Discount Price</label>
+                                <label for="discount">Discount %</label>
                                 <input type="number" min="0" max="100" name="product_discount" id="discount"
                                   class="form-control" placeholder="Enter Price">
+                              </div>
+                              <!-- discounted price -->
+                              <div class="form-group">
+                                <label for="discount">Discounted Price</label>
+                                <input type="number" id="discountedPrice" class="form-control"
+                                  placeholder="Enter Price">
                               </div>
                               <!-- product slug  -->
                               <div class="form-group">
                                 <label for="product_slug">Product Slug</label>
-                                <input type="text" name="product_slug" id="product_slug" class="form-control"
+                                <input type="text" id="product_slug" class="form-control"
                                   placeholder="Enter Slug">
                               </div>
                               <!-- Select Color -->
@@ -287,11 +286,26 @@
           })
         })
 
+        document.querySelector('#discount').onchange = () => {
+          const price = parseInt(document.querySelector('#price').value.trim())
+          const discount = document.querySelector('#discount').value.trim()
+          document.querySelector('#discountedPrice').value = price - parseInt(price * discount / 100)
+        }
+        function createSlug(str) {
+          return str.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .replace(/--+/g, '-')
+        }
         document.querySelector('#submitProduct').onsubmit = async (e) => {
           e.preventDefault()
+          const price = parseInt(document.querySelector('#price').value.trim())
+          const discount = document.querySelector('#discount').value.trim()
           const product_description = $('#summernote').summernote('code').trim()
           const formData = new FormData(e.target)
           formData.append('product_description', product_description)
+          formData.append('discounted_price', price - parseInt(price * discount / 100))
+          formData.append('product_slug',createSlug(document.querySelector('#product_slug').value.trim()))
 
           await fetch('http://localhost:8000/admin/product/create', {
             method: 'POST',
@@ -301,6 +315,8 @@
             .then((data) => {
               AlertMessage(data.message, 'Unsuccessfull!', 'Successfully Created!')
               e.target.reset()
+              document.querySelector('#Preview_featured_image').innerHTML = '';
+              document.querySelector('#imagePreview').innerHTML = '';
               $('#summernote').summernote('code', '')
             })
         }

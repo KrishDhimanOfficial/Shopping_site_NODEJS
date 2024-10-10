@@ -59,15 +59,21 @@ router.route('/blog/comment/:id')
 router.route('/product/create')
     .all(checkLogin)
     .get(productControllers.showProductAttributes)
-    .post(productImageupload.array('product_image', 5), productControllers.createProduct)
+    .post(productImageupload.fields([
+        { name: 'product_image', maxCount: 5 },
+        { name: 'featured_image', maxCount: 1 }
+    ]), productControllers.createProduct)
 
-router.get('/api/subCategory',productControllers.showsubcategory)
+router.get('/api/subCategory', productControllers.showsubcategory)
 router.get('/products', checkLogin, productControllers.getProductsOnAdmin)
 router.route('/product/:id')
     .all(checkLogin)
     .get(productControllers.updateProductPage)
     .delete(productControllers.deleteProduct)
-    .put(productImageupload.array('product_image', 5), productControllers.updateProduct)
+    .put(productImageupload.fields([
+        { name: 'product_image', maxCount: 5 },
+        { name: 'featured_image', maxCount: 1 }
+    ]), productControllers.updateProduct)
 
 router.put('/product/image/:id', checkLogin, productControllers.handlePreviewImage)
 

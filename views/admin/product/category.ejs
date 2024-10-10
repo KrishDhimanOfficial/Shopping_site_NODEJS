@@ -528,19 +528,6 @@
                     <label for="brand">Brand Name</label>
                     <input type="text" id="brand" name="brand_name" class="form-control">
                   </div>
-                  <div class="form-group d-flex flex-wrap">
-                    <% if (locals.categories) { %>
-                      <% categories.forEach(category=> { %>
-                        <div class="form-check mr-2">
-                          <input class="form-check-input parent_id" id="<%= category._id %>" type="checkbox"
-                            value="<%=category._id  %>" name="parent_id">
-                          <label class="form-check-label" for="<%= category._id %>">
-                            <%= category.category_name %>
-                          </label>
-                        </div>
-                        <% }) %>
-                          <% } %>
-                  </div>
                 </div>
               </div>
             </div>
@@ -572,23 +559,6 @@
                     <label for="brand">Brand Name</label>
                     <input type="text" id="brand_name" name="brand_name" class="form-control">
                   </div>
-                  <div class="form-group d-flex flex-wrap">
-                    <% if (locals.categories) { %>
-                      <% categories.forEach(category=> { %>
-                        <% const findCheckValue=findEditBrandId?.parent_id.some(id=> id.equals(category._id)) %>
-                          <% console.log(findCheckValue) %>
-                            <div class="form-check mr-2">
-                              <input class="form-check-input parent_id" type="checkbox" id="<%= category._id %>"
-                              
-                                <%= findCheckValue ? 'checked' : '' %> 
-                              value="<%= category._id %>" name="parent_id">
-                                <label class="form-check-label" for="<%= category._id %>">
-                                  <%= category.category_name %>
-                                </label>
-                            </div>
-                            <% }) %>
-                              <% } %>
-                  </div>
                 </div>
               </div>
             </div>
@@ -618,7 +588,6 @@
               selectBox.insertAdjacentHTML('beforeEnd', categoryOption)
             })
         })() // IIFE
-        const checkboxes = document.querySelectorAll('.parent_id')
         // To Delete Parent Category
         document.querySelectorAll('.deletePcategory').forEach(btn => {
           btn.onclick = (e) => {
@@ -696,14 +665,12 @@
         // To create Brand
         document.querySelector('#submitBrand').onsubmit = async (e) => {
           e.preventDefault()
-          const checkedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value)
           const brand_name = document.querySelector('#brand').value.trim()
-
-          if (brand_name || checkedValues) {
+          if (brand_name) {
             await fetch('http://localhost:8000/admin/api/attributes/brand', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ brand_name, parent_id: checkedValues })
+              body: JSON.stringify({ brand_name})
             })
               .then(response => response.json())
               .then(data => {
@@ -737,10 +704,8 @@
           document.querySelector('#editsubmit').onsubmit = (e) => {
             e.preventDefault()
             const api = `http://localhost:8000/admin/api/attributes/brand/${id}`
-            const checkedValues = Array.from(checkboxes).filter(checkbox => checkbox.checked).map(checkbox => checkbox.value)
             const info = {
               brand_name: document.querySelector('#brand_name').value.trim(),
-              parent_id: checkedValues
             }
             handlePostPutOperation(api, 'PUT', info)
           }

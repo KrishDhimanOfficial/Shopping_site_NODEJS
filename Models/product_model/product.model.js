@@ -20,6 +20,11 @@ const productSchema = mongoose.Schema({
         required: true,
         min: 0
     },
+    discounted_price:{
+        type: mongoose.Schema.Types.Number,
+        required: true,
+        min: 0
+    },
     date: {
         type: mongoose.Schema.Types.Date,
         require: true

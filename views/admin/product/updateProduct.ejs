@@ -52,11 +52,13 @@
                               <!-- /.col -->
                               <div class="col-md-6">
                                 <!-- /.form-group -->
+                                <!-- Product Title -->
                                 <div class="form-group">
                                   <label for="title">Product Title</label>
                                   <input type="text" id="title" name="product_title" class="form-control"
                                     value="<%= product[0].product_title%>" placeholder="Enter Title">
                                 </div>
+                                <!-- Parent category -->
                                 <div class="form-group">
                                   <label for="category">Category</label>
                                   <select name="product_parent_category_id" id="category" class="form-control">
@@ -72,42 +74,34 @@
                                           <% } %>
                                   </select>
                                 </div>
+                                <!-- Sub category -->
                                 <div class="form-group">
                                   <label for="category">Sub_Category</label>
-                                  <select name="product_sub_category_id" id="category" class="form-control">
+                                  <select name="product_sub_category_id" id="subcategory" class="form-control">
                                     <option selected disabled value="<%= product[0].sub_category._id %>">
                                       <%= product[0].sub_category.category_name %>
                                     </option>
-                                    <% if (locals.sub_categories) { %>
-                                      <% sub_categories.forEach(category=> { %>
-                                        <option value="<%= category._id %>">
-                                          <%= category.category_name %>
-                                        </option>
-                                        <% }) %>
-                                          <% } %>
                                   </select>
                                 </div>
-                                <div class="form-group">
-                                  <label for="Aprice">Actual Price</label>
-                                  <input type="number" id="Aprice" name="product_price" class="form-control"
-                                    value="<%= product[0].product_price %>" placeholder="Enter Actual Price">
-                                </div>
+                                <!-- Product Is New -->
                                 <div class="form-group">
                                   <label for="new">Product is NEW</label>
-                                  <select class="select2" name="product_new" id="new" data-placeholder="Select a Size"
-                                    style="width: 100%;">
+                                  <select class="form-control" name="product_new" id="new"
+                                    data-placeholder="Select a Size" style="width: 100%;">
                                     <option value="false">No</option>
                                     <option value="true">Yes</option>
                                   </select>
                                 </div>
+                                <!-- Product Is sales -->
                                 <div class="form-group">
                                   <label for="sales">Product ON sales</label>
-                                  <select class="select2" name="product_on_sales" id="sales"
+                                  <select class="form-control" name="product_on_sales" id="sales"
                                     data-placeholder="Select a Size" style="width: 100%;">
                                     <option value="false" selected>No</option>
                                     <option value="true">Yes</option>
                                   </select>
                                 </div>
+                                <!-- product Sizes -->
                                 <div class="form-group">
                                   <label>Sizes</label>
                                   <select class="select2" name="availableSize" multiple="multiple"
@@ -126,20 +120,37 @@
                                               <% } %>
                                   </select>
                                 </div>
+                                <!-- product IN stock -->
                                 <div class="form-group">
                                   <label for="stock">In Stock</label>
-                                  <select class="select2" name="product_stock" id="stock" data-placeholder="Stock"
+                                  <select class="form-control" name="product_stock" id="stock" data-placeholder="Stock"
                                     style="width: 100%;">
-                                    <% if (product[0].product_stock == true) { %>
+                                    <% if (product[0].product_stock==true) { %>
                                       <option value="false">No</option>
                                       <option value="true">Yes</option>
-                                    <% } else { %>
-                                      <option value="false">No</option>
-                                      <option value="true">Yes</option>
-                                      <% } %>
-                                    <option value="<%= product[0].product_stock %>">
-                                      </option> 
+                                      <% } else { %>
+                                        <option value="false">No</option>
+                                        <option value="true">Yes</option>
+                                        <% } %>
+                                          <option value="<%= product[0].product_stock %>">
+                                          </option>
                                   </select>
+                                </div>
+                                <!-- featured Image -->
+                                <div class="form-group">
+                                  <label for="image-upload">Select Featured Image</label>
+                                  <div class="input-group d-flex flex-column">
+                                    <div class="custom-file w-100 mb-2">
+                                      <input type="file" name="featured_image" class="custom-file-input"
+                                        id="featured_image">
+                                      <label class="custom-file-label" for="featured_image">Choose file</label>
+                                    </div>
+                                    <div id="Preview_featured_image" style="height: 200px;">
+                                      <img
+                                        src="http://localhost:8000/uploads/productImages/<%= product[0]?.featured_image %> "
+                                        alt="" class="w-25 mr-3">
+                                    </div>
+                                  </div>
                                 </div>
                                 <!-- /.form-group -->
                               </div>
@@ -147,12 +158,32 @@
                               <!-- /.col -->
                               <div class="col-md-6">
                                 <!-- /.form-group -->
+                                <!-- product price -->
                                 <div class="form-group">
-                                  <label for="price">Discount Price</label>
-                                  <input type="number" min="0" max="100" name="product_discount" id="price"
+                                  <label for="price">Product price</label>
+                                  <input type="text" id="price" name="product_price" class="form-control"
+                                    value="<%= product[0].product_price %>" placeholder="Enter Title">
+                                </div>
+                                <!-- product discount -->
+                                <div class="form-group">
+                                  <label for="discount">Discount %</label>
+                                  <input type="number" min="0" max="100" name="product_discount" id="discount"
                                     value="<%= product[0].product_discount %>" class="form-control"
                                     placeholder="Enter Price">
                                 </div>
+                                <!-- discounted price -->
+                                <div class="form-group">
+                                  <label for="discount">Discounted Price</label>
+                                  <input type="number" id="discountedPrice" class="form-control"
+                                    value="<%= product[0].discounted_price %>" placeholder="Enter Price">
+                                </div>
+                                <!-- product slug  -->
+                                <div class="form-group">
+                                  <label for="product_slug">Product Slug</label>
+                                  <input type="text" id="product_slug" class="form-control"
+                                    value="<%= product[0].product_slug %>" placeholder="Enter Slug">
+                                </div>
+                                <!-- Select Color -->
                                 <div class="form-group">
                                   <label>Color</label>
                                   <select class="select2" name="availableColor" multiple="multiple"
@@ -171,6 +202,7 @@
                                               <% } %>
                                   </select>
                                 </div>
+                                <!-- select Brand -->
                                 <div class="form-group">
                                   <label>Brand</label>
                                   <select class="form-control" name="brand_name" data-placeholder="Select a Brand"
@@ -187,13 +219,21 @@
                                           <% } %>
                                   </select>
                                 </div>
+                                <!-- Shipping -->
                                 <div class="form-group">
-                                  <label>Shipping</label>
+                                  <label>Free Shipping</label>
                                   <select class="form-control" name="shipping" data-placeholder="Select Shipping"
                                     style="width: 100%;">
-                                    <option value="Free Shipping">Free Shipping</option>
+                                    <% if (product[0].shipping==true) { %>
+                                      <option value="true" selected>Yes</option>
+                                      <option value="false">No</option>
+                                      <% } else {%>
+                                        <option value="true">Yes</option>
+                                        <option value="false" selected>No</option>
+                                        <% } %>
                                   </select>
                                 </div>
+                                <!-- featured Image -->
                                 <div class="form-group">
                                   <label for="image-upload">File input</label>
                                   <div class="input-group d-flex flex-column">
@@ -203,9 +243,9 @@
                                       <label class="custom-file-label" for="image-upload">Choose file</label>
                                     </div>
                                     <div id="imagePreview" class="d-flex flex-wrap">
-                                      <% product[0].product_image.forEach(image=> { %>
-                                        <img src="http://localhost:8000/uploads/<%= image %> " alt=""
-                                          class="img-fluid m-1 img" style="width: 150px; height: auto;">
+                                      <% product[0].product_image?.forEach(image=> { %>
+                                        <img src="http://localhost:8000/uploads/productImages/<%= image %> " alt=""
+                                          class="img-fluid m-1 img w-25" data-id="<%= image %>">
                                         <% }) %>
                                     </div>
                                   </div>
@@ -213,6 +253,7 @@
                                 <!-- /.form-group -->
                               </div>
                               <!-- /.col -->
+                              <!-- summernote Editor -->
                               <div class="col-12">
                                 <textarea id="summernote" name="product_description">
                                   <%= product[0].product_description %>
@@ -242,7 +283,33 @@
 
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
-      <script>
+      <script defer>
+         document.querySelector('#category').onchange = async () => {
+          const parentID = document.querySelector('#category').value.trim()
+          const api = await fetch('http://localhost:8000/admin/api/subCategory')
+          const response = api.json()
+          response.then(sub_category => {
+            let optionTag = ''
+            sub_category.forEach(category => {
+              const checkParentId = category.parent_id.some(id => id == parentID)
+              if (checkParentId) optionTag += `<option value="${category._id}">${category.category_name}</option>`;
+            })
+            document.querySelector('#subcategory').innerHTML = optionTag;
+          })
+        }
+
+        document.querySelector('#featured_image').onchange = (e) => {
+          const file = e.target.files[0];
+          const reader = new FileReader();
+          reader.onload = () => {
+            const img = document.createElement('img');
+            img.src = reader.result;
+            img.className = 'w-25'
+            document.querySelector('#Preview_featured_image').appendChild(img)
+          }
+          reader.readAsDataURL(file);
+        }
+
 
         const inputField = document.getElementById('imageInput');
         const imagePreview = document.getElementById('imagePreview');
@@ -258,7 +325,7 @@
               img.src = reader.result;
               img.alt = file.name;
               img.margin = '5px';
-              img.style.width = '150px';
+              img.className = 'w-25';
               imagePreview.appendChild(img);
             }
             reader.readAsDataURL(file);
@@ -268,8 +335,8 @@
         if (document.querySelector('.img')) {
           document.querySelectorAll('.img').forEach(img => {
             img.addEventListener('dblclick', async (e) => {
-              const imgName = e.target.src.split('/')[4];
-              e.target.remove()
+              const imgName = img.dataset.id;
+              img.remove()
               await fetch(`http://localhost:8000/admin/product/image/<%= product[0]._id %>`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
@@ -278,12 +345,32 @@
             })
           })
         }
+        document.querySelector('#discount').onchange = () => {
+          const price = parseInt(document.querySelector('#price').value.trim())
+          const discount = document.querySelector('#discount').value.trim()
+          document.querySelector('#discountedPrice').value = price - parseInt(price * discount / 100)
+        }
+
+        function createSlug(str) {
+          return str.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+            .replace(/--+/g, '-')
+        }
         document.querySelector('#UpdateProduct').addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const files = inputField.files
+          e.preventDefault()
+          const price = parseInt(document.querySelector('#price').value.trim())
+          const discount = document.querySelector('#discount').value.trim()
+          const product_description = $('#summernote').summernote('code').trim()
+          const files = inputField.files;
           const formData = new FormData(e.target)
 
-          await fetch(` <%= product[0]._id %>`, {
+          formData.append('product_description', product_description)
+          formData.append('discounted_price', price - parseInt(price * discount / 100))
+          formData.append('product_slug', createSlug(document.querySelector('#product_slug').value.trim()))
+
+
+          await fetch(`<%= product[0]._id %>`, {
             method: 'PUT',
             body: formData
           })

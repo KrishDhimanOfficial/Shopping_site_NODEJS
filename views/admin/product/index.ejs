@@ -72,7 +72,6 @@
                           <tbody id="ProductTable">
                             <% if (locals.products) { %>
                               <% products.forEach((product,i)=> { %>
-                                 %> 
                                 <tr id="row-<%= product._id %>">
                                   <td>
                                     <%= i+1 %>
@@ -81,32 +80,30 @@
                                     <%= product.product_title %>
                                   </td>
                                   <td>
-                                    <img src='http://localhost:8000/uploads/<%= product.product_image[0] %>'
+                                    <img
+                                      src='http://localhost:8000/uploads/productImages/<%= product?.featured_image %>'
                                       style="width: 105px; height: auto;" alt="">
                                   </td>
                                   <td>
                                     <%= product.parent_category.category_name %>
                                   </td>
                                   <td>
-                                    <%= product.formattedDate %>
+                                    <%= product.date.toLocaleDateString() %>
                                   </td>
                                   <td>
-                                    <button type="button" onclick="(()=>{
-                                      window.location.href= 'product/<%= product._id %>'
-                                    })()" class="btn btn-block btn-success">Edit</button>
-
+                                    <a href="product/<%= product._id %>" class="btn btn-block btn-success">Edit</a>
                                     <button type="button" onclick="(async (e)=> { 
-                                      const row = document.querySelector('#row-'+'<%= product._id %>');
+                                      const row = document.querySelector('#row-'+'<%= product._id %>')
                                           await fetch('http://localhost:8000/admin/product/' + '<%= product._id %>', {
                                             method: 'DELETE',
                                            })
                                           .then(response => response.json())
                                           .then(data => { 
-                                            row.remove()
-                                            AlertMessage(data.message,'Successfully Deleted!')
+                                            if(data.message == 'Successfully Deleted!') row.remove()
+                                            AlertMessage(data.message,'','Successfully Deleted!')
                                           })
                                         })()"
-                                      class="toast-btn btn btn-block btn-danger toastrDefaultError">Delete</button>
+                                      class="btn btn-block btn-danger">Delete</button>
                                   </td>
                                 </tr>
                                 <% }) %>

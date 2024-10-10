@@ -222,7 +222,8 @@ module.exports = {
                 product_title: 1, product_price: 1, product_discount: 1, product_image: 1,
                 product_stock: 1, shipping: 1, brand: 1, sub_category: 1, sub_Category: 1,
                 colorDetails: 1, sizeDetails: 1, parent_category: 1, product_description: 1,
-                product_new: 1, product_on_sales: 1,
+                product_new: 1, product_on_sales: 1, discounted_price: 1, product_slug: 1,
+                featured_image: 1, product_slug: 1,
                 formattedDate: {
                     $dateToString: {
                         format: "%Y-%m-%d", date: "$date"

@@ -105,32 +105,49 @@ module.exports = {
     createProduct: async (req, res) => {
         try {
             const { product_title, product_parent_category_id, product_sub_category_id,
-                product_price, product_discount, product_stock,
-                product_description, availableColor, availableSize,
+                product_price, product_discount, product_stock, discounted_price,
+                product_slug, product_description, availableColor, availableSize,
                 shipping, brand_name, product_on_sales, product_new } = req.body;
 
-            const product_image = req.files.map(file => file.filename)
+            const product_image = req.files['product_image']?.map(file => file.filename)
+            const featured_image = req.files['featured_image'][0].filename
             const date = new Date()
             const data = await product.create({
-                product_title, product_parent_category_id,
-                product_sub_category_id, date, product_price, product_discount,
-                product_stock, product_image, shipping, brand_name,
-                product_description: product_description[1],
+                product_title, product_parent_category_id, featured_image,
+                discounted_price, product_slug, product_sub_category_id, date,
+                product_price, product_discount, product_stock, product_image,
+                shipping, brand_name, product_description: product_description[1],
                 availableColor, availableSize, product_on_sales, product_new
             })
-            if (!data) req.files.map(file => deleteImage(`productImages/${file.filename}`))
+            if (!data) {
+                product_image?.map(file => deleteImage(`productImages/${file.filename}`))
+                deleteImage(`productImages/${featured_image}`)
+            }
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             res.json({ message: 'Unsuccessfull!' })
-            if (error.message) req.files.map(file => deleteImage(`productImages/${file.filename}`))
+            req.files['product_image']?.map(file => deleteImage(`productImages/${file.filename}`))
+            if (req.files['featured_image'] != undefined) deleteImage(`productImages/${req.files['featured_image'][0].filename}`)
             console.log('createProduct :' + error.message);
         }
     },
     getProductsOnAdmin: async (req, res) => {
         try {
-            const data = await product.aggregate(queries.productQuery)
-            if (data.length == 0 || !data) res.render('admin/product/index', { message: 'NOT FOUND' })
+            const data = await product.aggregate([
+                {
+                    $lookup: {
+                        from: 'parent_categories',
+                        localField: 'product_parent_category_id',
+                        foreignField: '_id',
+                        as: 'parent_category',
+                    }
+                },
+                { $unwind: '$parent_category' },
+                { $project: { product_title: 1, parent_category: 1, featured_image: 1, date: 1 } }
+            ])
+            console.log(data);
             res.render('admin/product/index', { products: data })
+            if (data.length == 0 || !data) res.render('admin/product/index', { message: 'NOT FOUND' })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
         }
@@ -145,7 +162,6 @@ module.exports = {
 
             queries.productQuery.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
             const productData = await product.aggregate(queries.productQuery)
-
             res.render('admin/product/updateProduct', {
                 product: productData,
                 sizes: size,
@@ -161,12 +177,17 @@ module.exports = {
     updateProduct: async (req, res) => {
         try {
             const existingImages = await product.findOne({ _id: req.params.id })
-            const new_image = req.files.map(file => file?.filename)
+            const new_image = req.files['product_image']?.map(file => file.filename)
+            const featured_image = req.files['featured_image'] ? req.files['featured_image'][0].filename : existingImages.featured_image
             const updatedIMages = [...existingImages.product_image, ...new_image]
-
             await product.findByIdAndUpdate(
                 { _id: req.params.id },
-                { ...req.body, product_image: updatedIMages },
+                {
+                    ...req.body,
+                    product_image: updatedIMages,
+                    featured_image,
+                    product_description: req.body.product_description[0]
+                },
                 { new: true })
             throw new Error('Update Successfully!')
         } catch (error) {
@@ -177,7 +198,9 @@ module.exports = {
     deleteProduct: async (req, res) => {
         try {
             const Image = await product.findOne({ _id: req.params.id })
-            Image.product_image.map(image => deleteImage(image))
+            Image.featured_image
+            deleteImage(`productImages/${Image.featured_image}`)
+            Image.product_image.map(image => deleteImage(`productImages/${image}`))
             await product.findByIdAndDelete({ _id: req.params.id })
             throw new Error('Successfully Deleted!')
         } catch (error) {
@@ -194,7 +217,7 @@ module.exports = {
                 { _id: req.params.id },
                 { product_image: result }
             )
-            deleteImage(previewImage.image)
+            deleteImage(`productImages/${previewImage.image}`)
         } catch (error) {
             console.log('handlePreviewImage :' + error.message);
         }
