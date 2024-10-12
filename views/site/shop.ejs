@@ -24,14 +24,14 @@
             <div class="row">
                 <%- include('../site_partials/product_filters') %>
                     <div class="col-lg-9 col-md-9">
-                        <div class="row">
+                        <div class="row" id="shop">
                             <% if (locals.products) { %>
                                 <% const productArray=products.collectionData[0]?.product; %>
                                     <% productArray?.forEach(product=> { %>
                                         <div class="col-lg-4 col-md-6">
                                             <div class="product__item">
                                                 <div class="product__item__pic set-bg"
-                                                    data-setbg="/uploads/<%= product.product_image[0] %>">
+                                                    data-setbg="/uploads/productImages/<%= product.featured_image %>">
                                                     <% if (product.product_new==true) { %>
                                                         <div class="label new">
                                                             New
@@ -42,7 +42,7 @@
                                                                 <% }%>
                                                                     <ul class="product__hover">
                                                                         <li>
-                                                                            <a href="/uploads/<%= product.product_image[0] %>"
+                                                                            <a href="/uploads/productImages/<%= product.featured_image %>"
                                                                                 class="image-popup">
                                                                                 <span class="arrow_expand"></span>
                                                                             </a>
@@ -62,7 +62,7 @@
                                                                     </ul>
                                                 </div>
                                                 <div class="product__item__text">
-                                                    <h6><a href="/product/<%= product._id%>">
+                                                    <h6><a href="/product/<%= product.product_slug %>">
                                                             <%= product.product_title %>
                                                         </a></h6>
                                                     <div class="rating">
@@ -72,8 +72,10 @@
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star"></i>
                                                     </div>
-                                                    <div class="product__price">$<%= product.product_discount %>
-                                                    </div>
+                                                    <div class="product-dis-price-details">
+                                                        $ <%= product.discounted_price %>
+                                                         <span>$<%= product.product_price %></span>
+                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -85,7 +87,7 @@
                                                         <div class="col-lg-4 col-md-6">
                                                             <div class="product__item">
                                                                 <div class="product__item__pic set-bg"
-                                                                    data-setbg="/uploads/<%= product.product_image[0] %>">
+                                                                    data-setbg="/uploads/productImages/<%= product.featured_image %>">
                                                                     <% if (product.product_new==true) { %>
                                                                         <div class="label new"> New</div>
                                                                         <% } %>
@@ -94,7 +96,7 @@
                                                                                 <% }%>
                                                                                     <ul class="product__hover">
                                                                                         <li>
-                                                                                            <a href="/uploads/<%= product.product_image[0] %>"
+                                                                                            <a href="/uploads/productImages/<%= product.featured_image %>"
                                                                                                 class="image-popup">
                                                                                                 <span
                                                                                                     class="arrow_expand"></span>
@@ -117,7 +119,7 @@
                                                                 </div>
                                                                 <div class="product__item__text">
                                                                     <h6>
-                                                                        <a href="/product/<%= product._id%>">
+                                                                        <a href="/product/<%= product.product_slug %>">
                                                                             <%= product.product_title %>
                                                                         </a>
                                                                     </h6>
@@ -128,9 +130,10 @@
                                                                         <i class="fa fa-star"></i>
                                                                         <i class="fa fa-star"></i>
                                                                     </div>
-                                                                    <div class="product__price">
-                                                                        $ <%= product.product_discount %>
-                                                                    </div>
+                                                                    <div class="product-dis-price-details">
+                                                                        $ <%= product.discounted_price %>
+                                                                         <span>$<%= product.product_price %></span>
+                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -142,22 +145,19 @@
                                                                         <div class="col-lg-4 col-md-6">
                                                                             <div class="product__item">
                                                                                 <div class="product__item__pic set-bg"
-                                                                                    data-setbg="/uploads/<%= product.product_image[0] %>">
-                                                                                    <% if (product.product_new==true) {
-                                                                                        %>
+                                                                                    data-setbg="/uploads/productImages/<%= product.featured_image %>">
+                                                                                    <% if (product.product_new==true) { %>
                                                                                         <div class="label new"> New
                                                                                         </div>
                                                                                         <% } %>
-                                                                                            <% if(product.product_on_sales==true){
-                                                                                                %>
+                                                                                            <% if(product.product_on_sales==true){ %>
                                                                                                 <div class="label sale">
                                                                                                     Sale
                                                                                                 </div>
                                                                                                 <% }%>
-                                                                                                    <ul
-                                                                                                        class="product__hover">
+                                                                                                    <ul class="product__hover">
                                                                                                         <li>
-                                                                                                            <a href="/uploads/<%= product.product_image[0] %>"
+                                                                                                            <a href="/uploads/productImages/<%= product.featured_image %>"
                                                                                                                 class="image-popup">
                                                                                                                 <span
                                                                                                                     class="arrow_expand"></span>
@@ -182,7 +182,7 @@
                                                                                 <div class="product__item__text">
                                                                                     <h6>
                                                                                         <a
-                                                                                            href="/product/<%= product._id%>">
+                                                                                            href="/product/<%= product.product_slug %>">
                                                                                             <%= product.product_title %>
                                                                                         </a>
                                                                                     </h6>
@@ -193,50 +193,50 @@
                                                                                         <i class="fa fa-star"></i>
                                                                                         <i class="fa fa-star"></i>
                                                                                     </div>
-                                                                                    <div class="product__price">
-                                                                                        $ <%= product.product_discount
-                                                                                            %>
-                                                                                    </div>
+                                                                                    <div class="product-dis-price-details">
+                                                                                        $ <%= product.discounted_price %>
+                                                                                         <span>$<%= product.product_price %></span>
+                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                         <% }) %>
                                                                             <% } %>
-                                                                            <div class="col-lg-12 text-center">
+                                                                                <div class="col-lg-12 text-center">
                                                                                     <div class="pagination__option">
                                                                                         <% if (locals.products) { %>
-                                                                                            <% if (products.totalDocs >  products.limit) { %>
-                                                                                                <% for( let i=1;  i<=products.totalPages; ++i ) { %>
+                                                                                            <% if (products.totalDocs>products.limit) { %>
+                                                                                                <% for( let i=1; i<=products.totalPages; ++i ) { %>
                                                                                                     <a
                                                                                                         href="/<%= i  %>">
                                                                                                         <%= i %>
                                                                                                     </a>
-                                                                                                <% } %>
-                                                                                            <% } %>
-                                                                                        <% } %>
+                                                                                                    <% } %>
+                                                                                                        <% } %>
+                                                                                                            <% } %>
 
-                                                                                        <!-- show All product pagination-->
-                                                                                        <% if(locals.allProducts){  %>
-                                                                                            <% if  (allProducts.totalDocs>  allProducts.limit) { %>
-                                                                                                <% for( let i=1; i<=allProducts.totalPages; ++i) { %>
-                                                                                                    <a
-                                                                                                        href="/shop/<%= i  %>">
-                                                                                                        <%= i %>
-                                                                                                    </a>
-                                                                                                <% } %>
-                                                                                            <% } %>
-                                                                                        <% } %>
-                                                                                        <!-- show sub_category_products pagination -->
-                                                                                        <% if (locals.sub_category_products) { %>
-                                                                                            <% if(sub_category_products.totalDocs> sub_category_products.limit){ %>
-                                                                                                <% for( let i=1; i<=sub_category_products.totalPages; ++i){%>
-                                                                                                    <a
-                                                                                                        href="<%= i  %>">
-                                                                                                        <%= i  %>
-                                                                                                    </a>
-                                                                                                <% } %>
-                                                                                            <% } %>
-                                                                                        <% } %>
+                                                                                                                <!-- show All product pagination-->
+                                                                                                                <% if(locals.allProducts){ %>
+                                                                                                                    <% if  (allProducts.totalDocs>  allProducts.limit)  {  %>
+                                                                                                                        <% for( let i=1; i<=allProducts.totalPages; ++i) { %>
+                                                                                                                            <a
+                                                                                                                                href="/shop/<%= i  %>">
+                                                                                                                                <%= i %>
+                                                                                                                            </a>
+                                                                                                                            <% } %>
+                                                                                                                                <% } %>
+                                                                                                                                    <% }  %>
+                                                                                                                                        <!-- show sub_category_products pagination -->
+                                                                                                                                        <% if  (locals.sub_category_products) { %>
+                                                                                                                                            <%  if(sub_category_products.totalDocs>  sub_category_products.limit){  %>
+                                                                                                                                                <% for( let i=1; i<=sub_category_products.totalPages; ++i){%>
+                                                                                                                                                    <a
+                                                                                                                                                        href="<%= i  %>">
+                                                                                                                                                        <%= i  %>
+                                                                                                                                                    </a>
+                                                                                                                                                    <% } %>
+                                                                                                                                                        <% } %>
+                                                                                                                                                            <% } %>
                                                                                     </div>
                                                                                 </div>
                         </div>
@@ -264,21 +264,7 @@
             </div>
             <!-- Search End -->
             <%- include('../site_partials/script') %>
-                <script>
-                    const cartbtn = document.querySelectorAll('.cart');
-                    cartbtn.forEach(btn => {
-                        btn.addEventListener('click', async () => {
-                            const productId = btn.dataset.id;
-                            await fetch('http://localhost:8000/addtocart', {
-                                method: 'PUT',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    product_cart: { product_details: { pid: productId } }
-                                })
-                            })
-                        })
-                    })
-
+                <script defer>
                     const priceFilter = document.querySelector('#priceFilter')
                     const sizeFilter = document.querySelectorAll('.product_size')
                     const colorFilter = document.querySelectorAll('.colorfilter')
@@ -321,7 +307,9 @@
                             })
                         })
                             .then(response => response.json())
-                            .then(data => console.log(data))
+                            .then(data =>{
+                                printProductDiv(data.products)
+                            })
                     })
 
                     async function fetchFilterData(minamount, maxamount, sizeArray, colorArray) {
@@ -331,9 +319,90 @@
                             body: JSON.stringify({ minamount, maxamount, sizeArray, colorArray })
                         })
                             .then(response => response.json())
-                            .then(data => console.log(data))
-
+                            .then(data =>  printProductDiv(data.products) )
                     } 
+
+                    function printProductDiv(products){
+                        document.querySelector('#shop').innerHTML = ''
+                                let productDiv = ''
+                                const newproductTag = '<div class="label new"> New</div>';
+                                const product_on_sales = '<div class="label sale"> Sale</div>';
+                                products.forEach(product => {
+                                    productDiv += `
+                                    <div class="col-lg-4 col-md-6">
+                                        <div class="product__item">
+                                            <div class="product__item__pic set-bg"
+                                            style="background-image: url('/uploads/productImages/${ product.featured_image }');
+                                             data-setbg="/uploads/productImages/${ product.featured_image }">
+                                                ${product.product_new == true ? newproductTag : ''}
+                                                ${product.product_on_sale == true ? product_on_sales : ''}
+                                                <ul class="product__hover">
+                                                    <li>
+                                                        <a href="/uploads/productImages/${ product.featured_image }"
+                                                            class="image-popup">
+                                                            <span class="arrow_expand"></span>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <button>
+                                                            <span class="icon_heart_alt like"></span>
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button type='button' class="addtocart" data-id="${product._id}">
+                                                             <span class="icon_bag_alt"></span>
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="product__item__text">
+                                                <h6>
+                                                    <a href="/product/${product.product_slug}">
+                                                        ${product.product_title}
+                                                    </a>
+                                                </h6>
+                                                <div class="rating">
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                    <i class="fa fa-star"></i>
+                                                </div>
+                                                <div class="product-dis-price-details">
+                                               $ ${product.discounted_price}
+                                                <span>$${product.product_price}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`
+                                })
+                                document.querySelector('#shop').insertAdjacentHTML('afterbegin', productDiv)
+                                document.querySelectorAll('.addtocart').forEach(btn =>{
+                                    btn.onclick = async () => {
+                                        const productId = btn.dataset.id;
+                                        await fetch('http://localhost:8000/addtocart', {
+                                            method: 'PUT',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ product_cart: { product_details: { pid: productId } }  })
+                                        })
+                                    }
+                                })
+                    }
+
+                    const cartbtn = document.querySelectorAll('.cart')
+                    cartbtn.forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            console.log("hrlo");
+                            const productId = btn.dataset.id;
+                            await fetch('http://localhost:8000/addtocart', {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    product_cart: { product_details: { pid: productId } }
+                                })
+                            })
+                        })
+                    })
                 </script>
                 </body>
 

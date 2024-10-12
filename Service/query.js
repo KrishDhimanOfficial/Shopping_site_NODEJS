@@ -46,6 +46,7 @@ module.exports = {
             $project: {
                 'product.product_title': 1,
                 'product.product_image': 1,
+                'product.featured_image': 1,
                 'product.product_discount': 1,
                 'userDetails.username': 1,
                 shippingAddress: 1,

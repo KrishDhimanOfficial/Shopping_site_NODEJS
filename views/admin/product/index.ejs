@@ -72,7 +72,7 @@
                           <tbody id="ProductTable">
                             <% if (locals.products) { %>
                               <% products.forEach((product,i)=> { %>
-                                <tr id="row-<%= product._id %>">
+                                <tr>
                                   <td>
                                     <%= i+1 %>
                                   </td>
@@ -92,18 +92,15 @@
                                   </td>
                                   <td>
                                     <a href="product/<%= product._id %>" class="btn btn-block btn-success">Edit</a>
-                                    <button type="button" onclick="(async (e)=> { 
-                                      const row = document.querySelector('#row-'+'<%= product._id %>')
-                                          await fetch('http://localhost:8000/admin/product/' + '<%= product._id %>', {
-                                            method: 'DELETE',
-                                           })
-                                          .then(response => response.json())
-                                          .then(data => { 
-                                            if(data.message == 'Successfully Deleted!') row.remove()
-                                            AlertMessage(data.message,'','Successfully Deleted!')
-                                          })
-                                        })()"
-                                      class="btn btn-block btn-danger">Delete</button>
+                                    <% if (locals.getorder) { %>
+                                     <% const checkpid = getorder.every(order => order.items.some(item => item.pid.toString() == product._id)) %> 
+                                     <% if (!checkpid) { %>
+                                       <button type="button" data-id="<%= product._id %>" 
+                                         class="btn btn-block btn-danger deleteProduct">
+                                         Delete
+                                       </button>
+                                     <% } %>
+                                    <% } %>
                                   </td>
                                 </tr>
                                 <% }) %>
@@ -139,6 +136,19 @@
     <!-- ./wrapper -->
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
+      <script defer>
+        document.querySelectorAll('.deleteProduct').forEach(btn => {
+          btn.onclick = async (e) => {
+            const id = btn.dataset.id;
+            await fetch(`http://localhost:8000/admin/product/${id}`, { method: 'DELETE', })
+              .then(response => response.json())
+              .then(data => {
+                if (data.message == 'Successfully Deleted!') e.target.parentNode.parentNode.remove()
+                AlertMessage(data.message, '', 'Successfully Deleted!')
+              })
+          }
+        })
+      </script>
   </body>
 
 </html>

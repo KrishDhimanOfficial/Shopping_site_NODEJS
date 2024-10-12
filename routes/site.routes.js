@@ -42,10 +42,8 @@ router.route('/api/comment/:id')
     .post(blogControllers.createPostComment)
     .put(blogControllers.updateBlogComments)
 
-router.route('/product/:id')
-    .all(checkUserlogin)
-    .get(productControllers.getSingleProductDetails)
-    .put(productControllers.updateProductRating)
+router.put('/product/Id/:id', checkUserlogin, productControllers.updateProductRating)
+router.get('/product/:slug', checkUserlogin, productControllers.getSingleProductDetails)
 
 router.put('/addtocart', checkUserlogin, productControllers.productcart)
 router.put('/updatecart/:id', checkUserlogin, productControllers.updatecart)

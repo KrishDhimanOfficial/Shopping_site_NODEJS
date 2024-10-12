@@ -47,11 +47,13 @@
                             <!-- /.col -->
                             <div class="col-md-6">
                               <!-- /.form-group -->
+                              <!-- product title -->
                               <div class="form-group">
                                 <label for="title">Product Title</label>
                                 <input type="text" id="title" name="product_title" class="form-control"
                                   placeholder="Enter Title">
                               </div>
+                              <!-- parent category -->
                               <div class="form-group">
                                 <label for="category">Category</label>
                                 <select name="product_parent_category_id" id="category" class="form-control">
@@ -65,12 +67,14 @@
                                         <% } %>
                                 </select>
                               </div>
+                              <!-- sub category -->
                               <div class="form-group">
                                 <label for="subcategory">Sub_Category</label>
                                 <select name="product_sub_category_id" id="subcategory" class="form-control">
                                   <option selected disabled value="">Select Category</option>
                                 </select>
                               </div>
+                              <!-- product is new -->
                               <div class="form-group">
                                 <label for="new">Product is NEW</label>
                                 <select class="form-control" name="product_new" id="new" style="width: 100%;">
@@ -78,6 +82,7 @@
                                   <option value="true" selected>Yes</option>
                                 </select>
                               </div>
+                              <!-- product is on sales -->
                               <div class="form-group">
                                 <label for="sales">Product ON sales</label>
                                 <select class="form-control" name="product_on_sale" id="sales" style="width: 100%;">
@@ -85,6 +90,7 @@
                                   <option value="true">Yes</option>
                                 </select>
                               </div>
+                              <!-- product sizes -->
                               <div class="form-group">
                                 <label>Sizes</label>
                                 <select class="select2" name="availableSize" data-placeholder="Select a Size"
@@ -98,6 +104,7 @@
                                         <% } %>
                                 </select>
                               </div>
+                              <!-- In Stock -->
                               <div class="form-group">
                                 <label for="stock">In Stock</label>
                                 <select class="form-control" name="product_stock" id="stock" style="width: 100%;">
@@ -105,6 +112,7 @@
                                   <option value="true" selected>Yes</option>
                                 </select>
                               </div>
+                              <!-- featured image -->
                               <div class="form-group">
                                 <label for="image-upload">Select Featured Image</label>
                                 <div class="input-group d-flex flex-column">
@@ -144,8 +152,7 @@
                               <!-- product slug  -->
                               <div class="form-group">
                                 <label for="product_slug">Product Slug</label>
-                                <input type="text" id="product_slug" class="form-control"
-                                  placeholder="Enter Slug">
+                                <input type="text" id="product_slug" class="form-control" placeholder="Enter Slug">
                               </div>
                               <!-- Select Color -->
                               <div class="form-group">
@@ -164,22 +171,24 @@
                               <!-- select Brand -->
                               <div class="form-group">
                                 <label>Brand</label>
-                                <select class="form-control" name="brand_name" data-placeholder="Select a Brand"
+                                <select class="form-control" id="brands" name="brand_name" data-placeholder="Select a Brand"
                                   style="width: 100%;">
                                   <option selected disabled value="">Select Brand Name</option>
-                                  <% if (locals.brands) { %>
-                                    <% brands.forEach(brand=> { %>
-                                      <option value="<%= brand._id %>">
-                                        <%= brand.brand_name %>
-                                      </option>
-                                      <% }) %>
-                                        <% } %>
                                 </select>
                               </div>
                               <!-- Shipping -->
                               <div class="form-group">
                                 <label>Free Shipping</label>
                                 <select class="form-control" name="shipping" data-placeholder="Select Shipping"
+                                  style="width: 100%;">
+                                  <option value="true">Yes</option>
+                                  <option value="false" selected>No</option>
+                                </select>
+                              </div>
+                              <!--  product Status -->
+                              <div class="form-group">
+                                <label>Status</label>
+                                <select class="form-control" name="status" data-placeholder="Product Status"
                                   style="width: 100%;">
                                   <option value="true">Yes</option>
                                   <option value="false" selected>No</option>
@@ -206,7 +215,7 @@
                               </textarea>
                             </div>
                           </div>
-                          <button type="submit" class="toast-btn btn btn-primary toastrDefaultError">Submit</button>
+                          <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                       </div>
                       <!-- /.card-body -->
@@ -229,6 +238,7 @@
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
       <script defer>
+        // TO load sub category on the change of parent category
         document.querySelector('#category').onchange = async () => {
           const parentID = document.querySelector('#category').value.trim()
           const api = await fetch('http://localhost:8000/admin/api/subCategory')
@@ -242,6 +252,22 @@
             document.querySelector('#subcategory').innerHTML = optionTag;
           })
         }
+        
+        // TO load brand on the change of sub category
+        document.querySelector('#subcategory').onchange = async () => {
+          const subID = document.querySelector('#subcategory').value.trim()
+          const api = await fetch('http://localhost:8000/admin/api/attributes/brands')
+          const res = api.json()
+          res.then(data => {
+            let optionTag = ''
+            data.forEach(brand => {
+              const checksubId = brand.category_id.some(id => id == subID)
+              if (checksubId) optionTag += `<option value="${brand._id}">${brand.brand_name}</option>`;
+            })
+            document.querySelector('#brands').innerHTML = optionTag;
+          })
+        }
+
         const inputField = document.getElementById('imageInput')
         const imagePreview = document.getElementById('imagePreview')
 
@@ -305,7 +331,7 @@
           const formData = new FormData(e.target)
           formData.append('product_description', product_description)
           formData.append('discounted_price', price - parseInt(price * discount / 100))
-          formData.append('product_slug',createSlug(document.querySelector('#product_slug').value.trim()))
+          formData.append('product_slug', createSlug(document.querySelector('#product_slug').value.trim()))
 
           await fetch('http://localhost:8000/admin/product/create', {
             method: 'POST',

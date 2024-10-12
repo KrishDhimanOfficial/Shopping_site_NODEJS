@@ -63,10 +63,37 @@ module.exports = {
             res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
+    getsubcategory: async (req, res) => {
+        try {
+            const sub_categories = await sub_Category.find({})
+            const data = await productBrand.aggregate([
+                {
+                    $match: { _id: new mongoose.Types.ObjectId(req.params.id) }
+                },
+                {
+                    $lookup: {
+                        from: 'sub_categories',
+                        localField: 'category_id',
+                        foreignField: '_id',
+                        as: 'sub_categories'
+                    }
+                },
+                {
+                    $project: {
+                        sub_categories: 1, brand_name: 1
+                    }
+                }
+            ])
+            res.status(200).json({ sub_categories, selectedcategories: data })
+        } catch (error) {
+            console.log('getsubcategory :' + error.message)
+        }
+    },
     showAllCategories: async (req, res) => {
         try {
             const color = await productColor.find({})
             const size = await productSize.find({})
+            const sub_categories = await sub_Category.find({})
             const findEditBrandId = await productBrand.findOne({ _id: req.params.id })
             const brand = await productBrand.find({})
             const products = await product.aggregate([{ $project: { brand_name: 1, _id: 0 } }])
@@ -84,6 +111,7 @@ module.exports = {
                 brands: brand,
                 colors: color,
                 products,
+                sub_categories,
                 findEditBrandId
             })
         } catch (error) {
@@ -145,8 +173,8 @@ module.exports = {
                 { $unwind: '$parent_category' },
                 { $project: { product_title: 1, parent_category: 1, featured_image: 1, date: 1 } }
             ])
-            console.log(data);
-            res.render('admin/product/index', { products: data })
+            const getorder = await order.find({}, { items: 1 })
+            res.render('admin/product/index', { products: data, getorder })
             if (data.length == 0 || !data) res.render('admin/product/index', { message: 'NOT FOUND' })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
@@ -154,14 +182,17 @@ module.exports = {
     },
     updateProductPage: async (req, res) => {
         try {
+            queries.productQuery.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
+            const productData = await product.aggregate(queries.productQuery)
+            console.log(productData)
+            if (productData.length == 0) res.render('partials/404')
+
             const color = await productColor.find({})
             const size = await productSize.find({})
             const category = await parent_Category.find({})
             const sub_category = await sub_Category.find({})
             const brand = await productBrand.find({})
 
-            queries.productQuery.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
-            const productData = await product.aggregate(queries.productQuery)
             res.render('admin/product/updateProduct', {
                 product: productData,
                 sizes: size,
@@ -177,7 +208,7 @@ module.exports = {
     updateProduct: async (req, res) => {
         try {
             const existingImages = await product.findOne({ _id: req.params.id })
-            const new_image = req.files['product_image']?.map(file => file.filename)
+            const new_image = req.files['product_image'] ? req.files['product_image']?.map(file => file.filename) : existingImages.product_image
             const featured_image = req.files['featured_image'] ? req.files['featured_image'][0].filename : existingImages.featured_image
             const updatedIMages = [...existingImages.product_image, ...new_image]
             await product.findByIdAndUpdate(
@@ -295,13 +326,15 @@ module.exports = {
     },
     createBrand: async (req, res) => {
         try {
-            const { brand_name } = req.body;
-            const parent_id = req.body.parent_id.map(id => new mongoose.Types.ObjectId(id))
+            const category_id = req.body.info.category_id.map(id => new mongoose.Types.ObjectId(id))
             const existingBrand = await productBrand.findOne({
-                brand_name: { $regex: req.body.brand_name, $options: "i" }
+                brand_name: { $regex: req.body.info.brand_name, $options: "i" }
             })
             if (existingBrand) throw new Error('Already exists!')
-            await productBrand.create({ brand_name, parent_id })
+            await productBrand.create({
+                brand_name: req.body.info.brand_name,
+                category_id
+            })
             res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log('createBrand : ' + error.message);
@@ -310,12 +343,20 @@ module.exports = {
     },
     updatebrand: async (req, res) => {
         try {
-            const { brand_name } = req.body.info;
-            const parent_id = req.body.info.parent_id.map(id => new mongoose.Types.ObjectId(id))
-            await productBrand.findByIdAndUpdate({ _id: req.params.id }, { brand_name, parent_id })
+            const category_id = req.body.info.category_id.map(id => new mongoose.Types.ObjectId(id))
+            await productBrand.findByIdAndUpdate({ _id: req.params.id },
+                { brand_name: req.body.info.brand_name, category_id })
             res.status(200).json({ message: 'Successfull!' })
         } catch (error) {
             console.log('updatebrand : ' + error.message)
+        }
+    },
+    getBrandsapi: async (req, res) => {
+        try {
+            const data = await productBrand.find({})
+            res.status(200).json(data)
+        } catch (error) {
+            console.log('getBrandsapi : ' + error.message)
         }
     },
     deleteBrand: async (req, res) => {
@@ -364,11 +405,11 @@ module.exports = {
                 },
                 { $project: { category_name: 1, sub: 1 } }
             ])
-            const projection = [
+            const projection = ([
                 {
                     $match: {
                         category_name: {
-                            $regex: req.params.parent_name, $options: 'i'
+                            $regex: new RegExp(`^${req.params.parent_name}$`, 'i')
                         }
                     }
                 },
@@ -385,7 +426,7 @@ module.exports = {
                         image: 0, category_desc: 0, _id: 0,
                     }
                 }
-            ]
+            ])
             const products = await handleAggregatePagination(parent_Category, projection, req.params)
             res.render('site/shop', { products, categories, colors, sizes, route: req.path })
         } catch (error) {
@@ -407,12 +448,14 @@ module.exports = {
                 },
                 { $project: { category_name: 1, sub: 1 } }
             ])
-            const projection = [{
-                $project: {
-                    product_title: 1, product_image: 1, product_on_sales: 1, product_new: 1,
-                    product_discount: 1
-                }
-            }]
+            const projection = [
+                { $match: { status: true } }, {
+                    $project: {
+                        product_title: 1, product_image: 1, product_on_sales: 1, product_new: 1,
+                        product_discount: 1, featured_image: 1, product_slug: 1, discounted_price:1,
+                        product_price:1
+                    }
+                }]
             const allProducts = await handleAggregatePagination(product, projection, req.params)
             res.render('site/shop', { allProducts, categories, colors, sizes, route: req.path })
         } catch (error) {
@@ -485,8 +528,12 @@ module.exports = {
     getSingleProductDetails: async (req, res) => {
         try {
             const relatedProducts = await product.find({}).limit(4)
+            const products = await product.find({})
+            const checkSlug = products.filter(product => product.product_slug == req.params.slug)
+            if (checkSlug.length == 0) res.status(404).render('Site_partials/404')
+
             const singleProduct = await product.aggregate([
-                { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+                { $match: { product_slug: req.params.slug } },
                 {
                     $lookup: {
                         from: 'productcolors',
@@ -516,12 +563,13 @@ module.exports = {
                     $project: {
                         product_title: 1, product_price: 1, product_discount: 1, product_image: 1,
                         sizeDetails: 1, brand: 1, colors: 1, product_stock: 1, shipping: 1,
-                        product_description: 1
+                        discounted_price: 1, product_description: 1
                     }
                 }
             ])
             res.render('site/productDetails', { singleProduct, relatedProducts })
         } catch (error) {
+            if (error.message) res.status(404).render('Site_partials/404')
             console.log('getSingleProductDetails :' + error.message);
         }
     },
@@ -544,6 +592,7 @@ module.exports = {
     productcart: async (req, res) => {
         try {
             const user = getUser(req.cookies.token)
+            if (!user) res.redirect('/login')
             const pid = new mongoose.Types.ObjectId(req.body.product_cart.product_details.pid)
             const quantity = req.body.product_cart.product_details.quantity;
 
@@ -811,10 +860,10 @@ module.exports = {
             if (obj.minamount || obj.maxamount) {
                 const priceFilter = await product.aggregate([{
                     $match: {
-                        product_discount: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) }
+                        product_price: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) }
                     }
                 }])
-                res.status(200).json(priceFilter)
+                res.status(200).json({products:priceFilter})
             }
         } catch (error) {
             console.log('getpriceRangeProducts :' + error.message);
@@ -825,7 +874,7 @@ module.exports = {
             const obj = req.body;
 
             if (obj.colorArray?.length > 0) {
-                const priceFilter = await product.aggregate([{ $match: { product_discount: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) } } }])
+                const priceFilter = await product.aggregate([{ $match: { product_price: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) } } }])
 
                 const colorFilter = priceFilter.filter(item => {
                     return item.availableColor.some(colorId => obj.colorArray.includes(colorId.toString()))
@@ -835,9 +884,9 @@ module.exports = {
                     const sizeColorFilter = colorFilter.filter(item => {
                         return item.availableSize.some(sizeId => obj.sizeArray.includes(sizeId.toString()))
                     })
-                    res.status(200).json(sizeColorFilter)
+                    res.status(200).json({ products: sizeColorFilter })
                 }
-                res.status(200).json(colorFilter)
+                res.status(200).json({ products: colorFilter })
             }
 
             if (obj.sizeArray?.length > 0) {
@@ -851,9 +900,9 @@ module.exports = {
                     const colorSizeFilter = sizeFilter.filter(item => {
                         return item.availableColor.some(colorId => obj.colorArray.includes(colorId.toString()))
                     })
-                    res.status(200).json(colorSizeFilter)
+                    res.status(200).json({ products: colorSizeFilter })
                 }
-                res.status(200).json(sizeFilter)
+                res.status(200).json({ products: sizeFilter })
             }
         } catch (error) {
             console.log('getfilterProducts : ' + error.message);

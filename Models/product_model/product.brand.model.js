@@ -8,6 +8,10 @@ const productBrandSchema = mongoose.Schema({
         maxlength: 30,
         match: [/^[a-zA-Z]+$/]
     },
+    category_id: {
+        type: mongoose.Schema.Types.Array,
+        require: true
+    }
 })
 
 module.exports = mongoose.model('productBrand', productBrandSchema)

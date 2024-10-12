@@ -30,15 +30,15 @@
                             <div class="product__details__pic__left product__thumb nice-scroll">
                                 <% singleProduct[0].product_image?.forEach((image,i)=> { %>
                                     <a class="pt" href="#product-<%= i +1 %>">
-                                        <img src="/uploads/<%= image %>" alt="" loading="lazy">
+                                        <img src="/uploads/productImages/<%= image %>" alt="" loading="lazy">
                                     </a>
                                     <% }) %>
                             </div>
                             <div class="product__details__slider__content">
                                 <div class="product__details__pic__slider owl-carousel">
                                     <% singleProduct[0].product_image?.forEach((image,i)=> { %>
-                                        <img src="/uploads/<%= image %>" data-hash="product-<%= i %>" alt=""
-                                            class="product__big__img" loading="lazy">
+                                        <img src="/uploads/productImages/<%= image %>" data-hash="product-<%= i %>"
+                                            alt="" class="product__big__img" loading="lazy">
                                         <% }) %>
                                 </div>
                             </div>
@@ -57,9 +57,10 @@
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                             </div>
-                            <div class="product__details__price">$ <%= singleProduct[0].product_discount %> <span>$
-                                        <%= singleProduct[0].product_price %>
-                                    </span></div>
+                            <div class="product__details__price">
+                                $ <%= singleProduct[0].discounted_price %>
+                                    <span>$<%= singleProduct[0].product_price %></span>
+                            </div>
                             <p>
                                 <%= singleProduct[0].product_description.slice(0,40) %>
                             </p>
@@ -122,9 +123,9 @@
                                     </li>
                                     <li>
                                         <span>Promotions:</span>
-                                        <p>
-                                            <%= singleProduct[0].shipping %>
-                                        </p>
+                                        <% if (singleProduct[0].shipping == true) { %>
+                                            <p>Free Shipping</p>
+                                        <% } %>
                                     </li>
                                 </ul>
                             </div>
@@ -137,62 +138,11 @@
                                     <a class="nav-link active" data-toggle="tab" href="#tabs-1"
                                         role="tab">Description</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#tabs-2" role="tab">Specification</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#tabs-3" role="tab">Reviews ( 2
-                                        )</a>
-                                </li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tabs-1" role="tabpanel">
                                     <h6>Description</h6>
-                                    <%= singleProduct[0].product_description %>
-                                </div>
-                                <div class="tab-pane" id="tabs-2" role="tabpanel">
-                                    <h6>Specification</h6>
-                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret
-                                        fugit,
-                                        sed
-                                        quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt
-                                        loret.
-                                        Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim
-                                        ipsam
-                                        voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia
-                                        ipsu
-                                        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
-                                        consequat massa quis enim.</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                                        ligula
-                                        eget
-                                        dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-                                        montes,
-                                        nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
-                                        pretium
-                                        quis, sem.</p>
-                                </div>
-                                <div class="tab-pane" id="tabs-3" role="tabpanel">
-                                    <h6>Reviews ( 2 )</h6>
-                                    <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut loret
-                                        fugit,
-                                        sed
-                                        quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt
-                                        loret.
-                                        Neque porro lorem quisquam est, qui dolorem ipsum quia dolor si. Nemo enim
-                                        ipsam
-                                        voluptatem quia voluptas sit aspernatur aut odit aut loret fugit, sed quia
-                                        ipsu
-                                        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Nulla
-                                        consequat massa quis enim.</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo
-                                        ligula
-                                        eget
-                                        dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient
-                                        montes,
-                                        nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu,
-                                        pretium
-                                        quis, sem.</p>
+                                    <%- singleProduct[0].product_description %>
                                 </div>
                             </div>
                         </div>
@@ -209,7 +159,7 @@
                             <div class="col-lg-3 col-md-4 col-sm-6">
                                 <div class="product__item">
                                     <div class="product__item__pic set-bg"
-                                        data-setbg="/uploads/<%= product.product_image[0] %>">
+                                        data-setbg="/uploads/productImages/<%= product.featured_image%>">
                                         <% if (product.product_new==true) { %>
                                             <div class="label new"> New </div>
                                             <% } %>
@@ -238,7 +188,7 @@
                                     </div>
                                     <div class="product__item__text">
                                         <h6>
-                                            <a href="/product/<%= product._id%>">
+                                            <a href="/product/<%= product.product_slug %>">
                                                 <%= product.product_title %>
                                             </a>
                                         </h6>
@@ -302,7 +252,7 @@
                             method: 'PUT',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                product_cart: { product_details: { pid: productId ,quantity: parseInt(quantity.value)} }
+                                product_cart: { product_details: { pid: productId, quantity: parseInt(quantity.value) } }
                             })
                         })
                     }

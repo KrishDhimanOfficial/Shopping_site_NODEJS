@@ -528,6 +528,19 @@
                     <label for="brand">Brand Name</label>
                     <input type="text" id="brand" name="brand_name" class="form-control">
                   </div>
+                  <div class="form-group">
+                    <label>category</label>
+                    <select class="select2" id="category_id" name="category_id" multiple="multiple"
+                      data-placeholder="Select category" style="width: 100%;">
+                      <% if (locals.sub_categories) { %>
+                        <% sub_categories.forEach(category=> { %>
+                          <option class="category_id" value="<%= category._id %>">
+                            <%= category.category_name %>
+                          </option>
+                          <% }) %>
+                            <% } %>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -559,11 +572,17 @@
                     <label for="brand">Brand Name</label>
                     <input type="text" id="brand_name" name="brand_name" class="form-control">
                   </div>
+                  <div class="form-group">
+                    <label>category</label>
+                    <select class="select2" id="updatecategory_id" name="category_id" multiple="multiple"
+                      data-placeholder="Select category" style="width: 100%;">
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
             <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-default" id="closemodal" data-dismiss="modal">Close</button>
               <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
           </form>
@@ -665,19 +684,11 @@
         // To create Brand
         document.querySelector('#submitBrand').onsubmit = async (e) => {
           e.preventDefault()
+          const selectBox = document.querySelector('#category_id')
+          const category_id = Array.from(selectBox.selectedOptions, option => option.value)
           const brand_name = document.querySelector('#brand').value.trim()
-          if (brand_name) {
-            await fetch('http://localhost:8000/admin/api/attributes/brand', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ brand_name})
-            })
-              .then(response => response.json())
-              .then(data => {
-                if (data.message == 'Successfully Created!') window.location.reload()
-                AlertMessage(data.message, 'Already exists!' ?? 'Unsuccessfull!', 'Successfully Created!')
-              })
-          }
+          const api = 'http://localhost:8000/admin/api/attributes/brand';
+          if (brand_name && category_id) handlePostPutOperation(api, 'POST', { brand_name, category_id })
         }
 
         // To Delete Brand Name
@@ -696,18 +707,32 @@
             await fetch(`http://localhost:8000/admin/productcategory/${id}`)
             document.querySelector('#brand_name').value = brand_name;
             openupdateModal(id)
+            await fetch(`http://localhost:8000/admin/api/sub/category/${id}`)
+              .then(response => response.json())
+              .then(data => {
+                let option = ''
+                data.sub_categories.forEach(category => {
+                  const selectedOption = data.selectedcategories[0].sub_categories.some(selectedcategory => selectedcategory._id == category._id)
+                  option += `<option value="${category._id}" ${selectedOption ? 'Selected' : ''}>${category.category_name}</option>`
+                })
+
+                document.querySelector('#updatecategory_id').innerHTML = option;
+              })
           }
         })
+        document.querySelector('#closemodal').onclick = () => {
+          document.querySelector('#updatecategory_id').innerHTML = '';
+        }
 
         // To Update Brand 
         function openupdateModal(id) {
           document.querySelector('#editsubmit').onsubmit = (e) => {
             e.preventDefault()
+            const brand_name = document.querySelector('#brand_name').value.trim()
+            const selectBox = document.querySelector('#updatecategory_id')
+            const category_id = Array.from(selectBox.selectedOptions, option => option.value)
             const api = `http://localhost:8000/admin/api/attributes/brand/${id}`
-            const info = {
-              brand_name: document.querySelector('#brand_name').value.trim(),
-            }
-            handlePostPutOperation(api, 'PUT', info)
+            handlePostPutOperation(api, 'PUT', { brand_name, category_id })
           }
         }
 

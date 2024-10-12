@@ -40,11 +40,11 @@
                                         <tr id="p-<%= product._id %>" class="rows">
                                             <td class="cart__product__item">
                                                 <input type="text" hidden class="price"
-                                                    value="<%= product.product_discount %>">
+                                                    value="<%= product.discounted_price %>">
                                                 <input type="text" hidden class="p_id" value="<%= product._id %>">
                                                 <input type="text" hidden class="product_total"
-                                                    value="<%=  1 * product.product_discount ?? 0 %> ">
-                                                <img src="http://localhost:8000/uploads/<%= product.product_image[0] %>"
+                                                    value="<%=  1 * product.discounted_price ?? 0 %> ">
+                                                <img src="http://localhost:8000/uploads/productImages/<%= product.featured_image %>"
                                                     alt="" class="img-fluid" style="width: 150px; height: 200px;">
                                                 <div class="cart__product__item__title">
                                                     <h6>
@@ -60,7 +60,7 @@
                                                 </div>
                                             </td>
                                             <td class="cart__price">
-                                                $ <%= product.product_discount %>
+                                                $ <%= product.discounted_price %>
                                             </td>
                                             <td class="cart__quantity">
                                                 <div class="pro-qty">
@@ -69,7 +69,7 @@
                                                 </div>
                                             </td>
                                             <td class="cart__total"> $
-                                                <%= 1 * product.product_discount ?? 0 %>
+                                                <%= 1 * product.discounted_price ?? 0 %>
                                             </td>
                                             <td class="cart__close">
                                                 <span class="icon_close" onclick="(()=>{

@@ -233,6 +233,20 @@
                                         <% } %>
                                   </select>
                                 </div>
+                                <!--  product Status -->
+                                <div class="form-group">
+                                  <label>Status</label>
+                                  <select class="form-control" name="status" data-placeholder="Product Status"
+                                    style="width: 100%;">
+                                    <% if (product[0].status==true) { %>
+                                      <option value="true" selected>Yes</option>
+                                      <option value="false">No</option>
+                                      <% } else {%>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                        <% } %>
+                                  </select>
+                                </div>
                                 <!-- featured Image -->
                                 <div class="form-group">
                                   <label for="image-upload">File input</label>
@@ -284,7 +298,7 @@
     <%- include('../../partials/script') %>
       <!-- AdminLTE App -->
       <script defer>
-         document.querySelector('#category').onchange = async () => {
+        document.querySelector('#category').onchange = async () => {
           const parentID = document.querySelector('#category').value.trim()
           const api = await fetch('http://localhost:8000/admin/api/subCategory')
           const response = api.json()

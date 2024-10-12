@@ -1740,6 +1740,18 @@ ol {
 	color: #ca1515;
 	margin-bottom: 30px;
 }
+.product-dis-price-details{
+	font-size: 18px;
+	color:#ca1515;
+	font-weight: 600;
+}
+.product-dis-price-details span{
+	font-size: 16px;
+	color: #b1b0b0;
+	text-decoration: line-through;
+	margin-left: 10px;
+	display: inline-block;
+}
 
 .product__details__price span {
 	font-size: 18px;
