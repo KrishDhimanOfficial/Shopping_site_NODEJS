@@ -91,16 +91,18 @@
                                     <%= product.date.toLocaleDateString() %>
                                   </td>
                                   <td>
-                                    <a href="product/<%= product._id %>" class="btn btn-block btn-success">Edit</a>
+                                    <button type="button"
+                                      onclick="(()=> window.location.href = 'product/<%= product._id %>')()"
+                                      class="btn btn-block btn-success">Edit</button>
                                     <% if (locals.getorder) { %>
-                                     <% const checkpid = getorder.every(order => order.items.some(item => item.pid.toString() == product._id)) %> 
-                                     <% if (!checkpid) { %>
-                                       <button type="button" data-id="<%= product._id %>" 
-                                         class="btn btn-block btn-danger deleteProduct">
-                                         Delete
-                                       </button>
-                                     <% } %>
-                                    <% } %>
+                                      <% const checkpid=getorder.every(order=> order.items.some(item => item.pid.toString() == product._id)) %>
+                                        <% if (!checkpid) { %>
+                                          <button type="button" data-id="<%= product._id %>"
+                                            class="btn btn-block btn-danger deleteProduct">
+                                            Delete
+                                          </button>
+                                          <% } %>
+                                            <% } %>
                                   </td>
                                 </tr>
                                 <% }) %>

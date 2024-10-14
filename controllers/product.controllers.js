@@ -182,24 +182,51 @@ module.exports = {
     },
     updateProductPage: async (req, res) => {
         try {
-            queries.productQuery.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
-            const productData = await product.aggregate(queries.productQuery)
-            console.log(productData)
-            if (productData.length == 0) res.render('partials/404')
-
-            const color = await productColor.find({})
-            const size = await productSize.find({})
-            const category = await parent_Category.find({})
-            const sub_category = await sub_Category.find({})
-            const brand = await productBrand.find({})
-
+            const pid = req.params.id.length === 24 ? req.params.id : '';
+            const productData = await product.aggregate([
+                { $match: { _id: new mongoose.Types.ObjectId(pid) } },
+                {
+                    $lookup: {
+                        from: 'productcolors', localField: 'availableColor',
+                        foreignField: '_id', as: 'colorDetails',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'productsizes', localField: 'availableSize',
+                        foreignField: '_id', as: 'sizeDetails',
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'parent_categories', localField: 'product_parent_category_id',
+                        foreignField: '_id', as: 'parent_category',
+                    }
+                },
+                { $unwind: '$parent_category' },
+                {
+                    $lookup: {
+                        from: 'sub_categories', localField: 'product_sub_category_id',
+                        foreignField: '_id', as: 'sub_category',
+                    }
+                },
+                { $unwind: '$sub_category' },
+                {
+                    $lookup: {
+                        from: 'productbrands', localField: 'brand_name',
+                        foreignField: '_id', as: 'brand',
+                    }
+                },
+                { $unwind: '$brand' }
+            ])
+            const [color, size, category] = await Promise.all([
+                productColor.find({}),
+                productSize.find({}),
+                parent_Category.find({}),
+            ])
             res.render('admin/product/updateProduct', {
-                product: productData,
-                sizes: size,
-                colors: color,
-                brands: brand,
-                parent_Categories: category,
-                sub_categories: sub_category
+                product: productData, sizes: size,
+                colors: color, parent_Categories: category,
             })
         } catch (error) {
             console.log('updateProductPage :' + error);
@@ -208,20 +235,22 @@ module.exports = {
     updateProduct: async (req, res) => {
         try {
             const existingImages = await product.findOne({ _id: req.params.id })
-            const new_image = req.files['product_image'] ? req.files['product_image']?.map(file => file.filename) : existingImages.product_image
+            const new_images = req.files['product_image'] ? req.files['product_image']?.map(file => file.filename) : ''
             const featured_image = req.files['featured_image'] ? req.files['featured_image'][0].filename : existingImages.featured_image
-            const updatedIMages = [...existingImages.product_image, ...new_image]
-            await product.findByIdAndUpdate(
+
+            const updatedImage = [...existingImages.product_image, ...new_images]
+            const data = await product.findByIdAndUpdate(
                 { _id: req.params.id },
                 {
                     ...req.body,
-                    product_image: updatedIMages,
-                    featured_image,
+                    product_image: updatedImage, featured_image,
                     product_description: req.body.product_description[0]
                 },
                 { new: true })
+            if (!data) req.files['product_image']?.map(file => deleteImage(`productImages/${file.filename}`))
             throw new Error('Update Successfully!')
         } catch (error) {
+            if (error.message != 'Update Successfully!') req.files['product_image']?.map(file => deleteImage(`productImages/${file.filename}`))
             console.log('updateProduct :' + error.message);
             res.json({ message: error.message ?? 'Update Unsuccessfull!' })
         }
@@ -452,8 +481,8 @@ module.exports = {
                 { $match: { status: true } }, {
                     $project: {
                         product_title: 1, product_image: 1, product_on_sales: 1, product_new: 1,
-                        product_discount: 1, featured_image: 1, product_slug: 1, discounted_price:1,
-                        product_price:1
+                        product_discount: 1, featured_image: 1, product_slug: 1, discounted_price: 1,
+                        product_price: 1
                     }
                 }]
             const allProducts = await handleAggregatePagination(product, projection, req.params)
@@ -863,7 +892,7 @@ module.exports = {
                         product_price: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) }
                     }
                 }])
-                res.status(200).json({products:priceFilter})
+                res.status(200).json({ products: priceFilter })
             }
         } catch (error) {
             console.log('getpriceRangeProducts :' + error.message);

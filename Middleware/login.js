@@ -1,6 +1,6 @@
 async function login(req, res, next) {
     try {
-        const token = await req.cookies?.token;
+        const token = await req.cookies?.authtoken;
         
         if (!token) {
             next()

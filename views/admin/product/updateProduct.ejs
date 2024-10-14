@@ -210,13 +210,6 @@
                                     <option selected disabled value="<%= product[0].brand._id %>">
                                       <%= product[0].brand.brand_name %> %>
                                     </option>
-                                    <% if (locals.brands) { %>
-                                      <% brands.forEach(brand=> { %>
-                                        <option value="<%= brand._id %>">
-                                          <%= brand.brand_name %>
-                                        </option>
-                                        <% }) %>
-                                          <% } %>
                                   </select>
                                 </div>
                                 <!-- Shipping -->
@@ -257,8 +250,9 @@
                                       <label class="custom-file-label" for="image-upload">Choose file</label>
                                     </div>
                                     <div id="imagePreview" class="d-flex flex-wrap">
-                                      <% product[0].product_image?.forEach(image=> { %>
+                                      <% product[0].product_image?.forEach((image,i)=> { %>
                                         <img src="http://localhost:8000/uploads/productImages/<%= image %> " alt=""
+                                        srcset="<%= image %> <%= i + 1 %>X,"
                                           class="img-fluid m-1 img w-25" data-id="<%= image %>">
                                         <% }) %>
                                     </div>
