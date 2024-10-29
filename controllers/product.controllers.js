@@ -30,16 +30,16 @@ module.exports = {
             image = req.file ? req.file.filename : null;
             await parent_Category.create({ category_name, image, category_desc })
 
-            res.json({ message: 'Successfully Created!' })
+            return res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log('createPcategory :' + error);
-            res.json({ message: error.message ?? 'Unsuccessfull!' })
+            return res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
     parenCategory: async (req, res) => {
         try {
             const data = await parent_Category.find({})
-            res.json(data)
+            return res.json(data)
         } catch (error) {
             console.log('parenCategory : ' + error.message);
         }
@@ -57,10 +57,10 @@ module.exports = {
             } else {
                 await sub_Category.create(req.body)
             }
-            res.json({ message: 'Successfully Created!' })
+            return res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log('createScategory :' + error.message);
-            res.json({ message: error.message ?? 'Unsuccessfull!' })
+            return res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
     getsubcategory: async (req, res) => {
@@ -84,7 +84,7 @@ module.exports = {
                     }
                 }
             ])
-            res.status(200).json({ sub_categories, selectedcategories: data })
+            return res.status(200).json({ sub_categories, selectedcategories: data })
         } catch (error) {
             console.log('getsubcategory :' + error.message)
         }
@@ -105,7 +105,7 @@ module.exports = {
                     }
                 },
             ])
-            res.render('admin/product/category', {
+            return res.render('admin/product/category', {
                 categories: data,
                 sizes: size,
                 brands: brand,
@@ -123,7 +123,7 @@ module.exports = {
             const data = await parent_Category.findByIdAndDelete({ _id: req.params.id })
             if (!data) res.json({ message: 'Unsuccessfully' })
             deleteImage(`/categoryImages/${data.image}`)
-            res.json({ message: 'Successfully Deleted!' })
+            return res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
             console.log('deleteParentCategory : ' + error.message);
         }
@@ -151,7 +151,7 @@ module.exports = {
                 product_image?.map(file => deleteImage(`productImages/${file.filename}`))
                 deleteImage(`productImages/${featured_image}`)
             }
-            res.json({ message: 'Successfully Created!' })
+            return res.json({ message: 'Successfully Created!' })
         } catch (error) {
             res.json({ message: 'Unsuccessfull!' })
             req.files['product_image']?.map(file => deleteImage(`productImages/${file.filename}`))
@@ -174,8 +174,8 @@ module.exports = {
                 { $project: { product_title: 1, parent_category: 1, featured_image: 1, date: 1 } }
             ])
             const getorder = await order.find({}, { items: 1 })
-            res.render('admin/product/index', { products: data, getorder })
-            if (data.length == 0 || !data) res.render('admin/product/index', { message: 'NOT FOUND' })
+            if (data.length == 0 || !data) return res.render('admin/product/index', { message: 'NOT FOUND' })
+            return res.render('admin/product/index', { products: data, getorder })
         } catch (error) {
             console.log('getProductsOnAdmin :' + error.message);
         }
@@ -224,7 +224,7 @@ module.exports = {
                 productSize.find({}),
                 parent_Category.find({}),
             ])
-            res.render('admin/product/updateProduct', {
+            return res.render('admin/product/updateProduct', {
                 product: productData, sizes: size,
                 colors: color, parent_Categories: category,
             })
@@ -252,7 +252,7 @@ module.exports = {
         } catch (error) {
             if (error.message != 'Update Successfully!') req.files['product_image']?.map(file => deleteImage(`productImages/${file.filename}`))
             console.log('updateProduct :' + error.message);
-            res.json({ message: error.message ?? 'Update Unsuccessfull!' })
+            return res.json({ message: error.message ?? 'Update Unsuccessfull!' })
         }
     },
     deleteProduct: async (req, res) => {
@@ -265,7 +265,7 @@ module.exports = {
             throw new Error('Successfully Deleted!')
         } catch (error) {
             console.log('deleteProduct :' + error.message);
-            res.json({ message: error.message })
+            return res.json({ message: error.message })
         }
     },
     handlePreviewImage: async (req, res) => {
@@ -285,7 +285,7 @@ module.exports = {
     showsubcategory: async (req, res) => {
         try {
             const sub_category = await sub_Category.find({})
-            res.status(200).json(sub_category)
+            return res.status(200).json(sub_category)
         } catch (error) {
             console.log('showsubcategory :' + error.message)
         }
@@ -297,7 +297,7 @@ module.exports = {
             const category = await parent_Category.find({})
             const sub_category = await sub_Category.find({})
             const brand = await productBrand.find({})
-            res.render('admin/product/create', {
+            return res.render('admin/product/create', {
                 sizes: size,
                 colors: color,
                 brands: brand,
@@ -316,11 +316,11 @@ module.exports = {
             if (existingColor) throw new Error('Already exists!')
 
             await productColor.create(req.body)
-            res.json({ message: 'Successfully Created!' })
+            return res.json({ message: 'Successfully Created!' })
 
         } catch (error) {
             console.log('createColor : ' + error.message);
-            res.json({ message: error.message ?? 'Unsuccessfull!' })
+            return res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
     createSize: async (req, res) => {
@@ -331,16 +331,16 @@ module.exports = {
             if (existingSize) throw new Error('Already exists!')
 
             await productSize.create(req.body)
-            res.json({ message: 'Successfully Created!' })
+            return res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log('createSize : ' + error.message);
-            res.json({ message: error.message ?? 'Unsuccessfull!' })
+            return res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
     deleteSize: async (req, res) => {
         try {
             await productSize.findByIdAndDelete({ _id: req.params.id })
-            res.json({ message: 'Successfully Deleted!' })
+            return res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
             console.log('deleteSize' + error.message);
         }
@@ -348,7 +348,7 @@ module.exports = {
     deleteColor: async (req, res) => {
         try {
             await productColor.findByIdAndDelete({ _id: req.params.id })
-            res.json({ message: 'Successfully Deleted!' })
+            return res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
             console.log('deleteColor' + error.message);
         }
@@ -364,10 +364,10 @@ module.exports = {
                 brand_name: req.body.info.brand_name,
                 category_id
             })
-            res.json({ message: 'Successfully Created!' })
+            return res.json({ message: 'Successfully Created!' })
         } catch (error) {
             console.log('createBrand : ' + error.message);
-            res.json({ message: error.message ?? 'Unsuccessfull!' })
+            return res.json({ message: error.message ?? 'Unsuccessfull!' })
         }
     },
     updatebrand: async (req, res) => {
@@ -375,7 +375,7 @@ module.exports = {
             const category_id = req.body.info.category_id.map(id => new mongoose.Types.ObjectId(id))
             await productBrand.findByIdAndUpdate({ _id: req.params.id },
                 { brand_name: req.body.info.brand_name, category_id })
-            res.status(200).json({ message: 'Successfull!' })
+            return res.status(200).json({ message: 'Successfull!' })
         } catch (error) {
             console.log('updatebrand : ' + error.message)
         }
@@ -383,7 +383,7 @@ module.exports = {
     getBrandsapi: async (req, res) => {
         try {
             const data = await productBrand.find({})
-            res.status(200).json(data)
+            return res.status(200).json(data)
         } catch (error) {
             console.log('getBrandsapi : ' + error.message)
         }
@@ -391,7 +391,7 @@ module.exports = {
     deleteBrand: async (req, res) => {
         try {
             await productBrand.findByIdAndDelete({ _id: req.params.id })
-            res.json({ message: 'Successfully Deleted!' })
+            return res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
             console.log('deleteBrand : ' + error.message);
         }
@@ -411,7 +411,7 @@ module.exports = {
                 { $project: { product: 0 } }
             ])
             const products = await product.aggregate(queries.productQuery).limit(8)
-            res.render('site/home', {
+            return res.render('site/home', {
                 products, product_categories,
                 route: req.path
             })
@@ -457,7 +457,7 @@ module.exports = {
                 }
             ])
             const products = await handleAggregatePagination(parent_Category, projection, req.params)
-            res.render('site/shop', { products, categories, colors, sizes, route: req.path })
+            return res.render('site/shop', { products, categories, colors, sizes, route: req.path })
         } catch (error) {
             console.log('getProductByCategoryonShop :' + error.message);
         }
@@ -486,7 +486,7 @@ module.exports = {
                     }
                 }]
             const allProducts = await handleAggregatePagination(product, projection, req.params)
-            res.render('site/shop', { allProducts, categories, colors, sizes, route: req.path })
+            return res.render('site/shop', { allProducts, categories, colors, sizes, route: req.path })
         } catch (error) {
             console.log('showAllproducts :' + error.message);
         }
@@ -549,7 +549,7 @@ module.exports = {
             ]
 
             const sub_category_products = await handleAggregatePagination(product, projection, req.params)
-            res.render('site/shop', { sub_category_products, colors, sizes, categories, route: req.path })
+            return res.render('site/shop', { sub_category_products, colors, sizes, categories, route: req.path })
         } catch (error) {
             console.log('getSub_categoryProduct :' + error.message);
         }
@@ -596,17 +596,17 @@ module.exports = {
                     }
                 }
             ])
-            res.render('site/productDetails', { singleProduct, relatedProducts })
+            return res.render('site/productDetails', { singleProduct, relatedProducts })
         } catch (error) {
-            if (error.message) res.status(404).render('Site_partials/404')
+            if (error.message) return res.status(404).render('Site_partials/404')
             console.log('getSingleProductDetails :' + error.message);
         }
     },
     singleproductonCart: async (req, res) => {
         try {
             const singleProduct = await product.findOne({ _id: req.params.id })
-            if (!singleProduct) res.json({ message: "NOT FOUND" })
-            res.json(singleProduct)
+            if (!singleProduct) return res.json({ message: "NOT FOUND" })
+            return res.json(singleProduct)
         } catch (error) {
             console.log('singleproductonCart' + error.message);
         }
@@ -682,7 +682,7 @@ module.exports = {
                     }
                 }
             ])
-            res.render('site/shop-cart', { products: data })
+            return res.render('site/shop-cart', { products: data })
         } catch (error) {
             console.log('getProductAddtoCart : ' + error.message);
         }
@@ -706,7 +706,7 @@ module.exports = {
         try {
             const user = getUser(req.cookies.token)
             const cart = await product_Cart.findOne({ username: user.username })
-            res.status(200).json(cart?.product_cart.length)
+            return res.status(200).json(cart?.product_cart.length)
         } catch (error) {
             console.log('getCartLength :' + error.message);
         }
@@ -728,7 +728,7 @@ module.exports = {
                     }
                 }
             ])
-            res.render('site/checkout', { products: data[0], grandTotal: data[0].grandTotal, userDetails })
+            return res.render('site/checkout', { products: data[0], grandTotal: data[0].grandTotal, userDetails })
         } catch (error) {
             console.log('getcartdetails :' + error.message);
         }
@@ -743,7 +743,7 @@ module.exports = {
             const order = await razorpay.orders.create(options)
 
             if (!order) return res.status(500).json('Error')
-            res.status(200).json(order)
+            return res.status(200).json(order)
         } catch (error) {
             console.log('orders : ' + error.message)
         }
@@ -771,9 +771,9 @@ module.exports = {
                     razorpay_order_id, razorpay_payment_id, contact, shippingAddress,
                     userId, order_note, totalAmount, items, createdAt: new Date()
                 })
-                res.status(200).json({ message: "Payment is successful" })
+                return res.status(200).json({ message: "Payment is successful" })
             } else {
-                res.status(200).json({ message: "Payment verification failed" })
+                return res.status(200).json({ message: "Payment verification failed" })
             }
         } catch (error) {
             console.log('validateOrder :' + error.message)
@@ -823,7 +823,7 @@ module.exports = {
                     }
                 }
             ])
-            res.render('admin/product/orders', { orders: data })
+            return res.render('admin/product/orders', { orders: data })
         } catch (error) {
             console.log('getOrders : ' + error.message);
         }
@@ -833,7 +833,7 @@ module.exports = {
             queries.getOrderData.push({ $match: { _id: new mongoose.Types.ObjectId(req.params.id) } })
             const data = await order.aggregate(queries.getOrderData)
             if (!data) res.render('partials/404')
-            res.render('admin/product/singleOrderDetails', { orderDetails: data })
+            return res.render('admin/product/singleOrderDetails', { orderDetails: data })
         } catch (error) {
             console.log('getorderDetais : ' + error.message)
         }
@@ -842,7 +842,7 @@ module.exports = {
         try {
             const data = await order.findByIdAndUpdate({ _id: req.params.id }, { status: req.body.status })
             if (!data) res.json({ message: 'Unsuccessful!' })
-            res.json({ message: 'updated!' })
+            return res.json({ message: 'updated!' })
         } catch (error) {
             console.log('updateOrderStatus :' + error.message);
         }
@@ -878,7 +878,7 @@ module.exports = {
                 }
             ]
             const userOrder = await handleAggregatePagination(order, projection, req.params)
-            res.render('site/UserAccount', { userorderDetails: userOrder })
+            return res.render('site/UserAccount', { userorderDetails: userOrder })
         } catch (error) {
             console.log('getuserOrders : ' + error.message)
         }
@@ -892,7 +892,7 @@ module.exports = {
                         product_price: { $gte: parseInt(obj.minamount), $lte: parseInt(obj.maxamount) }
                     }
                 }])
-                res.status(200).json({ products: priceFilter })
+                return res.status(200).json({ products: priceFilter })
             }
         } catch (error) {
             console.log('getpriceRangeProducts :' + error.message);

@@ -10,21 +10,19 @@ module.exports = {
             const data = await admin.findOne({ name })
             const isMatch = await bcrypt.compare(password, data.password);
             if (!isMatch) {
-                res.redirect('/admin/login')
+                return res.redirect('/admin/login')
             } else {
                 const user = { name: data.name }
                 const token = setUser(user)
                 res.cookie('authtoken', token)
-                res.redirect('/admin/dashboard')
+                return res.redirect('/admin/dashboard')
             }
         } catch (error) {
-            res.render('admin/login', { error: 'Invalid Username or Password!' })
+            return res.render('admin/login', { error: 'Invalid Username or Password!' })
         }
     },
     handleAdminLogout: async (req, res) => {
         const token = req.cookies?.authtoken;
-        console.log(token);
-        
         if (token) {
             res.clearCookie('authtoken')
             return res.redirect('/admin/login')

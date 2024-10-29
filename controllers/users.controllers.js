@@ -25,9 +25,9 @@ module.exports = {
                 res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 })
                 return res.redirect('/home')
             } else {
-                res.render('site/register', { message: 'Username Already Taken!' })
+                return res.render('site/register', { message: 'Username Already Taken!' })
             }
-            res.redirect('/home');
+            return res.redirect('/home');
         } catch (error) {
             console.log(' handleUserRegister : ' + error.message);
         }
@@ -46,7 +46,7 @@ module.exports = {
                 const existing_user = await product_Cart.findOne({ username: data.username })
                 if (!existing_user) await product_Cart.create({ username: data.username })
                 res.cookie('token', token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 })
-                res.redirect('/home')
+                return res.redirect('/home')
             }
         } catch (error) {
             console.log('handleUserLogin : ' + error.message);
@@ -67,16 +67,16 @@ module.exports = {
         try {
             const data = await contact.create(req.body)
             if (!data) res.json({ message: 'unsuccessfully!' })
-            res.json({ message: 'successfully Sent!' })
+            return res.json({ message: 'successfully Sent!' })
         } catch (error) {
-            res.json({ message: 'unsuccessfully!' })
+            return res.json({ message: 'unsuccessfully!' })
             console.log('contactMessage : ' + error.message)
         }
     },
     getAllMessages: async (req, res) => {
         try {
             const data = await contact.find({})
-            res.render('admin/contactMessage', { contactsMessages: data })
+            return res.render('admin/contactMessage', { contactsMessages: data })
         } catch (error) {
             console.log('getAllMessages : ' + error.message);
         }
@@ -85,7 +85,7 @@ module.exports = {
         try {
             const data = await contact.findOne({ _id: new mongoose.Types.ObjectId(req.params.id) })
             if (!data) res.render('admin/sendResponseMessage', { message: 'NOT FOUND' })
-            res.render('admin/sendResponseMessage', { singleMessage: data })
+            return res.render('admin/sendResponseMessage', { singleMessage: data })
         } catch (error) {
             console.log('sendResponse : ' + error.message);
         }
@@ -100,7 +100,7 @@ module.exports = {
             }
             const email = await transporter.sendMail(mailOptions)
             if (!email) res.json({ message: 'unsuccessfully!' })
-            res.json({ message: 'successfully Sent!' })
+            return res.json({ message: 'successfully Sent!' })
         } catch (error) {
             console.log('sendReponse : ' + error.message);
         }

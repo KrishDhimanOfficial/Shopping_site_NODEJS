@@ -15,14 +15,14 @@ module.exports = {
                 category: { $regex: req.body.info, $options: "i" }
             })
             if (existingCategory) {
-                res.json({ message: 'Category already exists!' })
+                return res.json({ message: 'Category already exists!' })
             } else {
                 await category.create({ category: req.body.info });
-                res.json({ message: 'Successfull!' });
+                return res.json({ message: 'Successfull!' });
             }
         } catch (error) {
             console.log(error.message);
-            res.json({ message: 'Please Enter Category' })
+            return res.json({ message: 'Please Enter Category' })
         }
     },
     allPostsAttributes: async (req, res) => {
@@ -41,7 +41,7 @@ module.exports = {
                     $addFields: { length: { $size: '$Posts' } }
                 },
             ])
-            res.render('admin/blog/blogCategory', { allPostsByCategory: data, tags, usingTags })
+            return res.render('admin/blog/blogCategory', { allPostsByCategory: data, tags, usingTags })
         } catch (error) {
             console.log('allPostsByCategory :' + error.message);
         }
@@ -50,7 +50,7 @@ module.exports = {
         try {
             const data = await category.findByIdAndDelete({ _id: req.params.id })
             if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
-            res.status(200).json({ message: 'Successfull!' })
+            return res.status(200).json({ message: 'Successfull!' })
         } catch (error) {
             console.log('deletePostCategory : ' + error.message);
         }
@@ -59,7 +59,7 @@ module.exports = {
         try {
             const data = await category.findByIdAndUpdate({ _id: req.params.id }, { category: req.body.info })
             if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
-            res.status(200).json({ message: 'Successfull!' })
+            return res.status(200).json({ message: 'Successfull!' })
         } catch (error) {
             console.log('updatePostCategory : ' + error.message)
         }
@@ -68,7 +68,7 @@ module.exports = {
         try {
             const categories = await category.find({})
             const tags = await tagsModel.find({})
-            res.render('admin/blog/createBlog', { categories, tags })
+            return res.render('admin/blog/createBlog', { categories, tags })
         } catch (error) {
             console.log(error.message);
         }
@@ -79,7 +79,7 @@ module.exports = {
             if (existingTag) res.json({ message: 'TagName already exists!' })
             const data = await tagsModel.create({ tag_name: req.body.info })
             if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
-            res.status(200).json({ message: 'Successfull!' })
+            return res.status(200).json({ message: 'Successfull!' })
         } catch (error) {
             console.log('createTag : ' + error.message)
         }
@@ -88,7 +88,7 @@ module.exports = {
         try {
             const data = await tagsModel.findByIdAndUpdate({ _id: req.params.id }, { tag_name: req.body.info })
             if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
-            res.status(200).json({ message: 'Successfull!' })
+            return res.status(200).json({ message: 'Successfull!' })
         } catch (error) {
             console.log('updateTag :' + error.message)
         }
@@ -97,7 +97,7 @@ module.exports = {
         try {
             const data = await tagsModel.findByIdAndDelete({ _id: req.params.id })
             if (!data) res.status(200).json({ message: 'Unsuccessfull!' })
-            res.status(200).json({ message: 'Successfull!' })
+            return res.status(200).json({ message: 'Successfull!' })
         } catch (error) {
             console.log('deleteTag : ' + error.message)
         }
@@ -123,12 +123,11 @@ module.exports = {
                 category_id
             })
             if (!data) deleteImage(`blogsImages/${blog_image}`)
-            res.json({ message: 'Post Created sucessfull!' })
+            return res.json({ message: 'Post Created sucessfull!' })
         } catch (error) {
             const blog_image = req.file.filename;
             if (error.message) deleteImage(`blogsImages/${blog_image}`)
-            res.json({ message: 'Post Created Unsucessfull!' })
-            console.log(error.message)
+            return res.json({ message: 'Post Created Unsucessfull!' })
         }
     },
     allPosts: async (req, res) => {
@@ -160,7 +159,7 @@ module.exports = {
                         }
                     }
                 }])
-            res.render('admin/blog/blogIndex', { posts: data });
+            return res.render('admin/blog/blogIndex', { posts: data });
         } catch (error) {
             console.log(error.message);
         }
@@ -173,7 +172,7 @@ module.exports = {
             throw new Error('Successfully Deleted!')
         } catch (error) {
             console.log(error.message);
-            res.json({ message: error.message })
+            return res.json({ message: error.message })
         }
     },
     updateBlogPage: async (req, res) => {
@@ -203,10 +202,10 @@ module.exports = {
                 }
             ])
             if (!data) res.redirect('/admin/blogs')
-            res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata, tags })
+            return res.render('admin/blog/updateBlog', { post: data[0], categories: categorydata, tags })
         } catch (error) {
             console.log('updateBlogPage :' + error.message)
-            res.redirect('/admin/blogs')
+            return res.redirect('/admin/blogs')
         }
     },
     updateBlog: async (req, res) => {
@@ -228,10 +227,10 @@ module.exports = {
                 })
             if (blog_image) deleteImage(`/blogsImages/${data.blog_image}`)
             if (!data) res.json({ message: 'Update Unsuccessfull!' })
-            res.json({ message: 'Update Successfully!' })
+            return res.json({ message: 'Update Successfully!' })
         } catch (error) {
             console.log("updateBlog : " + error.message);
-            res.json({ message: 'Update Unsuccessfull!' })
+            return res.json({ message: 'Update Unsuccessfull!' })
         }
     },
     getBlogs: async (req, res) => {
@@ -252,7 +251,7 @@ module.exports = {
                         }
                     }
                 }]).limit(limit)
-            res.render('site/blogPage', { blogs: data, blogLength: data.length, limit, route: req.url })
+            return res.render('site/blogPage', { blogs: data, blogLength: data.length, limit, route: req.url })
         } catch (error) {
             console.log("getBlogs :" + error.message);
         }
@@ -313,9 +312,9 @@ module.exports = {
                 }
             ])
             if (!data) res.render('site/singleBlog', { message: 'NOT FOUND' })
-            res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories, postComments: comments, postTags })
+            return res.render('site/singleBlog', { blog: data, featuredPosts, Postcategories, postComments: comments, postTags })
         } catch (error) {
-            if(error.message) res.status(404).render('Site_partials/404')
+            if (error.message) res.status(404).render('Site_partials/404')
             console.log('getSingleBlog : ' + error.message);
         }
     },
@@ -349,9 +348,9 @@ module.exports = {
                     }
                 }
             ])
-            res.render('site/tagsposts', { PostBytags, blogLength: PostBytags[0].blogs.length, limit })
+            return res.render('site/tagsposts', { PostBytags, blogLength: PostBytags[0].blogs.length, limit })
         } catch (error) {
-            if(error.message) res.status(404).render('Site_partials/404')
+            if (error.message) res.status(404).render('Site_partials/404')
             console.log('blogControllers : ' + error.message);
         }
     },
@@ -382,9 +381,9 @@ module.exports = {
                     }
                 }
             ])
-            res.render('site/categoriesBlogs', { Postcategories: data, category: req.params.blog_category, blogLength: data[0].posts.length, limit })
+            return res.render('site/categoriesBlogs', { Postcategories: data, category: req.params.blog_category, blogLength: data[0].posts.length, limit })
         } catch (error) {
-            if(error.message) res.status(404).render('Site_partials/404')
+            if (error.message) res.status(404).render('Site_partials/404')
             console.log('getCategoryBlogs :' + error.message);
         }
     },
@@ -400,7 +399,7 @@ module.exports = {
                 date: new Date(),
                 user_image: 'user.webp'
             })
-            res.status(200).json(data)
+            return res.status(200).json(data)
         } catch (error) {
             console.log('getPostComment : ' + error.message);
         }
@@ -418,7 +417,7 @@ module.exports = {
                 }
             ])
             // const data = await comment.find({})
-            res.render('admin/blog/blogComments', { comments: data })
+            return res.render('admin/blog/blogComments', { comments: data })
         } catch (error) {
             console.log('getBlogComments :' + error.message);
         }
@@ -434,8 +433,8 @@ module.exports = {
             }
             if (!data) res.status(200).json({ message: 'Updated Unsuccessfull!' })
             if (req.body.status == false) emailOptions.text = 'Your Comment has UnApprove by Admin For Blog. Check it Out!';
-            res.status(200).json({ message: 'Updated Successfully!' })
             await transporter.sendMail(emailOptions)
+            return res.status(200).json({ message: 'Updated Successfully!' })
         } catch (error) {
             console.log('updateBlogComments :' + error.message);
         }
@@ -449,8 +448,8 @@ module.exports = {
                 subject: 'Blog Comment Deleted',
                 text: 'Your Comment DELETED That From Blog. Check it Out!'
             }
-            res.json({ message: 'Successfully Deleted!' })
             await transporter.sendMail(emailOptions)
+            return res.json({ message: 'Successfully Deleted!' })
         } catch (error) {
             console.log('deleteBlogComment :' + error.message);
         }
