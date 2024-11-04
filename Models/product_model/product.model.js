@@ -63,6 +63,7 @@ const productSchema = mongoose.Schema({
     },
     status:{
         type:mongoose.Schema.Types.Boolean,
+        default:true,
         required:true
     },
     product_stock: {
