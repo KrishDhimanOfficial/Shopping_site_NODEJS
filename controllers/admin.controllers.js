@@ -6,9 +6,12 @@ module.exports = {
     handleAdminLogin: async (req, res) => {
         try {
             const { name, password } = req.body;
-
             const data = await admin.findOne({ name })
+            console.log(data);
+            
             const isMatch = await bcrypt.compare(password, data.password);
+            console.log(isMatch);
+            
             if (!isMatch) {
                 return res.redirect('/admin/login')
             } else {
