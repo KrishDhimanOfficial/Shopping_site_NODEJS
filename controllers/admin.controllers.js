@@ -10,15 +10,15 @@ module.exports = {
             console.log(data);
             
             const isMatch = await bcrypt.compare(password, data.password);
-            console.log(isMatch);
+            console.log(isMatch)
             
             if (!isMatch) {
-                return res.redirect('/admin/login')
-            } else {
                 const user = { name: data.name }
                 const token = setUser(user)
                 res.cookie('authtoken', token)
                 return res.redirect('/admin/dashboard')
+            } else {
+                return res.redirect('/admin/login')
             }
         } catch (error) {
             return res.render('admin/login', { error: 'Invalid Username or Password!' })

@@ -39,7 +39,7 @@ module.exports = {
             const ismatch = await bcrypt.compare(password, data.password)
 
             if (!ismatch) {
-                res.render('login', { message: 'NOT FOUND' })
+              return  res.render('site/login', { message: 'NOT FOUND' })
             } else {
                 const setuser = { username: data.username }
                 const token = setUser(setuser)
